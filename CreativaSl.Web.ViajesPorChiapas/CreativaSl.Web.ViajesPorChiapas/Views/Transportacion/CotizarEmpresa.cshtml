@@ -1,0 +1,305 @@
+﻿@using System.Data
+@using System.Text.RegularExpressions
+@using CreativaSl.Web.ViajesPorChiapas.Resources
+@model CreativaSl.Web.ViajesPorChiapas.Models.TransportacionModels
+@{
+    Localizate locale = new Localizate();
+}
+@{
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+@section metasTags{
+    @if (Model.tablaMetaTags.Rows.Count >= 1)
+    {
+        <meta charset="utf-8">
+        <title>@Html.Raw(Model.tablaMetaTags.Rows[0]["title"])</title>
+        <meta name="author" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["author"])">
+        <meta name="subject" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["subjetc"])">
+        <meta name="description" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["description"])">
+        <meta name="keywords" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["keywords"])">
+        <meta name="robots" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["robots"])">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="@Html.Raw(Model.tablaMetaTags.Rows[0]["canonical"])" />
+    }
+    else
+    {
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="author" content="">
+        <meta name="subject" content="">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="robots" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="" />
+    }
+}
+<div class="row page-title">
+    <div class="container clear-padding text-center flight-title">
+        <h3>@Html.Raw(locale.GetResourceTransportacion("cotizarTransportacion"))</h3>
+    </div>
+</div>
+<div class="divider"><span></span></div>
+<div class="row booking-tab">
+</div>
+<div class="row booking-detail">
+    <div class="container clear-padding">
+        <div class="tab-content">
+            <div id="passenger-info" class="tab-pane fade in active">
+                <div class="col-md-8 col-sm-8">
+                    <div class="passenger-detail">
+                        <p class="cotizarEmpreza">@Html.Raw(locale.GetResourceTransportacion("cotizarTransportacion"))</p>
+                        @using (Html.BeginForm("cotizarempresa", "transportacion", FormMethod.Post, new { id = "form_tour", @class = "form-horizontal" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true)
+                            <div class="passenger-detail-body">
+                                <div class="col-md-6 ol-sm-6 col6_form">
+                                    <label>@Html.Raw(locale.GetResourceTransportacion("nombre"))</label>
+                                    @Html.TextBoxFor(model => model.nombreCotizar, new { id = "nombreCotizar", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.nombreCotizar)
+                                </div>
+                                <div class="col-md-6 ol-sm-6 col6_form">
+                                    <label>@Html.Raw(locale.GetResourceTransportacion("apellidoPaterno"))</label>
+                                    @Html.TextBoxFor(model => model.apellidoPaternoCotizar, new { id = "apellidoPaternoCotizar", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.apellidoPaternoCotizar)
+                                </div>
+                                <div class="col-md-6 ol-sm-6 col6_form">
+                                    <label>@Html.Raw(locale.GetResourceTransportacion("apellidoMaterno"))</label>
+                                    @Html.TextBoxFor(model => model.apellidoMaternoCotizar, new { id = "apellidoMaternoCotizar", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.apellidoMaternoCotizar)
+                                </div>
+                                <div class="col-md-6 ol-sm-6 col6_form">
+                                    <label>@Html.Raw(locale.GetResourceTransportacion("email"))</label>
+                                    @Html.TextBoxFor(model => model.emailCotizar, new { id = "emailCotizar", @class = "form-control", @readonly = "readonly" })
+                                    
+                                </div>
+                                <div class="col-md-6 ol-sm-6 col6_form">
+                                    <label>@Html.Raw(locale.GetResourceTransportacion("telefono"))</label>
+                                    @Html.TextBoxFor(model => model.telefonoCotizar, new { id = "telefonoCotizar", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.telefonoCotizar)
+                                </div>
+                                <div class="col-md-6 ol-sm-6 col6_form">
+                                    <label>@Html.Raw(locale.GetResourceTransportacion("tipoCarro"))</label>
+                                    @Html.DropDownListFor(model => model.id_TipoVehiculoCotizar, ViewData["cmbTipoVehiculosCotizar"] as SelectList, new { id = "id_transportacion", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.id_TipoVehiculoCotizar)
+                                </div>
+                                <div class="col-md-6 ol-sm-6 col6_form">
+                                    <label>@locale.GetResourceTransportacion("fechaLlegada")</label>
+                                    <div id="datetimepicker1" class="input-append date calendar">
+                                        @Html.TextBoxFor(model => model.fechaLlegadaCotizar, "{0:dd/MM/yyyy}", new { id = "fechaLlegadaCotizar", @class = "form-control calendarFecha", @readonly = "readonly" })
+                                        @Html.ValidationMessageFor(model => model.fechaLlegadaCotizar)
+                                        <span class="add-on">
+                                            <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 ol-sm-6 col6_form">
+                                    <label>@locale.GetResourceTransportacion("fechaSalida")</label>
+                                    <div id="datetimepicker2" class="input-append date calendar">
+                                        @Html.TextBoxFor(model => model.fechaSalidaCotizar, "{0:dd/MM/yyyy}", new { id = "fechaSalidaCotizar", @class = "form-control calendarFecha", @readonly = "readonly" })
+                                        @Html.ValidationMessageFor(model => model.fechaSalidaCotizar)
+                                        <span class="add-on">
+                                            <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 ol-sm-6 col6_form">
+                                    <label>@locale.GetResourceTransportacion("horaLlegada")</label>
+                                    <div id="timepicker1" class="input-append time">
+                                        @Html.TextBoxFor(model => model.horaLlegadaCotizar, new { id = "horaLlegadaCotizar", @class = "form-control calendarFecha", @readonly = "readonly" })
+                                        @Html.ValidationMessageFor(model => model.horaLlegadaCotizar)
+                                        <span class="add-on">
+                                            <i data-time-icon="icon-time" data-date-icon="icon-time"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 ol-sm-6 col6_form">
+                                    <label>@locale.GetResourceTransportacion("horaSalida")</label>
+                                    <div id="timepicker2" class="input-append time">
+                                        @Html.TextBoxFor(model => model.horaSalidaCotizar, new { id = "horaSalidaCotizar", @class = "form-control calendarFecha", @readonly = "readonly" })
+                                        @Html.ValidationMessageFor(model => model.horaSalidaCotizar)
+                                        <span class="add-on">
+                                            <i data-time-icon="icon-time" data-date-icon="icon-time"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 ol-sm-6 col6_form">
+                                    <label>@Html.Raw(locale.GetResourceTransportacion("numeroPersonas"))</label>
+                                    @Html.DropDownListFor(model => model.numeroPersonasCotizar, new SelectListItem[]
+                                    {
+                                        new SelectListItem() {Text = "1", Value = "1", Selected = true},
+                                        new SelectListItem() {Text = "2", Value = "2"},
+                                        new SelectListItem() {Text = "3", Value = "3"},
+                                        new SelectListItem() {Text = "4", Value = "4"},
+                                        new SelectListItem() {Text = "5", Value = "5"},
+                                        new SelectListItem() {Text = "6", Value = "6"},
+                                        new SelectListItem() {Text = "7", Value = "7"},
+                                        new SelectListItem() {Text = "8", Value = "8"},
+                                        new SelectListItem() {Text = "9", Value = "9"},
+                                        new SelectListItem() {Text = "10", Value = "10"},
+                                        new SelectListItem() {Text = "11", Value = "11"},
+                                        new SelectListItem() {Text = "12", Value = "12"},
+                                        new SelectListItem() {Text = "13", Value = "13"},
+                                        new SelectListItem() {Text = "14", Value = "14"},
+                                        new SelectListItem() {Text = "15", Value = "15"},
+                                    }, new { id = "numeroPersonasCotizar", @class = "form-control" })
+                                </div>
+                                <div class="col-md-12">
+                                    <label>@Html.Raw(locale.GetResourceTransportacion("detalleServicio"))</label>
+                                    @Html.TextAreaFor(model => model.observacionesCotizar, new { id = "observacionesCotizar", @class = "form-control", @rows = "4" })
+                                    @Html.ValidationMessageFor(model => model.observacionesCotizar)
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="text-center">
+                                        <button type="submit" id="cotizar_paquetes1">@Html.Raw(locale.GetResourceTransportacion("cotizar"))<i class="fa fa-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 booking-sidebar">
+                    <div class="sidebar-item">
+                        <h4><i class="fa fa-phone"></i>@Html.Raw(locale.GetResourceCotizarTours("necesitaAyuda"))</h4>
+                        <div class="sidebar-body text-center">
+                            <p>@Html.Raw(locale.GetResourceCotizarTours("necesitaAyudaComunicarse"))</p>
+                            <h2>@Html.Raw(Model.tablaDatosGenerales.Rows[0]["telefono"])</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Newsletter{
+    <div class="container clear-padding">
+        <div class="col-md-7 col-sm-7">
+            <div class="progressbar fade-right animate1">
+                @{
+                    string newletter = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("newsletter")].ToString();
+                    string[] newsletter = Regex.Split(newletter, "\r\n");
+                    if (newsletter != null)
+                    {
+                        int totalnewsletter = newsletter.Count();
+                        if (totalnewsletter >= 1)
+                        {
+                            <p class="NL">@Html.Raw(newsletter[0])</p>
+                        }
+                        if (totalnewsletter >= 2)
+                        {
+                            <p>@Html.Raw(newsletter[1])</p>
+                        }
+                    }
+                }
+            </div>
+            <form>
+                <div class="col-md-9 col-sm-8 col-xs-6 clear-padding">
+                    <input type="text" id="correoSuscribirse" class="form-control" required />
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 clear-padding">
+                    <button type="button" id="btnSuscribirse"><i class="fa fa-paper-plane"></i> @locale.GetResourceSeccion("suscribirse")</button>
+                </div>
+                <p id="msg_newsletter" style="font-size: 25px;"></p>
+            </form>
+        </div>
+        <div class="col-md-5 col-sm-5">
+            <div class="social-media pull-right">
+                <ul>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["facebook"])"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["twitter"])"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["instagram"])"><i class="fa fa-instagram"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["google"])"><i class="fa fa-google-plus"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["youtube"])"><i class="fa fa-youtube"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+@section Piedepagina{
+    <div class="container clear-padding">
+        <div class="col-md-3 col-sm-6 about-box">
+            @{
+                string pieAcerca = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("pieAcerca")].ToString();
+                string[] pieAcercas = Regex.Split(pieAcerca, "\r\n");
+                if (pieAcercas != null)
+                {
+                    int totalPie = pieAcercas.Count();
+                    if (totalPie >= 1)
+                    {
+                        <h3>@Html.Raw(pieAcercas[0])</h3>
+                    }
+                    if (totalPie >= 2)
+                    {
+                        <p class="descripcion">@Html.Raw(pieAcercas[1])</p>
+                    }
+                }
+            }
+        </div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Popular")</h4>
+            <ul>
+                @foreach (DataRow PaquetPulares in Model.TablaPaquetesPopulares.Rows)
+                {
+                    string id = PaquetPulares["nombre_pagina"].ToString();
+                    <li><a href="@Url.Action("DetallePaquete", "Paquetes", new { id = id })">@Html.Raw(PaquetPulares["nombre"])</a></li>
+                }
+            </ul>
+        </div>
+        <div class="clearfix visible-sm-block"></div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Servicio")</h4>
+            <ul>
+                <li><a href="@Url.Action("Index", "Home")">@locale.GetResource("inicio")</a></li>
+                <li class="activo"><a href="@Url.Action("Index", "Transportacion")">@locale.GetResource("transportacion")</a></li>
+                <li><a href="@Url.Action("Index", "Promociones")">@locale.GetResource("promocion")</a></li>
+                <li><a href="@Url.Action("Index", "Galerias")">@locale.GetResource("galeria")</a></li>
+                <li><a href="@Url.Action("Index", "Blog")">@locale.GetResource("blog")</a></li>
+                <li><a href="@Url.Action("Index", "Contactos")">@locale.GetResource("contacto")</a></li>
+                <li><a href="@Url.Action("Index", "Recomendaciones")">@locale.GetResource("recomendaciones")</a></li>
+            </ul>
+        </div>
+        <div class="col-md-3 col-sm-6 contact-box">
+            <h4>@locale.GetResourceSeccion("contacto")</h4>
+            <p>
+                <i class="fa fa-home"></i>@locale.GetResourceSeccion("direccion"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["direccion"])
+            </p>
+            <p><i class="fa fa-phone"></i>@locale.GetResourceSeccion("telefono"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["telefono"])</p>
+            <p><i class="fa fa-envelope-o"></i>@locale.GetResourceSeccion("correo"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["correo"])</p>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12 text-center we-accept">
+            <h4>@locale.GetResourceSeccion("pago")</h4>
+            <ul>
+                @foreach (DataRow FormasPago in Model.TablaFormasDePago.Rows)
+                {
+                    <li><img class="formas-pago" src="@Html.Raw(Html.Encode(FormasPago["imagen"].ToString().Replace("~", "")))" alt="@Html.Raw(FormasPago["alt"].ToString())" title="@Html.Raw(FormasPago["title"].ToString())"></li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+@section scriptF{
+    <script>
+        var validacionLoad1 = 0;
+        var validacionLoad2 = 0;
+            $(document).ready(function () {
+                $("#BoletoCotizar").change(function () {
+                    var aux = 0;
+                    aux = $("#BoletoCotizar").val();
+                    if (aux == "true") {
+                        $('#aeropuertollegada_div').show();
+                        $('#aeropuertosalida_div').show();
+                    }
+                    else {
+                        $('#aeropuertollegada_div').hide();
+                        $('#aeropuertosalida_div').hide();
+                    }
+                });
+                $("#BoletoCotizar").trigger("change");
+            });
+            $(document).ready(function () {
+                jQuery.validator.methods["date"] = function (value, element) { return true; }
+            });
+    </script>
+}

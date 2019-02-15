@@ -1,0 +1,692 @@
+﻿@model CreativaSl.Web.ViajesPorChiapas.Models.ClienteModels
+@{
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <title>Email</title>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <link href="@Url.Content("~/Content/Administrador/plugins/email/css/bootstrap.min.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Content/Administrador/plugins/email/js/jquery-2.1.4.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/email/js/bootstrap.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/email/js/tinymce.min.js")" type="text/javascript"></script>
+    <link href="@Url.Content("~/Content/Administrador/plugins/email/css/mail.css")" rel="stylesheet" />
+    <script>
+        $.ajaxSetup({ cache: false });
+    </script>
+</head>
+<body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col col-md-4">
+                    <label>Herramientas</label>
+                    <div class="list-group" style="overflow-y:scroll;height:660px;">
+                        <a href="javascript:void(0);" id="email_header" class="list-group-item">
+                            <h4 class="list-group-item-heading">Header</h4>
+                            <p class="list-group-item-text">
+                                <img src="@Url.Content("~/Content/Administrador/img/email/headerT.png")" alt="Miniatura" class="img-thumbnail" style="height:75px !important"/>
+                                Ideal para datos de contacto.
+                            </p>
+                        </a>
+                        <a href="javascript:void(0);" id="email_banner" class="list-group-item">
+                            <h4 class="list-group-item-heading">Banner</h4>
+                            <p class="list-group-item-text">
+                                <img src="@Url.Content("~/Content/Administrador/img/email/bannerT.png")" alt="Miniatura" class="img-thumbnail" style="height:75px !important"/>
+                                Datos concisos como promociones.
+                            </p>
+                        </a>
+                        <a href="javascript:void(0);" id="email_pamphlet" class="list-group-item">
+                            <h4 class="list-group-item-heading">Panfleto</h4>
+                            <p class="list-group-item-text">
+                                <img src="@Url.Content("~/Content/Administrador/img/email/pamphletT.png")" alt="Miniatura" class="img-thumbnail" style="height:75px !important"/>
+                                Imagen de fondo con información.
+                            </p>
+                        </a>
+                        <a href="javascript:void(0);" id="email_imageLeft" class="list-group-item">
+                            <h4 class="list-group-item-heading">Texto con imagen a la izquierda</h4>
+                            <p class="list-group-item-text">
+                                <img src="@Url.Content("~/Content/Administrador/img/email/imageLeftT.png")" alt="Miniatura" class="img-thumbnail" style="height:75px !important"/>
+                                Imagen con información.
+                            </p>
+                        </a>
+                        <a href="javascript:void(0);" id="email_imageRight" class="list-group-item">
+                            <h4 class="list-group-item-heading">Texto con imagen a la derecha</h4>
+                            <p class="list-group-item-text">
+                                <img src="@Url.Content("~/Content/Administrador/img/email/imageRightT.png")" alt="Miniatura" class="img-thumbnail" style="height:75px !important"/>
+                                Imagen con información.
+                            </p>
+                        </a>
+                        <a href="javascript:void(0);" id="email_html" class="list-group-item">
+                            <h4 class="list-group-item-heading">Editor</h4>
+                            <p class="list-group-item-text">
+                                <img src="@Url.Content("~/Content/Administrador/img/email/html.png")" alt="Miniatura" class="img-thumbnail" style="height:75px !important"/>
+                                HTML y texto.
+                            </p>
+                        </a>
+                    </div>
+                </div>
+                <div class="col col-md-8" id="emailViewer">
+                    <label>Visor</label>
+                    <iframe id="email-content" style="width:100%; height:620px;">
+                    </iframe>
+                    <input class="btn btn-primary pull-right" value="Envíar Por Correos" id="email_send_Correos"/>
+                    <input class="btn btn-primary pull-right" value="Envíar Por Grupo" id="email_send_Grupos"/>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="emailRequeriments">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Datos</h4>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <button type="button" id="insertIntoEmail" class="btn btn-primary">Aceptar</button>
+                    </div>
+                </div>        
+            </div>
+        </div>
+       <div class="modal fade" id="correos_individual">
+        @using (Html.BeginForm("EnviarASeleccinados", "EnviarCorreos", FormMethod.Post, new { id = "form_EnviarASeleccinados", @class = "form-horizontal" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(model => model.html, new {id = "htmlCorreos"})
+
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Envios Correos Por Email</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <div class="control-group">
+                                <label class="form-group">Asunto<span class="required"> *</span></label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.asunto, new {id = "asunto", @class = "form-control"})
+                                    @Html.ValidationMessageFor(model => model.asunto)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="control-group">
+                                <label class="form-group">Clientes<span class="required"> *</span></label>
+                                <div class="controls">
+                                    @Html.DropDownListFor(model => model.tablaClientes2Cmb, ViewData["cmbClientes2"] as SelectList, new {id = "ListClientes2", @class = "email_modal_contacts", size = "10", multiple = "multiple"})
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label>&nbsp;</label>
+                            <div class='email_modal_toggle'>
+                                <button type='button' class='btn btn-block btn-primary' id="btnToggle">
+                                    <span class='glyphicon glyphicon-chevron-right'></span>
+                                </button>
+                            </div>
+                            <div class='email_modal_toggle'>
+                                <button type='button' class='btn btn-block btn-primary' id="btnToggle2">
+                                    <span class='glyphicon glyphicon-chevron-left'></span>
+                                </button>
+                            </div>
+
+                        </div>                                   
+                        <div class="col-md-5">
+                            <div class="control-group">
+                                <label class="form-group">Clientes Seleccionados<span class="required"> *</span></label>
+                                <div class="controls">
+                                    @Html.DropDownListFor(model => model.tablaClientesSeleccionadosCmb, ViewData["cmbClientesSeleccionados"] as SelectList, new {id = "ListClientesSeleccionados", @class = "email_modal_contacts", size = "10", multiple = "multiple"})
+                                    @Html.ValidationMessageFor(model => model.tablaClientesSeleccionadosCmb)
+                                </div>
+                            </div>
+                        </div>
+                    </div>                        
+                    <div class="modal-footer">
+                         <div style="height: 15px;" class="col-md-12"></div>
+                         <div class="col-md-12">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Aceptar</button>
+                        </div>
+                     </div>
+                 </div>
+            </div>        
+           }
+        </div>
+       <div class="modal fade" id="correos_grupos">
+        @using (Html.BeginForm("EnviarAGrupo", "EnviarCorreos", FormMethod.Post, new {id="form_EnviarAGrupo", @class = "form-horizontal" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(model => model.html, new {id = "htmlGrupos"})
+
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Envios Correo Grupo</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <div class="control-group">
+                                <label class="form-group">Grupo<span class="required"> *</span></label>
+                                <div class="controls">
+                                    @Html.DropDownListFor(model => model.tablaGruposCmb, ViewData["cmbGrupos"] as SelectList, new { id = "ListGrupos", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.tablaGruposCmb)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="control-group">
+                                <label class="form-group">Asunto<span class="required"> *</span></label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.asunto, new { id = "asunto", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.asunto)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="control-group">
+                                <label class="form-group">Clientes<span class="required"> *</span></label>
+                                <div class="controls">
+                                    @Html.DropDownListFor(model => model.tablaClientesCmb, ViewData["cmbClientes"] as SelectList, new { id = "ListClientes", @class = "form-control", size = "10", multiple = "multiple" })
+                                    @Html.ValidationMessageFor(model => model.tablaClientesCmb)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                      <div style="height: 15px;" class="col-md-12"></div>
+                      <div class="col-md-12">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Aceptar</button>
+                      </div>
+                    </div>
+                </div>        
+            </div>
+        }
+        </div>
+
+    <script type="text/javascript">
+        var auxbol = 1;
+        $(document).ready(function () {
+            var email_contacts = [];
+            var email_toSend = [];
+
+            function getClientes(id) {
+                $.ajax({
+                    url: "/Admin/EnviarCorreos/ObtenerClientesXGrupo",
+                    data: { id: id },
+                    dataType: "json",
+                    type: "POST",
+                    error: function () {
+                        $("#ListClientes").html('');
+                    },
+                    success: function (cliente) {
+                        var items = "";
+                        for (var i = 0; i < cliente.length; i++) {
+                            items += "<option value=\"" + cliente[i].id_cliente + "\">" + cliente[i].nombre + "</option>";
+                        }
+                        $("#ListClientes").html(items);
+                        $('#ListClientes option').prop('selected', true);
+                    }
+                });
+            }
+            function email_load_images1() {
+                $('.email_modal_image_visor1').empty();
+                $.getJSON("/Admin/EnviarCorreos/BrowseUploadGetImageList1", function (data) {
+                    $.each(data.files, function (key, val) {
+                        var image = '<div style="width:100px;height:80px;float:left;"><img class="email_image_thumbnail1" src="/Content/Administrador/plugins/email/img/uploads1/' + val + '" style="max-width:100px;max-height:80px;padding:3px;"></div>';
+                        $("#emailRequeriments").find(".email_modal_image_visor1").append(image);
+                    });
+                });
+            }
+            function email_load_images3() {
+                $('.email_modal_image_visor3').empty();
+                $.getJSON("/Admin/EnviarCorreos/BrowseUploadGetImageList3", function (data) {
+                    $.each(data.files, function (key, val) {
+                        var image = '<div style="width:100px;height:80px;float:left;"><img class="email_image_thumbnail3" src="/Content/Administrador/plugins/email/img/uploads3/' + val + '" style="max-width:100px;max-height:80px;padding:3px;"></div>';
+                        $("#emailRequeriments").find(".email_modal_image_visor3").append(image);
+                    });
+                });
+            }
+            function email_load_images4() {
+                $('.email_modal_image_visor4').empty();
+                $.getJSON("/Admin/EnviarCorreos/BrowseUploadGetImageList4", function (data) {
+                    $.each(data.files, function (key, val) {
+                        var image = '<div style="width:100px;height:80px;float:left;"><img class="email_image_thumbnail4" src="/Content/Administrador/plugins/email/img/uploads4/' + val + '" style="max-width:100px;max-height:80px;padding:3px;"></div>';
+                        $("#emailRequeriments").find(".email_modal_image_visor4").append(image);
+                    });
+                });
+            }
+            function email_load_images5() {
+                $('.email_modal_image_visor5').empty();
+                $.getJSON("/Admin/EnviarCorreos/BrowseUploadGetImageList5", function (data) {
+                    $.each(data.files, function (key, val) {
+                        var image = '<div style="width:100px;height:80px;float:left;"><img class="email_image_thumbnail5" src="/Content/Administrador/plugins/email/img/uploads5/' + val + '" style="max-width:100px;max-height:80px;padding:3px;"></div>';
+                        $("#emailRequeriments").find(".email_modal_image_visor5").append(image);
+                    });
+                });
+            }
+
+            $('body').on('click', '.email_image_thumbnail1', function () {
+                $(".email_image_thumbnail1").removeClass("email_image_thumbnail1_selected");
+                $(this).addClass("email_image_thumbnail1_selected");
+                $("#emailRequeriments").find("#email_modal_image1").val($(this).prop('src'));
+            });
+            $('body').on('dblclick', '.email_image_thumbnail1', function () {
+                $(".email_image_thumbnail1").removeClass("email_image_thumbnail1_selected");
+                if (confirm("¿Está seguro que desea borrar esta imagen?")) {
+                    $.post("/Admin/EnviarCorreos/BrowseDelete1", { file: decodeURIComponent($(this).prop('src')) }, function() {
+                    })
+                    .done(function () {
+                        $("#emailRequeriments").find("#email_modal_image1").val("");
+                        email_load_images1();
+                    });
+                }
+            });
+
+            $('body').on('click', '.email_image_thumbnail3', function () {
+                $(".email_image_thumbnail3").removeClass("email_image_thumbnail3_selected");
+                $(this).addClass("email_image_thumbnail3_selected");
+                $("#emailRequeriments").find("#email_modal_image3").val($(this).prop('src'));
+            });
+            $('body').on('dblclick', '.email_image_thumbnail3', function () {
+                $(".email_image_thumbnail3").removeClass("email_image_thumbnail3_selected");
+                if (confirm("¿Está seguro que desea borrar esta imagen?")) {
+                    $.post("/Admin/EnviarCorreos/BrowseDelete3", { file: decodeURIComponent($(this).prop('src')) }, function () {
+                    })
+                    .done(function () {
+                        $("#emailRequeriments").find("#email_modal_image3").val("");
+                        email_load_images3();
+                    });
+                }
+            });
+
+            $('body').on('click', '.email_image_thumbnail4', function () {
+                $(".email_image_thumbnail4").removeClass("email_image_thumbnail4_selected");
+                $(this).addClass("email_image_thumbnail4_selected");
+                $("#emailRequeriments").find("#email_modal_image4").val($(this).prop('src'));
+            });
+            $('body').on('dblclick', '.email_image_thumbnail4', function () {
+                $(".email_image_thumbnail4").removeClass("email_image_thumbnail4_selected");
+                if (confirm("¿Está seguro que desea borrar esta imagen?")) {
+                    $.post("/Admin/EnviarCorreos/BrowseDelete4", { file: decodeURIComponent($(this).prop('src')) }, function () {
+                    })
+                    .done(function () {
+                        $("#emailRequeriments").find("#email_modal_image4").val("");
+                        email_load_images4();
+                    });
+                }
+            });
+
+            $('body').on('click', '.email_image_thumbnail5', function () {
+                $(".email_image_thumbnail5").removeClass("email_image_thumbnail5_selected");
+                $(this).addClass("email_image_thumbnail5_selected");
+                $("#emailRequeriments").find("#email_modal_image5").val($(this).prop('src'));
+            });
+            $('body').on('dblclick', '.email_image_thumbnail5', function () {
+                $(".email_image_thumbnail5").removeClass("email_image_thumbnail5_selected");
+                if (confirm("¿Está seguro que desea borrar esta imagen?")) {
+                    $.post("/Admin/EnviarCorreos/BrowseDelete5", { file: decodeURIComponent($(this).prop('src')) }, function () {
+                    })
+                    .done(function () {
+                        $("#emailRequeriments").find("#email_modal_image5").val("");
+                        email_load_images5();
+                    });
+                }
+            });
+
+            $(document).on('change', '.email_file_button1 :file', function () {
+                $('.email_modal_image_visor1').html("Subiendo...");
+                var fd = new FormData();
+                for (var aux = 0; aux < $(this)[0].files.length ; aux++) {
+                    fd.append('file' + aux, $(this)[0].files[aux]);
+                }
+                $(this).remove();
+                $.ajax({
+                    url: '/Admin/EnviarCorreos/BrowseUpload1',
+                    data: fd,
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    success: function (data) {
+                        email_load_images1();
+                        $('.email_file_button1').append('<input type="file" name="files[]" multiple accept="image/*"/>');
+                    }
+                });
+            });
+
+
+            $(document).on('change', '.email_file_button3 :file', function () {
+                $('.email_modal_image_visor3').html("Subiendo...");
+                var fd = new FormData();
+                for (var aux = 0; aux < $(this)[0].files.length ; aux++) {
+                    fd.append('file' + aux, $(this)[0].files[aux]);
+                }
+                $(this).remove();
+                $.ajax({
+                    url: '/Admin/EnviarCorreos/BrowseUpload3',
+                    data: fd,
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    success: function (data) {
+                        email_load_images3();
+                        $('.email_file_button3').append('<input type="file" name="files[]" multiple accept="image/*"/>');
+                    }
+                });
+            });
+
+            $(document).on('change', '.email_file_button4 :file', function () {
+                $('.email_modal_image_visor4').html("Subiendo...");
+                var fd = new FormData();
+                for (var aux = 0; aux < $(this)[0].files.length ; aux++) {
+                    fd.append('file' + aux, $(this)[0].files[aux]);
+                }
+                $(this).remove();
+                $.ajax({
+                    url: '/Admin/EnviarCorreos/BrowseUpload4',
+                    data: fd,
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    success: function (data) {
+                        email_load_images4();
+                        $('.email_file_button4').append('<input type="file" name="files[]" multiple accept="image/*"/>');
+                    }
+                });
+            });
+
+            $(document).on('change', '.email_file_button5 :file', function () {
+                $('.email_modal_image_visor5').html("Subiendo...");
+                var fd = new FormData();
+                for (var aux = 0; aux < $(this)[0].files.length ; aux++) {
+                    fd.append('file' + aux, $(this)[0].files[aux]);
+                }
+                $(this).remove();
+                $.ajax({
+                    url: '/Admin/EnviarCorreos/BrowseUpload5',
+                    data: fd,
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    success: function (data) {
+                        email_load_images5();
+                        $('.email_file_button5').append('<input type="file" name="files[]" multiple accept="image/*"/>');
+                    }
+                });
+            });
+
+            $("#email_header").click(function () {
+                $("#emailRequeriments").find(".modal-body").empty();
+                $("#emailRequeriments").find(".modal-body").append("<input type='hidden' id='email_modal_type' value='1' class='form-control'>");
+                $("#emailRequeriments").find(".modal-body").append("<div id='email_response'></div>");
+                $("#emailRequeriments").find(".modal-body").append("<label>Logotipo</label>");
+                $("#emailRequeriments").find(".modal-body").append("<div style='border:1px solid grey;width:100%;height:200px;' class='email_modal_image_visor1'></div><div class='input-group'><input type='text' id='email_modal_image1' class='form-control' readonly /><span class='input-group-btn'><div class='btn btn-primary email_file_button1'>Subir Imagen<input type='file' name='files[]' multiple accept='image/*'/></div></span></div><br/>");
+                $("#emailRequeriments").find(".email_modal_image_visor").empty();
+                email_load_images1();
+                var hyper = "<div class='form-group'><label>Hipervínculo de la imagen</label>";
+                hyper += "<div style='position:relative;width:100%;height:30px;'>";
+                hyper += "<select style='width:100px;position:absolute;top:0;left:0;border-top-right-radius: 0;-moz-border-radius-topright: 0;-webkit-border-top-right-radius: 0;border-bottom-right-radius: 0;-moz-border-radius-bottomright: 0;-webkit-border-bottom-right-radius: 0;' class='form-control' id='email_modal_protocol1'>";
+                hyper += "<option selected value='http://'>http://</option>";
+                hyper += "<option value='https://'>https://</option>";
+                hyper += "</select>";
+                hyper += "<div style='position:absolute;top:0;right:0px;left:100px;'>"
+                hyper += "<input style='-webkit-border-top-left-radius: 0;-webkit-border-bottom-left-radius: 0;-moz-border-radius-topleft: 0;-moz-border-radius-bottomleft: 0;border-top-left-radius: 0;border-bottom-left-radius: 0;' class='form-control' type='text' id='email_modal_link1'>";
+                hyper += "</div>"
+                hyper += "</div></div>";
+                $("#emailRequeriments").find(".modal-body").append(hyper);
+                
+                $("#emailRequeriments").modal("show");
+            });
+            $("#email_banner").click(function () {
+                $("#emailRequeriments").find(".modal-body").empty();
+                $("#emailRequeriments").find(".modal-body").append("<input type='hidden' id='email_modal_type' value='2' class='form-control'>");
+                $("#emailRequeriments").find(".modal-body").append("<div class='form-group'>¿Seguro que quiere insertar este control?</div>");
+                $("#emailRequeriments").modal("show");
+            });
+            $("#email_pamphlet").click(function () {
+                $("#emailRequeriments").find(".modal-body").empty();
+                $("#emailRequeriments").find(".modal-body").append("<input type='hidden' id='email_modal_type' value='3' class='form-control'>");
+                $("#emailRequeriments").find(".modal-body").append("<div id='email_response'></div>");
+                $("#emailRequeriments").find(".modal-body").append("<label>Imagen</label>");
+                $("#emailRequeriments").find(".modal-body").append("<div style='border:1px solid grey;width:100%;height:200px;' class='email_modal_image_visor3'></div><div class='input-group'><input type='text' id='email_modal_image3' class='form-control' readonly /><span class='input-group-btn'><div class='btn btn-primary email_file_button3'>Subir Imagen<input type='file' name='files[]' multiple accept='image/*' /></div></span></div><br/>");
+                $("#emailRequeriments").find(".email_modal_image_visor").empty();
+                email_load_images3();
+                $("#emailRequeriments").modal("show");
+            });
+            $("#email_imageLeft").click(function () {
+                $("#emailRequeriments").find(".modal-body").empty();
+                $("#emailRequeriments").find(".modal-body").append("<input type='hidden' id='email_modal_type' value='4' class='form-control'>");
+                $("#emailRequeriments").find(".modal-body").append("<div id='email_response'></div>");
+                $("#emailRequeriments").find(".modal-body").append("<label>Imagen</label>");
+                $("#emailRequeriments").find(".modal-body").append("<div style='border:1px solid grey;width:100%;height:200px;' class='email_modal_image_visor4'></div><div class='input-group'><input type='text' id='email_modal_image4' class='form-control' readonly /><span class='input-group-btn'><div class='btn btn-primary email_file_button4'>Subir Imagen<input type='file' name='files[]' multiple accept='image/*' /></div></span></div><br/>");
+                $("#emailRequeriments").find(".email_modal_image_visor").empty();
+                email_load_images4();
+                var hyper = "<div class='form-group'><label>Hipervínculo</label>";
+                hyper += "<div style='position:relative;width:100%;height:30px;'>";
+                hyper += "<select style='width:100px;position:absolute;top:0;left:0;border-top-right-radius: 0;-moz-border-radius-topright: 0;-webkit-border-top-right-radius: 0;border-bottom-right-radius: 0;-moz-border-radius-bottomright: 0;-webkit-border-bottom-right-radius: 0;' class='form-control' id='email_modal_protocol4'>";
+                hyper += "<option selected value='http://'>http://</option>";
+                hyper += "<option value='https://'>https://</option>";
+                hyper += "</select>";
+                hyper += "<div style='position:absolute;top:0;right:0px;left:100px;'>"
+                hyper += "<input style='-webkit-border-top-left-radius: 0;-webkit-border-bottom-left-radius: 0;-moz-border-radius-topleft: 0;-moz-border-radius-bottomleft: 0;border-top-left-radius: 0;border-bottom-left-radius: 0;' class='form-control' type='text' id='email_modal_link4'>";
+                hyper += "</div>"
+                hyper += "</div></div>";
+                $("#emailRequeriments").find(".modal-body").append(hyper);
+                $("#emailRequeriments").modal("show");
+            });
+            $("#email_imageRight").click(function () {
+                $("#emailRequeriments").find(".modal-body").empty();
+                $("#emailRequeriments").find(".modal-body").append("<input type='hidden' id='email_modal_type' value='5' class='form-control'>");
+                $("#emailRequeriments").find(".modal-body").append("<div id='email_response'></div>");
+                $("#emailRequeriments").find(".modal-body").append("<label>Imagen</label>");
+                $("#emailRequeriments").find(".modal-body").append("<div style='border:1px solid grey;width:100%;height:200px;' class='email_modal_image_visor5'></div><div class='input-group'><input type='text' id='email_modal_image5' class='form-control' readonly /><span class='input-group-btn'><div class='btn btn-primary email_file_button5'>Subir Imagen<input type='file' name='files[]' multiple accept='image/*'/></div></span></div><br/>");
+                $("#emailRequeriments").find(".email_modal_image_visor").empty();
+                email_load_images5();
+                var hyper = "<div class='form-group'><label>Hipervínculo de la imagen</label>";
+                hyper += "<div style='position:relative;width:100%;height:30px;'>";
+                hyper += "<select style='width:100px;position:absolute;top:0;left:0;border-top-right-radius: 0;-moz-border-radius-topright: 0;-webkit-border-top-right-radius: 0;border-bottom-right-radius: 0;-moz-border-radius-bottomright: 0;-webkit-border-bottom-right-radius: 0;' class='form-control' id='email_modal_protocol5'>";
+                hyper += "<option selected value='http://'>http://</option>";
+                hyper += "<option value='https://'>https://</option>";
+                hyper += "</select>";
+                hyper += "<div style='position:absolute;top:0;right:0px;left:100px;'>"
+                hyper += "<input style='-webkit-border-top-left-radius: 0;-webkit-border-bottom-left-radius: 0;-moz-border-radius-topleft: 0;-moz-border-radius-bottomleft: 0;border-top-left-radius: 0;border-bottom-left-radius: 0;' class='form-control' type='text' id='email_modal_link5'>";
+                hyper += "</div>"
+                hyper += "</div></div>";
+                $("#emailRequeriments").find(".modal-body").append(hyper);
+                $("#emailRequeriments").modal("show");
+            });
+            $("#email_html").click(function () {
+                $("#emailRequeriments").find(".modal-body").empty();
+                $("#emailRequeriments").find(".modal-body").append("<input type='hidden' id='email_modal_type' value='6' class='form-control'>");
+                $("#emailRequeriments").find(".modal-body").append("<label class='col-xs-12'>Editor</label>");
+                $("#emailRequeriments").find(".modal-body").append("<textarea class='email_editor' id='email_editor_id'></textarea>");
+                tinymce.init({
+                    selector: ".email_editor",
+                    theme: "modern",
+                    encoding: "xml",
+                    plugins: [
+                        "advlist autolink lists link image charmap preview hr anchor pagebreak",
+                        "searchreplace wordcount visualblocks visualchars code fullscreen",
+                        "insertdatetime media nonbreaking save table contextmenu directionality",
+                        "emoticons template paste textcolor colorpicker textpattern imagetools"
+                    ],
+                    toolbar1: "preview | insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | forecolor backcolor",
+                    image_advtab: true,
+                    setup: function (editor) {
+                        editor.on('SaveContent', function (e) {
+                            e.Text = e.Text.replace(/&#39/g, "&apos");
+                        });
+                        editor.on("init", function (e) {
+                            tinyMCE.activeEditor.setContent(tinymce.activeEditor.getContent());
+                            tinyMCE.execCommand('mceRepaint');
+                        });
+                    }
+                });
+                $("#emailRequeriments").modal("show");
+            });
+            $("#email_send_Correos").click(function ()
+            {
+                if ($("#email-content").contents().find('body').html())
+                {
+                    $("#correos_individual").modal("show");
+
+                    var htmlToSend = $("#email-content").contents().find('body').clone();
+                    $(htmlToSend).find("button").remove();
+                    htmlToSend = $(htmlToSend).html();
+                    $("#htmlCorreos").val(htmlToSend);
+                }
+                else
+                {
+                    alert("El correo parece estar vacío.");
+                }
+            });
+            $("#email_send_Grupos").click(function ()
+            {
+                if ($("#email-content").contents().find('body').html())
+                {
+                    $("#correos_grupos").modal("show");
+                    var htmlToSend = $("#email-content").contents().find('body').clone();
+                    $(htmlToSend).find("button").remove();
+                    htmlToSend = $(htmlToSend).html();
+                    $("#htmlGrupos").val(htmlToSend);
+                }
+                else
+                {
+                    alert("El correo parece estar vacío.");
+                }
+            });
+            $("#insertIntoEmail").click(function ()
+            {
+                var baseURL = window.location.protocol + "//" + window.location.host + "";
+                var value = $("#email_modal_type").val();
+                if (value == 1)
+                {
+                    var email_modal_image = $("#email_modal_image1").val();
+                    if (!email_modal_image)
+                    {
+                        $('#email_response').html("<div class='alert alert-warning'>Este componente necesita una imagen.</div>");
+                        return false;
+                    }
+                    if ($("#email_modal_link1").val())
+                        var email_modal_link = $("#email_modal_protocol1").val() + $("#email_modal_link1").val();
+                    else
+                        var email_modal_link = "#";
+                    $("#email-content").contents().find('body').append("<div style=\"position:relative;\"><button style=\"position:absolute;top:0px;left:0px;opacity:0.8;z-index:9999;\" onclick=\"javascript:this.parentNode.parentNode.removeChild(this.parentNode);\">Borrar</button><table><tr style=\"width:100%;height:10px;\"></tr></table><table><tr style=\"position:relative;font-family:'Open Sans',sans-serif;\"></tr></table><table style=\"position:relative; width:800px;height:75px;border-bottom:5px solid #317FBF;color:#317FBF;\"><tr><td><a href=\"" + email_modal_link + "\" target=\"_blank\"><img src=\"" + email_modal_image + "\" alt=\"Logo\" style=\"top:0;left:0;width:150px;height:75px;padding:0px\"></a></td><td style=\"width:270px;text-align:right;\"></td><td style=\"font-family:'Open Sans',sans-serif;top:0;right:0;height:75px;font-size:20px;line-height:75px;\" contenteditable=\"true\">¡Aprovecha! <span style=\"font-weight:bolder;\" contenteditable=\"true\"> (961)61-0-00-00</span></td></tr></table></div>");
+                }
+                else if (value == 2)
+                {
+                    $("#email-content").contents().find('body').append("<div style=\"position:relative;\"><button style=\"position:absolute;top:0px;left:0px;opacity:0.8;z-index:9999;\" onclick=\"javascript:this.parentNode.parentNode.removeChild(this.parentNode);\">Borrar</button><table><tr style=\"width:100%;height:10px;\"></tr></table><table><tr style=\"position:relative;font-family:'Open Sans',sans-serif;\"></tr></table><table style=\"position:relative; width:800px;height:85px;background:#317FBF;color:#fff;\"><tr><td style=\"font-family:'Open Sans',sans-serif;position:absolute;top:0;left:5px; height:85px;font-size:20px;line-height:85px;\" contenteditable=\"true\">Llévate un <span style=\"font-size:30px;\">15%</span> de descuento este mes.</td><td style=\"width:270px;text-align:right;\"></td><td style=\"font-family:'Open Sans',sans-serif;position:absolute;top:0;right:5px;height:85px;font-size:10px;line-height:85px;\" contenteditable=\"true\">CÓDIGO: PROMO15</td></tr></table></div>");
+                } else if (value == 3)
+                {
+                    var email_modal_image = $("#email_modal_image3").val();
+                    if (!email_modal_image)
+                    {
+                        $('#email_response').html("<div class='alert alert-warning'>Este componente necesita una imagen.</div>");
+                        return false;
+                    }
+                    $("#email-content").contents().find('body').append("<div style=\"position:relative;\"><button style=\"position:absolute;top:0px;left:0px;opacity:0.8;z-index:9999;\" onclick=\"javascript:this.parentNode.parentNode.removeChild(this.parentNode);\">Borrar</button><table><tr style=\"width:100%;height:10px;\"></tr></table><table><tr style=\"position:relative;font-family:'Open Sans',sans-serif;\"></tr></table><table background=\"" + email_modal_image + "\" style=\"background-repeat: no-repeat;width:800px;height:480px;position:relative;color:white; background: url(" + email_modal_image + ") no-repeat center / 100% 100%\"><tr style=\"position:absolute;top:100px;font-size:20px;text-transform:uppercase;text-align:center;width:100%;font-weight:800;text-shadow:1px 1px #000000\" contenteditable=\"true\"><td>Es tiempo de planear tus</td></tr><tr style=\"position:absolute;top:140px;font-size:60px;text-transform:uppercase;text-align:center;width:100%;font-weight:800;text-shadow:1px 1px #000000\" contenteditable=\"true\"><td>vacaciones</td></tr><tr style=\"position:absolute;top:240px;font-size:20px;text-transform:uppercase;text-align:center;width:100%;font-weight:800;text-shadow:1px 1px #000000\" contenteditable=\"true\"><td>de verano</td></tr></table></div>");
+                } else if (value == 4)
+                {
+                    var email_modal_image = $("#email_modal_image4").val();
+                    if (!email_modal_image)
+                    {
+                        $('#email_response').html("<div class='alert alert-warning'>Este componente necesita una imagen.</div>");
+                        return false;
+                    }
+                    if ($("#email_modal_link4").val())
+                        var email_modal_link = $("#email_modal_protocol4").val() + $("#email_modal_link4").val();
+                    else
+                        var email_modal_link = "#";
+                    $("#email-content").contents().find('body').append("<div style=\"position:relative;\"><button style=\"position:absolute;top:0px;left:0px;opacity:0.8;z-index:9999;\" onclick=\"javascript:this.parentNode.parentNode.removeChild(this.parentNode);\">Borrar</button><table><tr style=\"width:100%;height:10px;\"></tr></table><table><tr style=\"position:relative;font-family:'Open Sans',sans-serif;\"></tr></table><table style=\"border-collapse:collapse;width:800px;height:360px;position:relative;\"><tbody><tr><td background=\"" + email_modal_image + "\" style=\"width:50%;height:100%; background:url(" + email_modal_image + ")no-repeat center / 100% 100%\"></td><td style=\"width:50%;height:100%;text-align:center;position:relative;\"><div style=\"font-family:'Open Sans',sans-serif;font-size:24px;color:#327dbe;font-weight:800;line-height:40px;min-height:40px;\" contenteditable=\"true\">Paraíso Indonesio</div><div style=\"font-family:'Open Sans',sans-serif;font-size:14px;font-weight:600;color:#727272;line-height:50px;min-height:50px;\" contenteditable=\"true\">LA EXPERIENCIA DE TU VIDA</div><div style=\"font-family:'Open Sans',sans-serif;font-size:14px;color:#494d58;line-height:24px;text-align:justify;padding-left:50px;padding-right:50px;\" contenteditable=\"true\">Adipisci velit, sed quia non numquam eius modi elit tempora incidunt ut labore et dolore magnam. Ut enim ad minima veniam quis nostrum.</div><div style=\"position:absolute;bottom:30px;left:90px;font-family: 'Open Sans', sans-serif;font-size: 13px; color: #3f3f3f; line-height: 32px; font-weight:600;\" contenteditable=\"true\">DESDE <span style=\"font-size:24px; line-height:32px; color:#337ebf; font-weight:800;\">$15280 MXN</span></div><a href=\"" + email_modal_link + "\" target=\"_blank\"><img src=\"" + baseURL + "/Content/Administrador/plugins/email/img/email/button.png\" alt=\"Botón\" style=\"position:absolute;bottom:0;right:0;\"/></a></td></tr></tbody></table></div>");
+                } else if (value == 5)
+                {
+                    var email_modal_image = $("#email_modal_image5").val();
+                    if (!email_modal_image)
+                    {
+                        $('#email_response').html("<div class='alert alert-warning'>Este componente necesita una imagen.</div>");
+                        return false;
+                    }
+                    if ($("#email_modal_link5").val())
+                        var email_modal_link = $("#email_modal_protocol5").val() + $("#email_modal_link5").val();
+                    else
+                        var email_modal_link = "#";
+                   
+                    $("#email-content").contents().find('body').append("<div style=\"position:relative;\"><button style=\"position:absolute;top:0px;left:0px;opacity:0.8;z-index:9999;\" onclick=\"javascript:this.parentNode.parentNode.removeChild(this.parentNode);\">Borrar</button><table><tr style=\"width:100%;height:10px;\"></tr></table><table><tr style=\"position:relative;font-family:'Open Sans',sans-serif;\"></tr></table><table style=\"border-collapse:collapse;width:800px;height:360px;position:relative;\"><tbody><tr><td style=\"width:50%;height:100%;text-align:center;position:relative;\"><div style=\"font-family:'Open Sans',sans-serif;font-size:24px;color:#327dbe;font-weight:800;line-height:40px;min-height:40px;\" contenteditable=\"true\">Romance italiano</div><div style=\"font-family:'Open Sans',sans-serif;font-size:14px;font-weight:600;color:#727272;line-height:50px;min-height:50px;\" contenteditable=\"true\">PERFECTO PARA PAREJAS</div><div style=\"font-family:'Open Sans',sans-serif;font-size:14px;color:#494d58;line-height:24px;text-align:justify;padding-left:50px;padding-right:50px;\" contenteditable=\"true\">Adipisci velit, sed quia non numquam eius modi elit tempora incidunt ut labore et dolore magnam. Ut enim ad minima veniam quis nostrum.</div><div style=\"position:absolute;bottom:30px;left:90px;font-family: 'Open Sans', sans-serif;font-size: 13px; color: #3f3f3f; line-height: 32px; font-weight:600;\" contenteditable=\"true\">DESDE <span style=\"font-size:24px; line-height:32px; color:#337ebf; font-weight:800;\">$18050 MXN</span></div><a href=\"" + email_modal_link + "\" target=\"_blank\"><img src=\"" + baseURL + "/Content/Administrador/plugins/email/img/email/button.png\" alt=\"Botón\" style=\"position:absolute;bottom:0;right:0;\"/></a></td><td background=\"" + email_modal_image + "\" style=\"width:50%;height:100%;background:url(" + email_modal_image + ") no-repeat center / 100% 100%\"></td></tr></tbody></table></div>");
+
+                } else if (value == 6)
+                {
+                    var email_content = tinyMCE.get("email_editor_id").getContent();
+
+                    $("#email-content").contents().find('body').append("<div style=\"position:relative;\"><button style=\"position:absolute;top:0px;left:0px;opacity:0.8;z-index:9999;\" onclick=\"javascript:this.parentNode.parentNode.removeChild(this.parentNode);\">Borrar</button><div style=\"width:800px;position:relative;\">" + email_content + "</div><div style=\"width:100%;height:10px;\"></div></div>");
+                    tinymce.execCommand('mceRemoveControl', true, 'email_editor_id');
+                }
+                else if (value == 999)
+                {
+                    var htmlToSend = $("#email-content").contents().find('body').clone();
+                    $(htmlToSend).find("button").remove();
+                    htmlToSend = $(htmlToSend).html();
+                    var inputSubject = $("#email_modal_subject").val();
+                    if (inputSubject.trim() == "")
+                    {
+                        $('#email_send_response').html("<div class='alert alert-warning'>No puedes enviar un correo sin el asunto.</div>");
+                        return false;
+                    }
+                    var emailTo = email_toSend.join(",");
+                    if (email_toSend.length == 0)
+                    {
+                        $('#email_send_response').html("<div class='alert alert-warning'>No puedes enviar un correo sin elegir a alguien.</div>");
+                        return false;
+                    }
+                }
+                if (value != 999 || value == 6)
+                {
+                    $("#email_modal_type").val("0");
+                }
+                $("#emailRequeriments").modal("hide");
+            });
+
+            $("#btnToggle").click(function () {
+                $('#ListClientes2 option:selected').appendTo("#ListClientesSeleccionados");
+            });
+            $("#btnToggle2").click(function () {
+                $('#ListClientesSeleccionados option:selected').appendTo("#ListClientes2");
+            });
+            getClientes($("#ListGrupos").val());
+            $("#ListGrupos").change(function () {
+                var id = $("#ListGrupos").val();
+                getClientes(id);
+            });
+
+            $('#ListClientes').change(function () {
+                $('#ListClientes option').prop('selected', true);
+            });
+
+            $('#form_EnviarASeleccinados').submit(function () {
+                $('#ListClientesSeleccionados option').prop('selected', true);
+                this.submit();
+                return false;
+            });
+
+            $('#form_EnviarAGrupo').submit(function () {
+                $('#ListClientes option').prop('selected', true);
+                this.submit();
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>
+}

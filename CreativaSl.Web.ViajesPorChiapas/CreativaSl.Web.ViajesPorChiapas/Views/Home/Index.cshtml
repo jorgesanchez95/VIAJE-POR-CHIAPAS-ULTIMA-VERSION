@@ -1,0 +1,914 @@
+﻿@model CreativaSl.Web.ViajesPorChiapas.Models.SeccionModels
+@using System.Data
+@using System.Text.RegularExpressions
+@using CreativaSl.Web.ViajesPorChiapas.Resources
+@{ 
+    CreativaSl.Web.ViajesPorChiapas.Resources.Localizate locale = new CreativaSl.Web.ViajesPorChiapas.Resources.Localizate();
+}
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+@section metasTags{
+    @if (Model.tablaMetaTags.Rows.Count >= 1)
+    {
+        <meta charset="utf-8">
+        <title>@Html.Raw(Model.tablaMetaTags.Rows[0]["title"])</title>
+        <meta name="author" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["author"])">
+        <meta name="subject" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["subjetc"])">
+        <meta name="description" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["description"])">
+        <meta name="keywords" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["keywords"])">
+        <meta name="robots" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["robots"])">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="@Html.Raw(Model.tablaMetaTags.Rows[0]["canonical"])" />
+    }
+    else
+    {
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="author" content="">
+        <meta name="subject" content="">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="robots" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="" />
+    }
+}
+@section scriptEncabezado{
+<script src="@Url.Content("~/Content/Pagina/js/jquery.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Pagina/html5gallery/jquery.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Pagina/html5gallery/html5gallery.js")"></script>
+}
+<div class="row full-width-search" style="height: 800px;">
+    <div class="container clear-padding">
+        <div class="home-title col-md-12 text-center">
+        </div>
+        <div class="col-md-12 search-section">
+            <div role="tabpanel">
+                <ul class="nav nav-tabs search-top" role="tablist" id="searchTab">
+                    <li role="presentation" class="text-center">
+                        <a href="#flight" aria-controls="flight" role="tab" data-toggle="tab">
+                            <i class="fa fa-plane"></i>
+                            <span>@locale.GetResource("paquetes")</span>
+                        </a>
+                    </li>
+                    <li role="presentation" class="active  text-center">
+                        <a href="#hotel" aria-controls="hotel" role="tab" data-toggle="tab">
+                            <i class="fa fa-bed"></i>
+                            <span>@locale.GetResource("tours")</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane" id="flight">
+                        <form>
+                            <div class="col-md-12 product-search-title">@locale.GetResource("elige"):</div>
+                            <div class="clearfix"></div>
+                            <div class="col-md-6 col-sm-6 search-col-padding">
+                                <label>@locale.GetResource("destino")</label>
+                                <div class="input-group">
+                                    <select name="Destinos" class="form-control" id="Destinos">
+                                        @foreach (DataRow Destino in Model.TablaDestinosPaquetes.Rows)
+                                        {
+                                            <option value="@Html.Raw(Destino["id_Estado2"])">@Html.Raw(Destino["Destino"])</option>
+                                        }
+                                    </select>
+                                    <span class="input-group-addon"><i class="fa fa-map-marker fa-fw"></i></span>
+                                   
+                                </div>
+                                <p id="paqueteMsj"></p>
+                            </div>
+                            <div class="col-md-6 col-sm-6 search-col-padding">
+                                <label>Modalidad</label>
+                                <div class="input-group">
+                                    <select name="ListLugares" class="form-control" id="ListLugares">
+                                        <option>Selecciones</option>
+                                    </select>
+                                    <span class="input-group-addon"><i class="fa fa-map-marker fa-fw"></i></span>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="col-md-12 search-col-padding passenger-detail-body">
+                                <button type="button" id="btnBuscarPaquete">@locale.GetResource("buscar")</button>
+                            </div>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                    <div role="tabpanel" class="tab-pane active" id="hotel">
+                        <form>
+                            <div class="col-md-12 product-search-title">@locale.GetResource("elige"):</div>
+
+                            <div class="clearfix"></div>
+                            <div class="col-md-6 col-sm-6 search-col-padding">
+                                <label>@locale.GetResource("destino")</label>
+                                <div class="input-group">
+                                    <select name="DestinosT" class="form-control" id="DestinosT">
+                                        @foreach (DataRow DestinoT in Model.TablaDestinosTours.Rows)
+                                        {
+                                            <option value="@Html.Raw(DestinoT["id_Estado2"])">@Html.Raw(DestinoT["Destino"])</option>
+                                        }
+                                    </select>
+                                    <span class="input-group-addon"><i class="fa fa-map-marker fa-fw"></i></span>
+                                </div>
+                                <p id="TourMsj"></p>
+                            </div>
+                            <div class="col-md-6 col-sm-6 search-col-padding">
+                                <label>Ciudad</label>
+                                <div class="input-group">
+                                    <select name="ListLugaresT" class="form-control" id="ListLugaresT">
+                                        <option value="">Selecciones</option>
+                                    </select>
+                                    <span class="input-group-addon"><i class="fa fa-map-marker fa-fw"></i></span>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="col-md-12 search-col-padding passenger-detail-body">
+                                <button type="button" id="btnBuscarTour">@locale.GetResource("buscar")</button>
+                                @*<button type="submit" class="search-button btn transition-effect">@locale.GetResource("buscar")</button>*@
+                            </div>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<section id="top-tour-row">
+    <div class="row top-tour">
+        <div class="container">
+            <div class="section-title text-center">
+                @{
+                    if (Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("topCinco")] != "")
+                    {
+                        string topCinco = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("topCinco")].ToString();
+                        string[] topsCinco = Regex.Split(topCinco, "\r\n");
+                        if (topsCinco != null)
+                        {
+                            int totaltopsCinco = topsCinco.Count();
+                            if (totaltopsCinco >= 1)
+                            {
+                                <h2>@Html.Raw(topsCinco[0])</h2>
+                            }
+                            if (totaltopsCinco >= 2)
+                            {
+                                <h4>@Html.Raw(topsCinco[1])</h4>
+                            }
+                        }
+                    }
+                }
+            </div>
+            @{
+                if (Model.TablaTuors.Rows.Count == 1)
+                {
+                    <div class="col-md-8 col-md-offset-2 col-sm-12 tour-grid clear-padding wow slideInUp" data-wow-delay="0.1s">
+                        <img src="@Url.Content(Model.TablaTuors.Rows[0]["pathimg"].ToString())" title="@Html.Raw(Model.TablaTuors.Rows[0]["title"])" alt="@Html.Raw(Model.TablaTuors.Rows[0]["alt"])">
+                        <div class="tour-brief">
+                            <div class="pull-left">
+                                <h4><i class="fa fa-map-marker"></i>@Html.Raw(Model.TablaTuors.Rows[0][locale.GetResourceTour("nombreGET")])</h4>
+                            </div>
+                            <div class="pull-right">
+                                <!-- <h4>$499</h4> -->
+                            </div>
+                        </div>
+                        <div class="tour-detail text-center">
+                            @{
+                                if (Model.TablaTuors.Rows[0]["Itinerario"] != "")
+                                {
+                                    string itinerario = Model.TablaTuors.Rows[0]["Itinerario"].ToString();
+                                    string[] itinerarios = Regex.Split(itinerario, "{");
+                                    if (itinerarios != null)
+                                    {
+                                        foreach (var itinerar in itinerarios)
+                                        {
+                                            if (itinerar != "")
+                                            {
+                                                <p><strong><i class="fa fa-map-marker"></i>Itinerary: </strong>@itinerar</p>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            <p><strong><i class="fa fa-clock-o"></i>Duration: </strong>@Html.Raw(Model.TablaTuors.Rows[0]["cantidaddias"]) @locale.GetResourceTour("dias")</p>
+                            @{
+                                string id = Model.TablaTuors.Rows[0]["nombre_pagina"].ToString();
+                            }
+                            <p><a href="@Url.Action("detalletour", "tours", new { id = id })">@locale.GetResourceSeccion("verMas")</a></p>
+                        </div>
+                    </div>
+                    }
+                    else
+                    {
+                        foreach (DataRow paquetes in Model.TablaTuors.Rows)
+                        {
+                        <div class="col-md-4 col-sm-6 tour-grid clear-padding wow slideInUp" data-wow-delay="0.1s">
+                            <img src="@Url.Content(paquetes["pathimg"].ToString())" title="@Html.Raw(paquetes["title"])" alt="@Html.Raw(paquetes["alt"])">
+                            <div class="tour-brief">
+                                <div class="pull-left">
+                                    <h4><i class="fa fa-map-marker"></i>@Html.Raw(paquetes[locale.GetResourceTour("nombreGET")])</h4>
+                                </div>
+                                <div class="pull-right">
+                                    <!-- <h4>$499</h4> -->
+                                </div>
+                            </div>
+                            <div class="tour-detail text-center">
+                                @{
+                                    if (paquetes["Itinerario"] != "")
+                                    {
+                                        string itinerario = paquetes["Itinerario"].ToString();
+                                        string[] itinerarios = Regex.Split(itinerario, "{");
+                                        if (itinerarios != null)
+                                        {
+                                            foreach (var itinerar in itinerarios)
+                                            {
+                                                if (itinerar != "")
+                                                {
+                                                    <p><strong><i class="fa fa-map-marker"></i>Itinerary: </strong>@itinerar</p>
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                <p><strong><i class="fa fa-clock-o"></i>Duration: </strong>@Html.Raw(paquetes["cantidaddias"]) @locale.GetResourceTour("dias")</p>
+                                @{
+                                    string id = paquetes["nombre_pagina"].ToString();
+                                }
+                                <p><a href="@Url.Action("detalletour", "tours", new { id = id })">@locale.GetResourceSeccion("verMas")</a></p>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            
+        </div>
+    </div>
+</section>
+@{ if (Model.TablaPromociones.Rows.Count == 0)
+    {
+
+    }
+    else
+    {
+        <section class="hotel-product home-product">
+            <div class="row light-row">
+                <h2 style="text-align: center;font-weight: bold;padding: 20px;">@locale.GetResourcePaquete("indexPaquete")</h2>
+                @{
+                    if (Model.TablaPromociones.Rows.Count == 1)
+                    {
+                        <div class="col-md-12 clear-padding wow slideInLeft">
+                            <div class="product-wrapper">
+                                <div class="col-md-6 col-sm-6 home-product-padding tooltip-right post-desc">
+                                    <h4>@Html.Raw(Model.TablaPromociones.Rows[0]["nombre"])</h4>
+                                    @*<h5><i class="fa fa-map-marker"></i>@Html.Raw(Model.TablaPromociones.Rows[0]["estado"])</h5>*@
+                                    <p>@Html.Raw(Model.TablaPromociones.Rows[0]["descripcion"])</p>
+                                    <div class="clearfix"></div>
+                                    <div class="pricing-info text-center">
+                                        <div class="">
+                                            @{string id_paquete = Model.TablaPromociones.Rows[0]["nombre_pagina"].ToString();}
+                                            <a href="@Url.Action("detallepromocion", "promociones", new { id = id_paquete })" class="wow fadeIn">@locale.GetResourceSeccion("verMas")</a>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 clear-padding image-sm text-center">
+                                    <img src="@Html.Raw(Html.Encode(Model.TablaPromociones.Rows[0]["pathMul"].ToString().Replace("~", "")))" title="@Html.Raw(Model.TablaPromociones.Rows[0]["title"])" alt="@Html.Raw(Model.TablaPromociones.Rows[0]["alt"])">
+                                </div>
+                            </div>
+                        </div>
+                        }
+                        else
+                        {
+                            foreach (DataRow Promo in Model.TablaPromociones.Rows)
+                            {
+                                <div class="col-md-6 clear-padding wow slideInLeft">
+                                    <div class="product-wrapper">
+                                        <div class="col-md-6 col-sm-6 home-product-padding tooltip-right post-desc">
+                                            <h4>@Html.Raw(Promo["nombre"])</h4>
+                                            @*<h5><i class="fa fa-map-marker"></i>@Html.Raw(Model.TablaPromociones.Rows[0]["estado"])</h5>*@
+                                            <p>@Html.Raw(Promo["descripcion"])</p>
+                                            <div class="clearfix"></div>
+                                            <div class="pricing-info text-center">
+                                                <div class="">
+                                                    @{string id_paquete = Promo["nombre_pagina"].ToString();}
+                                                    <a href="@Url.Action("detallepromocion", "promociones", new { id = id_paquete })" class="wow fadeIn">@locale.GetResourceSeccion("verMas")</a>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 clear-padding image-sm text-center">
+                                            <img src="@Html.Raw(Html.Encode(Promo["pathMul"].ToString().Replace("~", "")))" title="@Html.Raw(Promo["title"])" alt="@Html.Raw(Promo["alt"])">
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                }
+                <div class="clearfix"></div>
+            </div>
+            <!-- END: PRODUCT ROW 1 -->
+        </section>
+         }
+
+}
+<!-- END: PRODUCT SECTION -->
+<!-- BEGIN: RECENT BLOG POST -->
+<section id="recent-blog">
+    <div class="row top-offer">
+        <div class="container">
+            <div class="section-title text-center">
+                <h2>@locale.GetResourceBlog("indexBlog")</h2>
+            </div>
+            <div class="owl-carousel" id="post-list">
+                @foreach (DataRow Articulo in Model.tablaArticulos.Rows)
+                {
+                <div class="room-grid-view wow slideInUp" data-wow-delay="0.1s">
+                    <img src="@Html.Raw(Html.Encode(Articulo["pathimg"].ToString().Replace("~", "")))" title="@Html.Raw(@Articulo["title"])" alt="@Html.Raw(@Articulo["alt"])">
+                    <div class="room-info">
+                        <div class="post-title">
+                            <h5>@Html.Raw(Articulo[locale.GetResourceSeccion("tituloArticulo")])</h5>
+                            @{
+                                DateTime fecha = Convert.ToDateTime(Articulo["fecins"]);
+                                <p><i class="fa fa-calendar"></i> @Html.Raw(fecha.ToString("MMMM")) @Html.Raw(fecha.Day), @Html.Raw(fecha.Year) </p>
+                            }
+                            
+                        </div>
+                        <div class="post-desc">
+                            <p>@Html.Raw(Articulo["Descripcion"].ToString())</p>
+                        </div>
+                        <div class="room-book">
+
+                            <div class="col-md-12 col-sm-12 col-xs-12 clear-padding text-center">
+                                @{string id = Articulo["nombre_pagina"].ToString();}
+                                <a href="@Url.Action("detallearticulo", "blog", new { id = id })" class="text-center">@locale.GetResourceSeccion("verMas")</a>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+<!-- END: RECENT BLOG POST -->
+<!-- START: WHY CHOOSE US SECTION -->
+<section id="why-choose-us">
+    <div class="row choose-us-row">
+        <div class="container clear-padding text-center passenger-detail-body">
+            <div class="light-section-title text-center">
+                <h2>@locale.GetResourceBlog("indexOpiniones")</h2>
+            </div>
+            <div class="owl-carousel" id="post-comentarios">
+                @foreach (DataRow Tes in Model.TablaTestimoniales.Rows)
+                {
+                <div class="wow slideInUp" data-wow-delay="0.1s">
+                    <div class="col-md-12 col-sm-12 wow slideInLeft">
+                        <div class="choose-us-item text-left">
+                            <div class="opiniones-foto"><img class="foto-opiniones img-responsive" src="@Html.Raw(Html.Encode(Tes["urlimagen"].ToString().Replace("~", "")))" alt="" style=""></div>
+                            <br>
+                            <h4>@Html.Raw(Tes["nombre"].ToString())</h4>
+                            @{
+                                
+                                DateTime fecha = Convert.ToDateTime(Tes["fecins"]);
+                                <p><i class="fa fa-calendar"></i> @Html.Raw(fecha.ToString("MMMM")) @Html.Raw(fecha.Day), @Html.Raw(fecha.Year) </p>
+                            }
+                            <p class="comment">@Html.Raw(Tes["comentario"].ToString())</p>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+            <a href="#" title="" data-toggle="modal" data-target="#myModal">@locale.GetResourceBlog("indexOpComentario")</a>
+        </div>
+    </div>
+</section>
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Dejanos tu Comentario</h4>
+            </div>
+            <form method="post" id="testimoniales-form" enctype="multipart/form-data">
+                <div class="modal-body">
+
+                    <div class="form-group search-col-padding">
+                        <label style="color:#e8292f">Nombre </label>
+                        <div class="input-group">
+                            <input id="nomTestimonial" type="text" class="form-control" placeholder="Nombre Completo" required>
+                            <span class="input-group-addon cotizar-form"><i class="fa fa-user fa-fw"></i></span>
+
+                        </div>
+                        <p id="nombre-test-val" class="text-center"></p>
+                    </div>
+                    <div class="visualizar-imagen">
+
+                    </div>
+                    <div class="form-group search-col-padding">
+                        <label style="color:#e8292f">Imagen </label>
+                        <div class="input-group">
+                            <input type="file" name="image" id="image-upload" required />
+                            <span class="input-group-addon cotizar-form"><i class="fa fa-file-image-o fa-fw"></i></span>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group search-col-padding">
+                        <label style="color:#e8292f">Algún comentario</label><br>
+                        <div class="input-group">
+                            <textarea id="comentarioTestimonial" name="" cols="80" class="form-control" required style="resize:none;"></textarea>
+                        </div>
+                        <br>
+                        <p id="comentario-test-val" class="text-center"></p>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer passenger-detail-body">
+                    <button type="submit">Enviar</button>
+                    <button type="button" id="cerrar" data-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+<!-- END: WHY CHOOSE US SECTION -->
+<!--VIDEO DE VIAJES POR CHIAPAS-->
+<!--END: VIDEO DE VIAJES POR CHIAPAS-->
+<!-- START: HOT  DEALS -->
+<section id="how-it-work">
+    <div class="row work-row">
+
+        <div class="container">
+            <div class="section-title text-center">
+                @{
+                    if (Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("textoDos")] != "")
+                    {
+                        string textoDos = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("textoDos")].ToString();
+                        string[] textosDos = Regex.Split(textoDos, "\r\n");
+                        if (textosDos != null)
+                        {
+                            int totaltextosDos = textosDos.Count();
+                            if (totaltextosDos >= 1)
+                            {
+                                <h2>@Html.Raw(textosDos[0])</h2>
+                            }
+                            if (totaltextosDos >= 2)
+                            {
+                                <h4>@Html.Raw(textosDos[1])</h4>
+                            }
+                        }
+                    }
+                }
+                <div class="space"></div>
+                @if (Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("textoUno")] != "")
+                {
+                    <h1>
+                        «@Html.Raw(Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("textoUno")])»
+                    </h1>
+                }
+
+            </div>
+            <div class="work-step">
+                <div class="owl-carousel" id="post-valores">
+                    @foreach (DataRow Valores in Model.tablaCaracteristicasEmpresa.Rows)
+                    {
+                        <div class="wow slideInUp" data-wow-delay="0.1s">
+                            <div class="col-md-12 col-sm-12 first-step text-center">
+                                <img src="@Html.Raw(Html.Encode(Valores["urlImg"].ToString().Replace("~", "")))" title="@Html.Raw(Valores["title"].ToString())" alt="@Html.Raw(Valores["alt"].ToString())" class="img-valores">
+                                <h5>@Html.Raw(Valores[locale.GetResourceSeccion("frase")])</h5>
+                                <p>@Html.Raw(Valores[locale.GetResourceSeccion("descripcion")])</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="row hot-deals">
+        @*<div class="container clear-padding">
+
+            <div class="section-title text-center">
+                <h2>PROMOCIONES</h2>
+                <h4></h4>
+            </div>
+            <div role="tabpanel" class="text-center">
+                <!-- BEGIN: CATEGORY TAB -->
+                <ul class="nav nav-tabs" role="tablist" id="hotDeal">
+                    <li role="presentation" class="active text-center">
+                        <a href="#tab1" aria-controls="tab1" role="tab" data-toggle="tab">
+                            <i class="fa fa-bed"></i>
+                            <span>Oaxaca</span>
+                        </a>
+                    </li>
+                    <li role="presentation" class="text-center">
+                        <a href="#tab2" aria-controls="tab2" role="tab" data-toggle="tab">
+                            <i class="fa fa-suitcase"></i>
+                            <span>Guatemala</span>
+                        </a>
+                    </li>
+                    <li role="presentation" class="text-center">
+                        <a href="#tab3" aria-controls="tab3" role="tab" data-toggle="tab">
+                            <i class="fa fa-plane"></i>
+                            <span>Quintana Roo</span>
+                        </a>
+                    </li>
+                    <li role="presentation" class="text-center">
+                        <a href="#tab4" aria-controls="tab4" role="tab" data-toggle="tab">
+                            <i class="fa fa-taxi"></i>
+                            <span>Yucatan</span>
+                        </a>
+                    </li>
+                    <li role="presentation" class="text-center">
+                        <a href="#tab3" aria-controls="tab3" role="tab" data-toggle="tab">
+                            <i class="fa fa-plane"></i>
+                            <span>Quintana Roo</span>
+                        </a>
+                    </li>
+                    <li role="presentation" class="text-center">
+                        <a href="#tab4" aria-controls="tab4" role="tab" data-toggle="tab">
+                            <i class="fa fa-taxi"></i>
+                            <span>Yucatan</span>
+                        </a>
+                    </li>
+
+                </ul>
+                <!-- END: CATEGORY TAB -->
+                <div class="clearfix"></div>
+                <!-- BEGIN: TAB PANELS -->
+                <div class="tab-content">
+                    <!-- BEGIN: FLIGHT SEARCH -->
+                    <div role="tabpanel" class="tab-pane active fade in" id="tab1">
+                        <div class="col-md-6 hot-deal-list wow slideInLeft">
+                            <div class="item">
+                                <div class="col-xs-3">
+                                    <img src="@Url.Content("Content/Pagina/images/offer1.jpg")" alt="Cruise">
+                                </div>
+                                <div class="col-md-7 col-xs-6">
+                                    <h5>Hotel Grand Lilly</h5>
+                                    <p class="location"><i class="fa fa-map-marker"></i> New York, USA</p>
+                                    <p class="text-sm">Lorem Ipsum is simply dummy text. Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                                </div>
+                                <div class="col-md-2 col-xs-3">
+                                    <!-- <h4>$499</h4>
+                                    <h6>Per Night</h6> -->
+                                    <a href="promocion-detalle.html">DETALLES</a>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="item">
+                                <div class="col-xs-3">
+                                    <img src="@Url.Content("Content/Pagina/images/offer2.jpg")" alt="Cruise">
+                                </div>
+                                <div class="col-md-7 col-xs-6">
+                                    <h5>Royal Resort</h5>
+                                    <p class="location"><i class="fa fa-map-marker"></i> New York, USA</p>
+                                    <p class="text-sm">Lorem Ipsum is simply dummy text. Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                                </div>
+                                <div class="col-md-2 col-xs-3">
+                                    <!-- <h4>$399</h4>
+                                    <h6>Per Night</h6> -->
+                                    <a href="promocion-detalle.html">DETALLES</a>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="item">
+                                <div class="col-xs-3">
+                                    <img src="@Url.Content("Content/Pagina/images/offer3.jpg")" alt="Cruise">
+                                </div>
+                                <div class="col-md-7 col-xs-6">
+                                    <h5>Hotel Grand Lilly</h5>
+                                    <p class="location"><i class="fa fa-map-marker"></i> New York, USA</p>
+                                    <p class="text-sm">Lorem Ipsum is simply dummy text. Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                                </div>
+                                <div class="col-md-2 col-xs-3">
+                                    <!-- <h4>$499</h4>
+                                    <h6>Per Night</h6> -->
+                                    <a href="promocion-detalle.html">DETALLES</a>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="col-md-6 hot-deal-grid wow slideInRight">
+                            <div class="col-sm-6 item">
+                                <div class="wrapper">
+                                    <img src="@Url.Content("Content/Pagina/images/tour.jpg")" alt="Cruise">
+                                    <h5>Paris </h5>
+                                    <a href="promocion-detalle.html">DETALLES</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 item">
+                                <div class="wrapper">
+                                    <img src="@Url.Content("Content/Pagina/images/tour1.jpg")" alt="Cruise">
+                                    <h5>Bangkok </h5>
+                                    <a href="promocion-detalle.html">DETALLES</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 item">
+                                <div class="wrapper">
+                                    <img src="@Url.Content("Content/Pagina/images/tour3.jpg")" alt="Cruise">
+                                    <h5>Dubai </h5>
+                                    <a href="promocion-detalle.html">DETALLES</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 item">
+                                <div class="wrapper">
+                                    <img src="@Url.Content("Content/Pagina/images/tour4.jpg")" alt="Cruise">
+                                    <h5>Italy </h5>
+                                    <a href="promocion-detalle.html">DETALLES</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab2">
+                        <div class="col-md-6 hot-deal-list">
+                            <div class="item">
+                                <div class="col-xs-3">
+                                    <img src="@Url.Content("Content/Pagina/images/offer3.jpg")" alt="Cruise">
+                                </div>
+                                <div class="col-md-7 col-xs-6">
+                                    <h5>Hotel Grand Lilly</h5>
+                                    <p class="location"><i class="fa fa-map-marker"></i> New York, USA</p>
+                                    <p class="text-sm">Lorem Ipsum is simply dummy text. Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                                </div>
+                                <div class="col-md-2 col-xs-3">
+                                    <!-- <h4>$499</h4>
+                                    <h6>Per Night</h6> -->
+                                    <a href="promocion-detalle.html">REVISAR</a>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="item">
+                                <div class="col-xs-3">
+                                    <img src="@Url.Content("Content/Pagina/images/offer2.jpg")" alt="Cruise">
+                                </div>
+                                <div class="col-md-7 col-xs-6">
+                                    <h5>Royal Resort</h5>
+                                    <p class="location"><i class="fa fa-map-marker"></i> New York, USA</p>
+                                    <p class="text-sm">Lorem Ipsum is simply dummy text. Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                                </div>
+                                <div class="col-md-2 col-xs-3">
+                                    <!-- <h4>$399</h4>
+                                    <h6>Per Night</h6> -->
+                                    <a href="promocion-detalle.html">REVISAR</a>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="item">
+                                <div class="col-xs-3">
+                                    <img src="@Url.Content("Content/Pagina/images/offer1.jpg")" alt="Cruise">
+                                </div>
+                                <div class="col-md-7 col-xs-6">
+                                    <h5>Hotel Grand Lilly</h5>
+                                    <p class="location"><i class="fa fa-map-marker"></i> New York, USA</p>
+                                    <p class="text-sm">Lorem Ipsum is simply dummy text. Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                                </div>
+                                <div class="col-md-2 col-xs-3">
+                                    <!-- <h4>$499</h4>
+                                    <h6>Per Night</h6> -->
+                                    <a href="promocion-detalle.html">REVISAR</a>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="col-md-6 hot-deal-grid">
+                            <div class="col-sm-6 item">
+                                <div class="wrapper">
+                                    <img src="@Url.Content("Content/Pagina/images/tour.jpg")" alt="Cruise">
+                                    <h5>Paris Starting From $49/Night</h5>
+                                    <a href="promocion-detalle.html">DETALLES</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 item">
+                                <div class="wrapper">
+                                    <img src="@Url.Content("Content/Pagina/images/tour1.jpg")" alt="Cruise">
+                                    <h5>Bangkok Starting From $69/Night</h5>
+                                    <a href="promocion-detalle.html">DETALLES</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 item">
+                                <div class="wrapper">
+                                    <img src="@Url.Content("Content/Pagina/images/tour2.jpg")" alt="Cruise">
+                                    <h5>Dubai Starting From $99/Night</h5>
+                                    <a href="promocion-detalle.html">DETALLES</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 item">
+                                <div class="wrapper">
+                                    <img src="@Url.Content("Content/Pagina/images/tour3.jpg")" alt="Cruise">
+                                    <h5>Italy Starting From $59/Night</h5>
+                                    <a href="promocion-detalle.html">DETALLES</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="tab3">
+                        Lorem Lpsum 3
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="tab4">
+                        Lorem Lpsum 4
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="tab5">
+                        Lorem Lpsum 5
+                    </div>
+                </div>
+            </div>
+        </div>*@
+        <div class="row" >
+            <div class="col-md-6 cont-video">
+                <div style="display:none;margin:0 auto;" class="html5gallery" data-onchange="onSlideChange" data-onthumbclick="onThumbClick" data-skin="gallery" data-autoplayvideo="false" data-responsive="true" data-resizemode="fill" data-html5player="true" data-autoslide="true" data-autoplayvideo="false" data-width="800" data-height="450" data-effect="fadeout" data-shownumbering="true">
+
+                    <a href="@Html.Raw(Model.tablaSeccion.Rows[0]["urlYoutube"])"><img src="https://img.youtube.com/vi/ror3hepR4HQ/2.jpg" alt="Video 1"></a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                @{
+                    string Ques = Model.tablaDatosGenerales.Rows[0]["quees"].ToString();
+                    string[] Quees = Regex.Split(Ques, "\r\n");
+                    if (Quees != null)
+                    {
+                        int totalQ = Quees.Count();
+                        if (totalQ >= 1)
+                        {
+                            <h3 style="font-size: 25px;font-weight: bold; color: #0063a4;">@Html.Raw(Quees[0])</h3>
+                        }
+                        if (totalQ >= 2)
+                        {
+                            <p class="texto-video">@Html.Raw(Quees[1])</p>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>
+@section Newsletter{
+    <div class="container clear-padding">
+        <div class="col-md-7 col-sm-7">
+            <div class="progressbar fade-right animate1">
+                @{
+                    string newletter = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("newsletter")].ToString();
+                    string[] newsletter = Regex.Split(newletter, "\r\n");
+                    if (newsletter != null)
+                    {
+                        int totalnewsletter = newsletter.Count();
+                        if (totalnewsletter >= 1)
+                        {
+                            <p class="NL">@Html.Raw(newsletter[0])</p>
+                        }
+                        if (totalnewsletter >= 2)
+                        {
+                            <p>@Html.Raw(newsletter[1])</p>
+                        }
+                    }
+                }
+            </div>
+            <form>
+                <div class="col-md-9 col-sm-8 col-xs-6 clear-padding">
+                    <input type="text" id="correoSuscribirse" class="form-control" required />
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 clear-padding">
+                    <button type="button" id="btnSuscribirse"><i class="fa fa-paper-plane"></i> @locale.GetResourceSeccion("suscribirse")</button>
+                </div>
+                <p id="msg_newsletter" style="font-size: 25px;"></p>
+            </form>
+        </div>
+        <div class="col-md-5 col-sm-5">
+            <div class="social-media pull-right">
+                <ul>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["facebook"])"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["twitter"])"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["instagram"])"><i class="fa fa-instagram"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["google"])"><i class="fa fa-google-plus"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["youtube"])"><i class="fa fa-youtube"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+@section Piedepagina{
+    <div class="container clear-padding">
+        <div class="col-md-3 col-sm-6 about-box">
+            @{
+                string pieAcerca = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("pieAcerca")].ToString();
+                string[] pieAcercas = Regex.Split(pieAcerca, "\r\n");
+                if (pieAcercas != null)
+                {
+                    int totalPie = pieAcercas.Count();
+                    if (totalPie >= 1)
+                    {
+                        <h3>@Html.Raw(pieAcercas[0])</h3>
+                    }
+                    if (totalPie >= 2)
+                    {
+                        <p class="descripcion">@Html.Raw(pieAcercas[1])</p>
+                    }
+                }
+            }
+        </div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Popular")</h4>
+            <ul>
+                @foreach (DataRow PaquetPulares in Model.TablaPaquetesPopulares.Rows)
+                {
+                string id = PaquetPulares["nombre_pagina"].ToString();
+                <li><a href="@Url.Action("DetallePaquete", "Paquetes", new { id = id })">@Html.Raw(PaquetPulares["nombre"])</a></li>
+                }
+            </ul>
+        </div>
+        <div class="clearfix visible-sm-block"></div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Servicio")</h4>
+            <ul>
+                <li class="activo"><a class="active" href="@Url.Action("Index", "Home")">@locale.GetResource("inicio")</a></li>
+                <li><a href="@Url.Action("Index", "Transportacion")">@locale.GetResource("transportacion")</a></li>
+                <li><a href="@Url.Action("Index", "Promociones")">@locale.GetResource("promocion")</a></li>
+                <li><a href="@Url.Action("Index", "Galerias")">@locale.GetResource("galeria")</a></li>
+                <li><a href="@Url.Action("Index", "Blog")">@locale.GetResource("blog")</a></li>
+                <li><a href="@Url.Action("Index", "Contactos")">@locale.GetResource("contacto")</a></li>
+                <li><a href="@Url.Action("Index", "Recomendaciones")">@locale.GetResource("recomendaciones")</a></li>
+            </ul>
+        </div>
+        <div class="col-md-3 col-sm-6 contact-box">
+            <h4>@locale.GetResourceSeccion("contacto")</h4>
+            <p>
+                <i class="fa fa-home"></i>@locale.GetResourceSeccion("direccion"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["direccion"])
+            </p>
+            <p><i class="fa fa-phone"></i>@locale.GetResourceSeccion("telefono"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["telefono"])</p>
+            <p><i class="fa fa-envelope-o"></i>@locale.GetResourceSeccion("correo"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["correo"])</p>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12 text-center we-accept">
+            <h4>@locale.GetResourceSeccion("pago")</h4>
+            <ul>
+            @foreach (DataRow FormasPago in Model.TablaFormasDePago.Rows)
+            {
+                <li><img class="formas-pago" src="@Html.Raw(Html.Encode(FormasPago["imagen"].ToString().Replace("~", "")))" alt="@Html.Raw(FormasPago["alt"].ToString())" title="@Html.Raw(FormasPago["title"].ToString())"></li>
+            }
+            </ul>
+        </div>
+    </div>
+}
+<!-- END: HOT DEALS -->
+@section scriptF{
+<script type="text/javascript">
+	jQuery(function($){
+		"use strict";
+		$.supersized({
+			//Functionality
+			slideshow               :   1,		//Slideshow on/off
+			autoplay				:	1,		//Slideshow starts playing automatically
+			start_slide             :   1,		//Start slide (0 is random)
+			random					: 	0,		//Randomize slide order (Ignores start slide)
+			slide_interval          :   10000,	//Length between transitions
+			transition              :   1, 		//0-None, 1-Fade, 2-Slide Top, 3-Slide Right, 4-Slide Bottom, 5-Slide Left, 6-Carousel Right, 7-Carousel Left
+			transition_speed		:	500,	//Speed of transition
+			new_window				:	1,		//Image links open in new window/tab
+			pause_hover             :   0,		//Pause slideshow on hover
+			keyboard_nav            :   0,		//Keyboard navigation on/off
+			performance				:	1,		//0-Normal, 1-Hybrid speed/quality, 2-Optimizes image quality, 3-Optimizes transition speed // (Only works for Firefox/IE, not Webkit)
+			image_protect			:	1,		//Disables image dragging and right click with Javascript
+
+			//Size & Position
+			min_width		        :   0,		//Min width allowed (in pixels)
+			min_height		        :   0,		//Min height allowed (in pixels)
+			vertical_center         :   1,		//Vertically center background
+			horizontal_center       :   1,		//Horizontally center background
+			fit_portrait         	:   1,		//Portrait images will not exceed browser height
+			fit_landscape			:   0,		//Landscape images will not exceed browser width
+
+			//Components
+			navigation              :   1,		//Slideshow controls on/off
+			thumbnail_navigation    :   1,		//Thumbnail navigation
+			slide_counter           :   1,		//Display slide numbers
+			slide_captions          :   1,		//Slide caption (Pull from "title" in slides array)
+			slides                  :   [		//Slideshow Images
+                                            @foreach(DataRow item in Model.tablaBannerInicio.Rows)
+                                            {
+                                                @Html.Raw("{image : '" + item["pathMul"].ToString().Replace("~", "") + "', title: '" + item["title"] + "'},");
+                                            }
+										]
+		});
+	});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $.uploadPreview({
+    input_field: "#image-upload",   // Default: .image-upload
+    preview_box: ".visualizar-imagen",  // Default: .image-preview
+    label_field: "#image-label",    // Default: .image-label
+    label_default: "Choose File",   // Default: Choose File
+    label_selected: "Change File",  // Default: Change File
+    no_label: false                 // Default: false
+  });
+  });
+</script>
+<script src="@Url.Content("~/Content/Pagina/js/CombosPaquetesHome.js")"></script>
+<script src="@Url.Content("~/Content/Pagina/js/BusquedaHome.js")"></script>
+}

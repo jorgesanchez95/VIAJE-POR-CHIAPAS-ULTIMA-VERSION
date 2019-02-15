@@ -1,0 +1,232 @@
+﻿@using System.Data
+@using System.Text.RegularExpressions
+@using CreativaSl.Web.ViajesPorChiapas.Resources
+@model CreativaSl.Web.ViajesPorChiapas.Models.TransportacionModels
+@{
+    var locale = new Localizate();
+}
+@{ 
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+
+@section metasTags{
+    @if (Model.tablaMetaTags.Rows.Count >= 1)
+    {
+        <meta charset="utf-8">
+        <title>@Html.Raw(Model.tablaMetaTags.Rows[0]["title"])</title>
+        <meta name="author" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["author"])">
+        <meta name="subject" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["subjetc"])">
+        <meta name="description" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["description"])">
+        <meta name="keywords" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["keywords"])">
+        <meta name="robots" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["robots"])">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="@Html.Raw(Model.tablaMetaTags.Rows[0]["canonical"])" />
+    }
+    else
+    {
+        <meta charset="utf-8">
+        <title>Detalle promocion</title>
+        <meta name="author" content="">
+        <meta name="subject" content="">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="robots" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="" />
+    }
+}
+<!-- START: PAGE TITLE -->
+<div class="row page-title">
+    <div class="container clear-padding text-center">
+        <h3>@locale.GetResourcePromociones("promociones")</h3>
+        <h4>@Model.tablaPromociones.Rows[0]["nombre"].ToString()</h4>
+
+    </div>
+</div>
+<!-- END: PAGE TITLE -->
+
+<div class="row package-detail">
+    <div class="container clear-padding">
+        <div class="main-content col-md-8">
+            <!-- START: HOLIDAY GALLERY -->
+            <div id="gallery" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-target="#gallery" data-slide-to="0" class="active"></li>
+                    
+                </ol>
+                <div class="carousel-inner" role="listbox">
+                    <div class="item active">
+                        <img src="@Model.tablaPromociones.Rows[0]["pathMul"].ToString().Replace("~", "")" alt="Cruise">
+                    </div>
+                   
+                </div>
+                
+            </div>
+            <!-- END: HOLIDAY GALLRY -->
+            <div class="package-complete-detail">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#overview"><i class="fa fa-suitcase"></i> <span>Detalles</span></a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="overview" class="tab-pane fade in active">
+                        <h4 class="tab-heading">Descripción</h4>
+                        <p>
+                            @Model.tablaPromociones.Rows[0]["descripcion"].ToString()
+                            <br><br>
+                            @{
+                                DateTime fecha = Convert.ToDateTime(Model.tablaPromociones.Rows[0]["fec_fin"].ToString());
+                            }
+                            <strong><span class="detalles-tour"><i class="fa fa-calendar-o" aria-hidden="true"></i>  Fecha de fin: </strong><span style="text-transform:uppercase">@Html.Raw(fecha.Day) DE @Html.Raw(fecha.ToString("MMMM")), DEL @Html.Raw(fecha.Year)</span>
+                            </span><br>
+
+                        </p>
+
+                      
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 package-detail-sidebar">
+            <div class="col-md-12 sidebar-wrapper clear-padding">
+                @*<div class="package-summary sidebar-item">
+                    <h4><i class="fa fa-bookmark"></i> Palenque</h4>
+                    <div class="package-summary-body">
+
+                        <h5><i class="fa fa-map-marker"></i>Lugar de salida</h5>
+                        <p>Tuxtla Gutiérrez</p>
+                        <h5><i class="fa fa-globe"></i>Resumen del tour</h5>
+                        <p>Viajes a cascadas de agua azul...</p>
+                    </div>
+                    <div class="package-summary-footer text-center">
+                        <div class="col-md-6 col-sm-6 col-xs-6 price">
+                            <h5>Desde</h5>
+                            <h5>$999/Persona</h5>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 book">
+                            <a href="cotizar.html">Cotizar</a>
+                        </div>
+                    </div>
+                </div>*@
+
+                <div class="assistance-box sidebar-item">
+                    <h4><i class="fa fa-phone"></i> Asistencia</h4>
+                    <div class="assitance-body text-center">
+                        <h5>¿Necesitas ayuda? Cotiza este paquete</h5>
+                        <h2>@Model.tablaDatosGenerales.Rows[0]["telefono"].ToString()</h2>
+                        <h3>O</h3>
+                        <a href="@Url.Action("Index","Contactos")">Solicita información</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+@section Newsletter{
+    <div class="container clear-padding">
+        <div class="col-md-7 col-sm-7">
+            <div class="progressbar fade-right animate1">
+                @{
+                    string newletter = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("newsletter")].ToString();
+                    string[] newsletter = Regex.Split(newletter, "\r\n");
+                    if (newsletter != null)
+                    {
+                        int totalnewsletter = newsletter.Count();
+                        if (totalnewsletter >= 1)
+                        {
+                            <p class="NL">@Html.Raw(newsletter[0])</p>
+                        }
+                        if (totalnewsletter >= 2)
+                        {
+                            <p>@Html.Raw(newsletter[1])</p>
+                        }
+                    }
+                }
+            </div>
+            <form>
+                <div class="col-md-9 col-sm-8 col-xs-6 clear-padding">
+                    <input type="text" id="correoSuscribirse" class="form-control" required />
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 clear-padding">
+                    <button type="button" id="btnSuscribirse"><i class="fa fa-paper-plane"></i> @locale.GetResourceSeccion("suscribirse")</button>
+                </div>
+                <p id="msg_newsletter" style="font-size: 25px;"></p>
+            </form>
+        </div>
+        <div class="col-md-5 col-sm-5">
+            <div class="social-media pull-right">
+                <ul>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["facebook"])"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["twitter"])"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["instagram"])"><i class="fa fa-instagram"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["google"])"><i class="fa fa-google-plus"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["youtube"])"><i class="fa fa-youtube"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+@section Piedepagina{
+    <div class="container clear-padding">
+        <div class="col-md-3 col-sm-6 about-box">
+            @{
+                string pieAcerca = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("pieAcerca")].ToString();
+                string[] pieAcercas = Regex.Split(pieAcerca, "\r\n");
+                if (pieAcercas != null)
+                {
+                    int totalPie = pieAcercas.Count();
+                    if (totalPie >= 1)
+                    {
+                        <h3>@Html.Raw(pieAcercas[0])</h3>
+                    }
+                    if (totalPie >= 2)
+                    {
+                        <p class="descripcion">@Html.Raw(pieAcercas[1])</p>
+                    }
+                }
+            }
+        </div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Popular")</h4>
+            <ul>
+                @foreach (DataRow PaquetPulares in Model.TablaPromocionesPopulares.Rows)
+                {
+                    string id = PaquetPulares["nombre_pagina"].ToString();
+                    <li><a href="@Url.Action("DetallePaquete", "Paquetes", new { id = id })">@Html.Raw(PaquetPulares["nombre"])</a></li>
+                }
+            </ul>
+        </div>
+        <div class="clearfix visible-sm-block"></div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Servicio")</h4>
+            <ul>
+                <li><a href="@Url.Action("Index", "Home")">@locale.GetResource("inicio")</a></li>
+                <li><a href="@Url.Action("Index", "Transportacion")">@locale.GetResource("transportacion")</a></li>
+                <li class="activo"><a href="@Url.Action("Index", "Promociones")">@locale.GetResource("promocion")</a></li>
+                <li><a href="@Url.Action("Index", "Galerias")">@locale.GetResource("galeria")</a></li>
+                <li><a href="@Url.Action("Index", "Blog")">@locale.GetResource("blog")</a></li>
+                <li><a href="@Url.Action("Index", "Contactos")">@locale.GetResource("contacto")</a></li>
+                <li><a href="@Url.Action("Index", "Recomendaciones")">@locale.GetResource("recomendaciones")</a></li>
+            </ul>
+        </div>
+        <div class="col-md-3 col-sm-6 contact-box">
+            <h4>@locale.GetResourceSeccion("contacto")</h4>
+            <p>
+                <i class="fa fa-home"></i>@locale.GetResourceSeccion("direccion"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["direccion"])
+            </p>
+            <p><i class="fa fa-phone"></i>@locale.GetResourceSeccion("telefono"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["telefono"])</p>
+            <p><i class="fa fa-envelope-o"></i>@locale.GetResourceSeccion("correo"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["correo"])</p>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12 text-center we-accept">
+            <h4>@locale.GetResourceSeccion("pago")</h4>
+            <ul>
+                @foreach (DataRow FormasPago in Model.TablaFormasDePago.Rows)
+                {
+                    <li><img class="formas-pago" src="@Html.Raw(Html.Encode(FormasPago["imagen"].ToString().Replace("~", "")))" alt="@Html.Raw(FormasPago["alt"].ToString())" title="@Html.Raw(FormasPago["title"].ToString())"></li>
+                }
+            </ul>
+        </div>
+    </div>
+}

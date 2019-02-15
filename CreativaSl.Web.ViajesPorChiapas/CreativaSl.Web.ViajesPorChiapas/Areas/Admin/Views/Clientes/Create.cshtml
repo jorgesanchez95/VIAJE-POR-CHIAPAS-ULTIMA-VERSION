@@ -1,0 +1,276 @@
+﻿@model CreativaSl.Web.ViajesPorChiapas.Models.ClienteModels
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section featured
+{
+    @{
+        var message = TempData["message"] ?? string.Empty;
+        var typemessage = TempData["typemessage"] ?? string.Empty;
+    }
+    <div class="page-content">
+        <div id="Error" class="error message" style="display: none">
+            <h3></h3>
+        </div>
+        <div id="Success" class="success message" style="display: none">
+            <h3></h3>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h3 class="page-title">Viaje Por Chiapas<small>  Administración</small></h3>
+                </div>
+            </div>
+            <div class="tab-pane">
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Nuevo Cliente</div>
+                    </div>
+                    @using (Html.BeginForm("Create", "Clientes", FormMethod.Post, new {@class = "form-horizontal" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+
+                        @Html.HiddenFor(model => model.id_cliente)
+
+
+                        <div class="portlet-body form">
+                            <h3 class="form-section">Información Cliente</h3>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Genero<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.DropDownListFor(model => model.tablaGeneroCmb, ViewData["cmbGeneros"] as SelectList, new {id = "ListGeneros", @class = "span12 m-wrap"})
+                                            @Html.ValidationMessageFor(model => model.tablaGeneroCmb)
+                                        </div>
+                                    </div>
+                                    <span class="help-block">Seleccione Genero</span>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Ocupacion<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.DropDownListFor(model => model.tablaOcupacionesCmb, ViewData["cmbOcupaciones"] as SelectList, new {id = "ListOcupaciones", @class = "span12 m-wrap"})
+                                            @Html.ValidationMessageFor(model => model.tablaOcupacionesCmb)
+                                        </div>
+                                    </div>
+                                    <span class="help-block">Seleccione Ocupacion</span>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Nombre<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.nombre, new {id = "nombre", @class = "span12 m-wrap"})
+                                            @Html.ValidationMessageFor(model => model.nombre)
+                                            <span class="help-block">Ingrese el nombre</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Apellido Paterno<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.apPat, new {id = "apPat", @class = "span12 m-wrap"})
+                                            @Html.ValidationMessageFor(model => model.apPat)
+                                            <span class="help-block">Ingrese el apellido paterno</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Apellido Materno<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.apMat, new {id = "apMat", @class = "span12 m-wrap"})
+                                            @Html.ValidationMessageFor(model => model.apMat)
+                                            <span class="help-block">Ingrese el apellido materno</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Fecha Nacimiento<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            <div id="datetimepicker3" class="input-append date calendar">
+                                                @Html.TextBoxFor(model => model.fechaNac, "{0:dd/MM/yyyy}", new { id = "fechaNac", @class = "span12 m-wrap", @readonly= "readonly"})
+                                                <span class="add-on">
+                                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                                                    </i>
+                                                </span>
+                                            </div>
+                                            @Html.ValidationMessageFor(model => model.fechaNac)
+                                            <span class="help-block">Ingrese la fecha de nacimiento</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Colonia<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.colonia, new {id = "colonia", @class = "span12 m-wrap"})
+                                            @Html.ValidationMessageFor(model => model.colonia)
+                                            <span class="help-block">Ingrese la colonia</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Teléfono<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.telefono, new {id = "telefono", @class = "span12 m-wrap"})
+                                            @Html.ValidationMessageFor(model => model.telefono)
+                                            <span class="help-block">Ingrese el teléfono del usuario</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Correo Electrónico<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.email, new { id = "email", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.email)
+                                            <span class="help-block">Ingrese el correo electronico del usuario</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">C.U.R.P<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.curp, new { id = "curp", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.curp)
+                                            <span class="help-block">Ingrese la curp</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Estado<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.DropDownListFor(model => model.tablaEstadosCmb, ViewData["cmbEstados"] as SelectList, new {id = "ListEstado", @class = "span12 m-wrap chosen"})
+                                            @Html.ValidationMessageFor(model => model.tablaEstadosCmb)
+                                        </div>
+                                    </div>
+                                    <span class="help-block">Seleccione el estado </span>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Municipio<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.DropDownListFor(model => model.tablaMunicipiosCmb, ViewData["cmbMunicipios"] as SelectList, new {id = "ListMunicipio", @class = "span12 m-wrap"})
+                                            @Html.ValidationMessageFor(model => model.tablaMunicipiosCmb)
+                                        </div>
+                                    </div>
+                                    <span class="help-block">Seleccione el municipio </span>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Contraseña<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.PasswordFor(model => model.password, new { id = "password", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.password)
+                                            <span class="help-block">Ingrese la contraseña del usuario</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form-actions">
+                                <input type="submit" value="Guardar" class="btn green">
+                                <a href="@Url.Action("Index","Clientes")" class="btn btn-default red"><i class="icon-prev"></i>Cancelar</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var auxbol = 1;
+        $(document).ready(function () {
+            getMunicipio($("#ListEstado").val());
+
+            $("#ListEstado").change(function () {
+                var id = $("#ListEstado").val();
+                getMunicipio(id);
+            });
+
+        });
+
+        function getMunicipio(id) {
+            $.ajax({
+                url: "/Admin/Clientes/Municipio",
+                data: { id: id },
+                dataType: "json",
+                type: "POST",
+                error: function () {
+                    $("#ListMunicipio").html('');
+                },
+                success: function (municipio) {
+                    var items = "";
+                    for (var i = 0; i < municipio.length; i++) {
+                        items += "<option value=\"" + municipio[i].id_municipio + "\">" + municipio[i].descripcion + "</option>";
+                    }
+                    $("#ListMunicipio").html(items);
+                    if (auxbol == 1) {
+                        $("#ListMunicipio").val('@Model.id_municipio');
+                        auxbol = 0;
+                    }
+                }
+            });
+        }
+
+        jQuery(document).ready(function () {
+            var message = '@message';
+            var typemessage = '@typemessage';
+
+            if (typemessage && message) {
+                if (typemessage == '1') {
+                    $('#Success').html('<h3>' + message + '<h3>');
+                    $('#Success').css("display", "block");
+                    $('#Success').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Success').css("display", "block");
+                }
+                else if (typemessage == '2') {
+                    $('#Error').html('<h3>' + message + '<h3>');
+                    $('#Error').css("display", "block");
+                    $('#Error').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Error').css("display", "block");
+                }
+            }
+        });
+        jQuery.validator.methods["date"] = function (value, element) { return true; }
+    </script>
+}
+
+

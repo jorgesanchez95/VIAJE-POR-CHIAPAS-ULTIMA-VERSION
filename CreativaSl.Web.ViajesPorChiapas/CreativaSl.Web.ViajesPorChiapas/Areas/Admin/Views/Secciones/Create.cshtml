@@ -1,0 +1,201 @@
+﻿@model CreativaSl.Web.ViajesPorChiapas.Models.SeccionModels
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section featured
+{
+    @{
+        var message = TempData["message"] ?? string.Empty;
+        var typemessage = TempData["typemessage"] ?? string.Empty;
+    }
+    <div class="page-content">
+        <div id="Error" class="error message" style="display: none">
+            <h3></h3>
+        </div>
+        <div id="Success" class="success message" style="display: none">
+            <h3></h3>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h3 class="page-title">Viaje Por Chiapas<small> Administración</small>
+                    </h3>
+                </div>
+            </div>
+            <div class="tab-pane">
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Nueva Sección
+                        </div>
+                    </div>
+                    @using (Html.BeginForm("Create", "Secciones", FormMethod.Post, new {enctype = "multipart/form-data", @class = "form-horizontal"}))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+
+                        @Html.HiddenFor(model => model.id_seccion)
+
+                        <div class="portlet-body form">
+                            <h3 class="form-section">Información de la seccion</h3>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Nombre de la seccion<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.nombreSeccion, new {id = "nombreSeccion", @class = "span12 m-wrap"})
+                                            @Html.ValidationMessageFor(model => model.nombreSeccion)
+                                            <span class="help-block">Ingrese el nombre de la seccion</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Descripción<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.descripcion, new { id = "descripcion", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.descripcion)
+                                            <span class="help-block">Ingrese la descripcion</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h3 class="form-section">Ubicación</h3>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Latitud<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.latitud, new {id = "latitud", @class = "span12 m-wrap", @readonly = true})
+                                            @Html.ValidationMessageFor(model => model.latitud)
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group">
+                                        <label class="control-label">Longitud<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.longitud, new {id = "longitud", @class = "span12 m-wrap", @readonly = true})
+                                            @Html.ValidationMessageFor(model => model.longitud)
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span6">
+                                    <div class="portlet box blue" style="height: 440px;">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="icon-reorder"></i>Mapa
+                                            </div>
+                                            <div class="tools">
+                                                <a href="javascript:;" class="reload"></a>
+                                            </div>
+                                        </div>
+                                        <div class="portlet-body" style="height: 382px;">
+                                            <div class="form-inline">
+                                                <input type="text" id="gmap_geocoding_address" class="m-wrap medium" placeholder="Buscar..."/>
+                                                <input type="button" id="gmap_geocoding_btn" class="btn" value="Buscar"/>
+                                            </div>
+                                            <br/>
+                                            <div id="gmap_geocoding" class="gmaps">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span10">
+                                    <div class="control-group">
+                                        <label class="control-label">URL Youtube<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.urlYoutube, new {id = "urlYoutube", @class = "span12 m-wrap"})
+                                            @Html.ValidationMessageFor(model => model.urlYoutube)
+                                            <span class="help-block">Ingrese el link de Youtube</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span2">
+                                    <div class="control-group">
+                                        <label class="control-label">Comprobar video</label>
+                                        <div class="controls">
+                                            <button type="button" id="openModal" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Ver Video</button>
+                                        </div>
+                                        <span class="help-block"> </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <input type="submit" value="Guardar" class="btn green">
+                                <a href="@Url.Action("Index", "Secciones")" class="btn btn-default red"><i class="icon-prev"></i>Cancelar</a>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Modal -->
+                    <div id="myModal" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Video Youtube</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <pre id="myCode"></pre>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#openModal").click(function () {
+                var url = $('input:text[name=urlYoutube]').val();
+                var myId = getId(url);
+
+                $('#myId').html(myId);
+
+                $('#myCode').html('<iframe width="508" height="258" src="//www.youtube.com/embed/' + myId + '" frameborder="0" allowfullscreen></iframe>');
+            });
+
+            function getId(url) {
+                var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                var match = url.match(regExp);
+
+                if (match && match[2].length == 11) {
+                    return match[2];
+                } else {
+                    return 'error';
+                }
+            }
+
+            var message = '@message';
+            var typemessage = '@typemessage';
+
+            if (typemessage && message) {
+                if (typemessage == '1') {
+                    $('#Success').html('<h3>' + message + '<h3>');
+                    $('#Success').css("display", "block");
+                    $('#Success').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Success').css("display", "block");
+                } else if (typemessage == '2') {
+                    $('#Error').html('<h3>' + message + '<h3>');
+                    $('#Error').css("display", "block");
+                    $('#Error').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Error').css("display", "block");
+                }
+            }
+        });
+    </script>
+}

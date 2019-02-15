@@ -1,0 +1,348 @@
+﻿@using System.Data
+@using System.Text.RegularExpressions
+@using CreativaSl.Web.ViajesPorChiapas.Resources
+@model CreativaSl.Web.ViajesPorChiapas.Models.ToursModels
+@{
+    var locale = new Localizate();
+}
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+@section metasTags{
+    @if (Model.tablaMetaTags.Rows.Count >= 1)
+    {
+        <meta charset="utf-8">
+        <title>@Html.Raw(Model.tablaMetaTags.Rows[0]["title"])</title>
+        <meta name="author" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["author"])">
+        <meta name="subject" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["subjetc"])">
+        <meta name="description" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["description"])">
+        <meta name="keywords" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["keywords"])">
+        <meta name="robots" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["robots"])">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="@Html.Raw(Model.tablaMetaTags.Rows[0]["canonical"])" />
+    }
+    else
+    {
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="author" content="">
+        <meta name="subject" content="">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="robots" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="" />
+    }
+}
+<div class="row">
+    <div class="container">
+        <!-- START: FILTER AREA -->
+        <div class="col-md-3 filters">
+            <div class="filter-head text-center">
+                <h4>@locale.GetResourceTour("contamosConMas") @Html.Raw(Model.totalTours) @locale.GetResourceTour("tours").</h4>
+            </div>
+            <div class="filter-area">
+                <div class="facilities-filter filter">
+                    <h5><i class="fa fa-list"></i> @locale.GetResourceTour("queViaje")</h5>
+                    <ul>
+                        @foreach (DataRow tags in Model.tablaTags.Rows)
+                        {
+                            if (Convert.ToInt32(tags["selecionado"]) == 0)
+                            {
+                                <li><input type="checkbox" class="miCheckBox" value="@Html.Raw(tags["id_tag"])"> <i class="@Html.Raw(tags["icon"])"></i> @Html.Raw(tags[@locale.GetResourceTour("nombreTag")])</li>
+                            }
+                            else
+                            {
+                                <li><input type="checkbox" class="miCheckBox" value="@Html.Raw(tags["id_tag"])" checked> <i class="@Html.Raw(tags["icon"])"></i> @Html.Raw(tags[@locale.GetResourceTour("nombreTag")])</li>
+                            }
+                        }
+                        <li><input type="checkbox" value="todos" id="seleccionTodos"> <i class=""></i> @locale.GetResourceTour("todos")</li>
+                    </ul>
+                    <center class="passenger-detail-body">
+                        <button type="button" id="btnFiltrar">@locale.GetResourceTour("filtrar")</button>
+                    </center>
+                </div>
+            </div>
+            <div class="col-md-12 package-detail-sidebar">
+                <div class="col-md-12 sidebar-wrapper clear-padding">
+                    <div class="assistance-box sidebar-item">
+                        <h4 class="text-center">@locale.GetResourceDetallePaquete("armarPaquete")</h4>
+                        <div class="assitance-body text-center passenger-detail-body">
+                            <h3>
+                                @locale.GetResourceDetallePaquete("PaqueteViP")
+                            </h3>
+                            <a href="@Url.Action("cotizarpaquetevip", "Paquetes")">@locale.GetResourceDetallePaquete("cotizar")</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 holidays-listing">
+            @{ int j = 0;}
+            @foreach (DataRow paquetes in Model.tablaTours.Rows)
+            {
+                j = j + 1;
+                <div class="col-md-4 col-sm-6">
+                    <div class="holiday-grid-view">
+
+                        <div class="holiday-header-wrapper">
+                            <div class="holiday-header">
+                                <div class="holiday-img">
+                                    <img src="@Url.Content(paquetes["pathimg"].ToString().Replace("~", ""))" title="@Html.Raw(paquetes["title"])" alt="@Html.Raw(paquetes["alt"])">
+                                </div>
+                                <div class="holiday-price">
+                                    @if (Convert.ToInt32(paquetes["Precio"]) > 0)
+                                    {
+                                        <h4>@Html.Raw(@locale.GetResourceSeccion("desde") + " " + String.Format("{0:C}", paquetes["Precio"]))</h4>
+                                    }
+                                    else
+                                    {
+                                        <h4>@Html.Raw(@locale.GetResourceSeccion("preguntar"))</h4>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="holiday-details">
+                            <div class="holiday-title text-center" style="height:50px;">
+                                <h3 class="title-tours">@Html.Raw(paquetes[locale.GetResourceTour("nombreGET")])</h3>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="col-md-12 ">
+                                <hr />
+                            </div>
+
+                            <div class="col-md-12 ">
+                                <p class="sm-text">@locale.GetResourceTour("Salidas"), @locale.GetResourceTour("Desde") @Html.Raw(paquetes["Pais"].ToString()), @Html.Raw(paquetes["estado"].ToString()), @Html.Raw(paquetes["municipio"].ToString()).</p>
+                            </div>
+                        </div>
+                        <div class="holiday-footer text-center">
+                            <div class="col-md-8 col-sm-8 col-xs-8 view-detail">
+                                @{
+                                    string id = paquetes["nombre_pagina"].ToString();
+                                }
+                                <a href="@Url.Action("detalletour", "tours", new { id = id })">@locale.GetResourceSeccion("verMas")</a>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-4 social cot-stc">
+                                <a class="cot-st" href="@Url.Action("cotizar", "tours", new { id = id })">
+
+                                    @locale.GetResourceSeccion("cotizar")
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                    }
+            <div class="clearfix"></div><div class="clearfix"></div><div class="clearfix"></div>
+            <!-- END: HOTEL GRID VIEW -->
+            <!-- START: PAGINATION -->
+            <div class="bottom-pagination">
+                <nav class="pull-right">
+                    <ul class="pagination pagination-lg">
+                        @{
+                            string idsTags = "";
+                            foreach (DataRow aux in Model.tablaTags.Rows)
+                            {
+                                if (Convert.ToInt32(aux["selecionado"]) == 1)
+                                {
+                                    idsTags = idsTags + aux["id_tag"] + ",";
+                                }
+                            }
+                            double numeroPagina = 0;
+                            try
+                            {
+                                numeroPagina = ((double)Model.numeroPaquetes / Model.fetchNext);
+                            }
+                            catch (Exception)
+                            {
+                                numeroPagina = 0;
+                            }
+                            int numeroPaginaReal = (int)numeroPagina;
+                            double residuo = numeroPagina - numeroPaginaReal;
+                            if (residuo > 0.1)
+                            {
+                                numeroPaginaReal = numeroPaginaReal + 1;
+                            }
+                            for (int i = 1; i <= numeroPaginaReal; i++)
+                            {
+                                if (i == Model.current)
+                                {
+                                    if (idsTags == "")
+                                    {
+                                        <li class="active"><a href="/Tours/Busqueda/@Model.id_pais,@Model.id_estado/?idLugars=@Model.id_Lugar&current=@Html.Raw(i)" class="paginator">@Html.Raw(i) <span class="sr-only">(current)</span></a></li>
+                                    }
+                                    else
+                                    {
+                                        <li class="active"><a href="/Tours/Busqueda/@Model.id_pais,@Model.id_estado/?idLugars=@Model.id_Lugar&current=@Html.Raw(i)&idTags=@Html.Raw(idsTags)" class="paginator">@Html.Raw(i) <span class="sr-only">(current)</span></a></li>
+                                    }
+                                }
+                                else
+                                {
+                                    if (idsTags == "")
+                                    {
+                                        <li><a href="/Tours/Busqueda/@Model.id_pais,@Model.id_estado/?idLugars=@Model.id_Lugar&current=@Html.Raw(i)" class="paginator">@Html.Raw(i) <span class="sr-only">(current)</span></a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a href="/Tours/Busqueda/@Model.id_pais,@Model.id_estado/?idLugars=@Model.id_Lugar&current=@Html.Raw(i)&idTags=@Html.Raw(idsTags)" class="paginator">@Html.Raw(i) <span class="sr-only">(current)</span></a></li>
+                                    }
+                                }
+                            }
+                        }
+                    </ul>
+                </nav>
+            </div>
+            <!-- END: PAGINATION -->
+        </div>
+        <!-- END: INDIVIDUAL LISTING AREA -->
+    </div>
+</div>
+@section Newsletter{
+    <div class="container clear-padding">
+        <div class="col-md-7 col-sm-7">
+            <div class="progressbar fade-right animate1">
+                @{
+                    string newletter = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("newsletter")].ToString();
+                    string[] newsletter = Regex.Split(newletter, "\r\n");
+                    if (newsletter != null)
+                    {
+                        int totalnewsletter = newsletter.Count();
+                        if (totalnewsletter >= 1)
+                        {
+                            <p class="NL">@Html.Raw(newsletter[0])</p>
+                        }
+                        if (totalnewsletter >= 2)
+                        {
+                            <p>@Html.Raw(newsletter[1])</p>
+                        }
+                    }
+                }
+            </div>
+            <form>
+                <div class="col-md-9 col-sm-8 col-xs-6 clear-padding">
+                    <input type="text" id="correoSuscribirse" class="form-control" required />
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 clear-padding">
+                    <button type="button" id="btnSuscribirse"><i class="fa fa-paper-plane"></i> @locale.GetResourceSeccion("suscribirse")</button>
+                </div>
+                <p id="msg_newsletter" style="font-size: 25px;"></p>
+            </form>
+        </div>
+        <div class="col-md-5 col-sm-5">
+            <div class="social-media pull-right">
+                <ul>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["facebook"])"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["twitter"])"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["instagram"])"><i class="fa fa-instagram"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["google"])"><i class="fa fa-google-plus"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["youtube"])"><i class="fa fa-youtube"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+@section Piedepagina{
+    <div class="container clear-padding">
+        <div class="col-md-3 col-sm-6 about-box">
+            @{
+                string pieAcerca = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("pieAcerca")].ToString();
+                string[] pieAcercas = Regex.Split(pieAcerca, "\r\n");
+                if (pieAcercas != null)
+                {
+                    int totalPie = pieAcercas.Count();
+                    if (totalPie >= 1)
+                    {
+                        <h3>@Html.Raw(pieAcercas[0])</h3>
+                    }
+                    if (totalPie >= 2)
+                    {
+                        <p class="descripcion">@Html.Raw(pieAcercas[1])</p>
+                    }
+                }
+            }
+        </div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Popular")</h4>
+            <ul>
+                @foreach (DataRow PaquetPulares in Model.TablaPaquetesPopulares.Rows)
+                {
+                    string ids = PaquetPulares["nombre_pagina"].ToString();
+                    <li><a href="@Url.Action("DetallePaquete", "Paquetes", new { id = ids })">@Html.Raw(PaquetPulares["nombre"])</a></li>
+                }
+            </ul>
+        </div>
+        <div class="clearfix visible-sm-block"></div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Servicio")</h4>
+            <ul>
+                <li><a href="@Url.Action("Index", "Home")">@locale.GetResource("inicio")</a></li>
+                <li><a href="@Url.Action("Index", "Transportacion")">@locale.GetResource("transportacion")</a></li>
+                <li><a href="@Url.Action("Index", "Promociones")">@locale.GetResource("promocion")</a></li>
+                <li><a href="@Url.Action("Index", "Galerias")">@locale.GetResource("galeria")</a></li>
+                <li><a href="@Url.Action("Index", "Blog")">@locale.GetResource("blog")</a></li>
+                <li><a href="@Url.Action("Index", "Contactos")">@locale.GetResource("contacto")</a></li>
+                <li><a href="@Url.Action("Index", "Recomendaciones")">@locale.GetResource("recomendaciones")</a></li>
+            </ul>
+        </div>
+        <div class="col-md-3 col-sm-6 contact-box">
+            <h4>@locale.GetResourceSeccion("contacto")</h4>
+            <p>
+                <i class="fa fa-home"></i>@locale.GetResourceSeccion("direccion"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["direccion"])
+            </p>
+            <p><i class="fa fa-phone"></i>@locale.GetResourceSeccion("telefono"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["telefono"])</p>
+            <p><i class="fa fa-envelope-o"></i>@locale.GetResourceSeccion("correo"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["correo"])</p>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12 text-center we-accept">
+            <h4>@locale.GetResourceSeccion("pago")</h4>
+            <ul>
+                @foreach (DataRow FormasPago in Model.TablaFormasDePago.Rows)
+                {
+                    <li><img class="formas-pago" src="@Html.Raw(Html.Encode(FormasPago["imagen"].ToString().Replace("~", "")))" alt="@Html.Raw(FormasPago["alt"].ToString())" title="@Html.Raw(FormasPago["title"].ToString())"></li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+@section scriptF{
+    <script>
+         $(document).ready(function () {
+             $("#seleccionTodos").change(function () {
+                 $("input:checkbox").prop('checked', $(this).prop("checked"));
+             });
+             $("#btnFiltrar").click(function (event) {
+                 var idsTags = "";
+                 $('.miCheckBox:checked').each(
+                     function () {
+                         idsTags = idsTags + $(this).attr("value") + ",";
+                     }
+                 );
+                 if (idsTags == "") {
+                     window.location.href = "/Tours/Busqueda/@Model.id_pais,@Model.id_estado/?idLugars=@Model.id_Lugar";
+                 } else {
+                     if ($('#seleccionTodos').is(':checked')) {
+                         window.location.href = "/Tours/Busqueda/@Model.id_pais,@Model.id_estado/?idLugars=@Model.id_Lugar";
+                     } else {
+                         window.location.href = "/Tours/Busqueda/@Model.id_pais,@Model.id_estado/?idLugars=@Model.id_Lugar &current=1" + "&idTags=" + idsTags;
+                     }
+                     event.preventDefault();
+                 }
+             });
+         });
+     @*<script>
+	$(function() {
+		"use strict";
+		$( "#price-range" ).slider({
+		  range: true,
+		  min: 0,
+		  max: 100,
+		  values: [ 3, 50 ],
+		  slide: function( event, ui ) {
+			$( "#amount" ).val( "$ " + ui.values[ 0 ] + " - $ " + ui.values[ 1 ] );
+		  }
+		});
+		$( "#amount" ).val( "$ " + $( "#price-range" ).slider( "values", 0 ) +
+		  " - $ " + $( "#price-range" ).slider( "values", 1 ) );
+	  });*@
+    </script>
+}

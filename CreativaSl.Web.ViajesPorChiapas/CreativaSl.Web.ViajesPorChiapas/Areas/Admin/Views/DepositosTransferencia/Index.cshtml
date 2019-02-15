@@ -1,0 +1,158 @@
+﻿@using System.Data
+@model CreativaSl.Web.ViajesPorChiapas.Models.TipoPagosDetalleModels
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section featured
+{
+    @{
+        var message = TempData["message"] ?? string.Empty;
+        var typemessage = TempData["typemessage"] ?? string.Empty;
+    }
+    <div class="page-content">
+        <div id="Error" class="error message" style="display: none">
+            <h3></h3>
+        </div>
+        <div id="Success" class="success message" style="display: none">
+            <h3></h3>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h3 class="page-title">Viaje Por Chiapas<small>  Administración</small></h3>
+                </div>
+            </div>
+            <div id="dashboard">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption"><i class="icon-edit"></i>Tipo Pagos Detalles</div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="dataTables_wrapper form-inline" style="min-height:100px;">
+                                    <div id="miGrid">
+                                        <div id="datdim" class="dataTables_wrapper form-inline" style="border-bottom-style: solid; border-bottom-color: #abd1eb; border-bottom-width: thin;">
+                                            <div class="row-fluid" style="margin:0px; padding:0px">
+                                                <div class="portlet-body flip-scroll" style="text-align:center;">
+                                                    <section id="flip-scroll">
+                                                        <table id="example" class="table table-striped table-hover table-bordered dataTable">
+                                                            <thead class="flip-content">
+                                                                <tr>
+                                                                    <th>Imagen</th>
+                                                                    <th>Tipo Pago</th>
+                                                                    <th>Descripcion</th>
+                                                                    <th>Titular</th>
+                                                                    <th>Estado</th>
+                                                                    <th>No. Referencia</th>
+                                                                    <th>Editar</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (DataRow tipoPagosDetalle in Model.tablaCatTipoPagosDetalle.Rows)
+                                                                {
+                                                                    <tr>
+                                                                        <td><img src="@Html.Raw(Html.Encode(tipoPagosDetalle["imagen"].ToString().Replace("~", "")))" width="32px" height="32px"></td>
+                                                                        <td>@tipoPagosDetalle["TipoPago"].ToString()</td>
+                                                                        <td>@tipoPagosDetalle["descripcion"].ToString()</td>
+                                                                        <td>@tipoPagosDetalle["titular"].ToString()</td>
+                                                                        <td>@tipoPagosDetalle["numero_referencia"].ToString()</td>
+                                                                        @{bool estado = false;
+                                                                            bool.TryParse(tipoPagosDetalle["estado"].ToString(), out estado);}
+                                                                        @if (estado == false)
+                                                                        {
+                                                                            <td style="text-align:center;"><a class="btn yellow estado" href="@Url.Action("ActivarFormadePago", "DepositosTransferencia", new { id = tipoPagosDetalle["id_tipoPagoDetalle"].ToString(), id2=tipoPagosDetalle["estado"].ToString() })">Mostrar</a></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="text-align:center;"><a class="btn green estado" href="@Url.Action("ActivarFormadePago", "DepositosTransferencia", new { id = tipoPagosDetalle["id_tipoPagoDetalle"].ToString(), id2=tipoPagosDetalle["estado"].ToString() })">Ocultar</a></td>
+
+                                                                        }
+                                                                        <td style="text-align: center;"><a class="btn yellow" href="@Url.Action("Edit", "DepositosTransferencia", new {id = tipoPagosDetalle["id_tipoPagoDetalle"].ToString()})"><i class="icon-edit"></i></a></td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </section>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            $(document).ready(function () {
+                $('#example').DataTable({
+                    "bSort": false,
+                    "bAutoWidth": false,
+                    "aLengthMenu": [
+                    [10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]
+                    ],
+                    "iDisplayLength": 10
+                });
+                $('a.estado').live('click', function (e) {
+                    e.preventDefault();
+                    if (confirm("¿Desea mostrar este comentario?") == false) return;
+                    var url = $(this).attr('href');
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (result) { location.reload(true); },
+                        error: function () {
+                            $('#Error').html('<h3>Ocurrio un error al mostrar este registro<h3>');
+                            $('#Error').css("display", "block");
+                            $('#Error').delay(400).slideDown(400).delay(2000).slideUp(400);
+                            $('#Error').css("display", "block");
+                        }
+                    });
+                });
+                $('a.delete').live('click', function (e) {
+                    e.preventDefault();
+                    if (confirm("¿Confirmar eliminación?") == false) return;
+                    var url = $(this).attr('href');
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (result) { location.reload(true); },
+                        error: function () {
+                            $('#Error').html('<h3>Ocurrio un error al eliminar este registro<h3>');
+                            $('#Error').css("display", "block");
+                            $('#Error').delay(400).slideDown(400).delay(2000).slideUp(400);
+                            $('#Error').css("display", "block");
+                        }
+                    });
+                });
+
+            });
+            jQuery(document).ready(function () {
+                var message = '@message';
+            var typemessage = '@typemessage';
+
+            if (typemessage && message) {
+                if (typemessage == '1') {
+                    $('#Success').html('<h3>' + message + '<h3>');
+                    $('#Success').css("display", "block");
+                    $('#Success').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Success').css("display", "block");
+                }
+                else if (typemessage == '2') {
+                    $('#Error').html('<h3>' + message + '<h3>');
+                    $('#Error').css("display", "block");
+                    $('#Error').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Error').css("display", "block");
+                }
+            }
+        });
+    </script>
+}

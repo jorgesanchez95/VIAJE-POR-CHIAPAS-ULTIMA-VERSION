@@ -1,0 +1,776 @@
+﻿<!DOCTYPE html>
+<html class="load-full-screen">
+<head>
+    @using System.Data
+    @using System.Text.RegularExpressions
+    @{
+        CreativaSl.Web.ViajesPorChiapas.Resources.Localizate locale = new CreativaSl.Web.ViajesPorChiapas.Resources.Localizate();
+    }
+    <meta name="google-site-verification" content="OoqLbp0l7HFOKgpfxtN5HDTBBwAJJonev_klFsOh52M" />
+    @RenderSection("metasTags", required: false)
+    <link rel="stylesheet" href="@Url.Content("~/Content/Pagina/plugins/rs-plugin/css/settings.min.css")" media="screen" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/Pagina/plugins/showbizpro/css/settings.min.css")" media="screen" />
+    <link href="@Url.Content("~/Content/Pagina/css/animate.min.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/Pagina/css/bootstrap-select.min.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/Pagina/css/owl.carousel.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/Pagina/css/owl-carousel-theme.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/Pagina/css/bootstrap.min.css")" rel="stylesheet" media="screen">
+    <link href="@Url.Content("~/Content/Pagina//css/flexslider.css")" rel="stylesheet" media="screen">
+    <link href="@Url.Content("~/Content/Administrador/plugins/bootstrap/css/bootstrapDateTime.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Administrador/css/bootstrap-datetimepicker.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Pagina/css/style.css")" rel="stylesheet" media="screen">
+    <link href="@Url.Content("~/Content/Pagina/font-awesome/css/font-awesome.min.css")" rel="stylesheet">
+    <link rel="shortcut icon" href="@Url.Content("~/Content/Pagina/Viajes.ico")">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,800,700,600' rel='stylesheet' type='text/css'>
+    @RenderSection("scriptEncabezado", required: false)
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    @*<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74317404-3"></script>
+    <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-74317404-3');
+    </script>*@
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-8666690-1"></script>
+    <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-8666690-1');
+    </script>
+    <!-- Facebook Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '526991667495812');
+    fbq('track', 'PageView');
+    </script>
+    <noscript>
+        <img height="1" width="1" style="display:none"
+             src="https://www.facebook.com/tr?id=526991667495812&ev=PageView&noscript=1" />
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+
+</head>
+<body class="load-full-screen">
+    <div id="loader" class="load-full-screen">
+        <div class="loading-animation">
+            <span><i class="fa fa-plane"></i></span>
+            <span><i class="fa fa-bed"></i></span>
+            <span><i class="fa fa-ship"></i></span>
+            <span><i class="fa fa-suitcase"></i></span>
+        </div>
+    </div>
+    <!-- END: PRELOADER -->
+    <!-- BEGIN: SITE-WRAPPER -->
+    <div class="site-wrapper">
+        <div class="row transparent-menu-top">
+            <div class="container clear-padding">
+                <div class="navbar-contact">
+                    <div class="col-md-7 col-sm-6 clear-padding">
+                        <a href="tel:@Html.Raw(Model.tablaDatosGenerales.Rows[0]["telefono"])" class="transition-effect"><i class="fa fa-phone"></i> @locale.GetResource("atencion") @Html.Raw(Model.tablaDatosGenerales.Rows[0]["telefono"]) </a>
+                        <a href="mailto:@Html.Raw(Model.tablaDatosGenerales.Rows[0]["correo"])" class="transition-effect"><i class="fa fa-envelope-o"></i> @Html.Raw(Model.tablaDatosGenerales.Rows[0]["correo"])</a>
+                    </div>
+                    <div class="col-md-5 col-sm-6 clear-padding search-box">
+                        <div class="col-md-6 col-xs-5 clear-padding">
+                            <a href="javascript:changeLocale('@locale.GetResource("locale")');">@locale.GetResource("changeLocale")</a>
+                            <a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["facebook"])" class="transition-effect" target="_blank">
+                                <i class="fa fa-facebook"></i>Facebook
+                            </a>
+                            <a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["youtube"])" class="transition-effect" target="_blank">
+                                <i class="fa fa-youtube"></i>Youtube
+                            </a>
+                        </div>
+                        @{
+                            if (HttpContext.Current.Session["idCliente"] != null)
+                            {
+                                <div class="col-md-6 col-xs-7 clear-padding user-logged">
+                                    <a href="#" class="transition-effect">
+                                        <a href="@Url.Action("index", "micuenta")"><li class="fa fa-user"></li> @Html.Raw(Session["nombreCliente"].ToString()) </a>
+                                        <a href="javascript:logoutCliente();"><li class="fa fa-sign-out"></li></a>
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-6 col-xs-7 clear-padding user-logged">
+                                    <a href="#" class="transition-effect">
+                                        <a href="@Url.Action("index", "login")">@locale.GetResource("ingresar") <i class="fa fa-sign-in"></i></a>
+                                    </a>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        @{
+            string Conexion = System.Configuration.ConfigurationManager.AppSettings.Get("strConnection");
+            CreativaSl.Web.ViajesPorChiapas.Models.SeccionModels Menu = new CreativaSl.Web.ViajesPorChiapas.Models.SeccionModels();
+            CreativaSl.Web.ViajesPorChiapas.Models.SeccionDatos Cuenta = new CreativaSl.Web.ViajesPorChiapas.Models.SeccionDatos();
+            Menu.conexion = Conexion;
+            Menu.idioma = Session["locale"] == null ? 1 : 2;
+            Menu.id_seccion = Session["idSeccion"].ToString();
+            Menu = Cuenta.ObtenerMenu(Menu);
+        }
+        <div class="row transparent-menu">
+            <div class="container clear-padding">
+                <!-- BEGIN: HEADER -->
+                <div class="navbar-wrapper">
+                    <div class="navbar navbar-default" role="navigation">
+                        <!-- BEGIN: NAV-CONTAINER -->
+                        <div class="nav-container">
+                            <div class="navbar-header">
+                                <!-- BEGIN: TOGGLE BUTTON (RESPONSIVE)-->
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+
+                                <!-- BEGIN: LOGO -->
+                                <a class="navbar-brand logo" href="@Url.Action("Index", "Home")"><img id="logo" src="@Url.Content("~/Content/Pagina/logo.png")"></a>
+                            </div>
+
+                            <!-- BEGIN: NAVIGATION -->
+                            <div class="navbar-collapse collapse">
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i>@locale.GetResource("inicio")</a>
+
+                                    </li>
+                                    <li class="dropdown mega">
+                                        <a class="dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-bed"></i>@locale.GetResource("paquetes")<i class="fa fa-caret-down"></i></a>
+                                        <ul class="dropdown-menu mega-menu">
+                                            <li class="col-md-3 col-sm-3 desc">
+                                                @{
+                                                    if (Menu.tablaDatosGenerales.Rows[0]["servicioPaquetes"] != "")
+                                                    {
+                                                        string Paquete = Menu.tablaDatosGenerales.Rows[0]["servicioPaquetes"].ToString();
+                                                        string[] NombrePa = Regex.Split(Paquete, "\r\n");
+                                                        if (NombrePa != null)
+                                                        {
+                                                            int totalNombre = NombrePa.Count();
+                                                            if (totalNombre >= 1)
+                                                            {
+                                                                <h4>@Html.Raw(NombrePa[0])</h4>
+                                                            }
+                                                            if (NombrePa.Length >= 2)
+                                                            {
+                                                                <p>@Html.Raw(NombrePa[1])</p>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            </li>
+                                            <li class="col-md-3 col-sm-4 links">
+                                                <h5>@locale.GetResource("destino")</h5>
+                                                <ul>
+                                                    @foreach (DataRow DestinosP in Menu.TablaDestinosPaquetes.Rows)
+                                                    {
+                                                        string id = DestinosP["id_Estado2"].ToString();
+                                                    <li><a href="@Url.Action("Index", "Paquetes", new { id = id })">@Html.Raw(DestinosP["Destino"])</a></li>
+                                                    }
+                                                </ul>
+                                                
+                                            </li>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    @{ 
+                                                        if (Menu.tablaTopPaquetes.Rows.Count >= 1)
+                                                        {
+                                                        <li class="col-md-6 links">
+                                                            <div class="img-div clear-top">
+                                                                <img src="@Html.Raw(Html.Encode(Menu.tablaTopPaquetes.Rows[0]["pathimg"].ToString().Replace("~", "")))" title="@Menu.tablaTopPaquetes.Rows[0]["title"]" alt="@Menu.tablaTopPaquetes.Rows[0]["alt"]">
+                                                                <div class="overlay">
+                                                                    <h5>@Html.Raw(Menu.tablaTopPaquetes.Rows[0][locale.GetResourceSeccion("nombreGET")])</h5>
+                                                                    <p>@Html.Raw(Menu.tablaTopPaquetes.Rows[0]["estado"])</p>
+                                                                    @{string id_paquete = Menu.tablaTopPaquetes.Rows[0]["nombre_pagina"].ToString();}
+                                                                    <a href="@Url.Action("detallepaquete", "paquetes", new { id = id_paquete })">@locale.GetResourceSeccion("verMas")</a>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        }
+                                                        if (Menu.tablaTopPaquetes.Rows.Count >= 2)
+                                                        {
+                                                            <li class="col-md-6 links">
+                                                                <div class="img-div clear-top">
+                                                                    <img src="@Html.Raw(Html.Encode(Menu.tablaTopPaquetes.Rows[1]["pathimg"].ToString().Replace("~", "")))" title="@Menu.tablaTopPaquetes.Rows[1]["title"]" alt="@Menu.tablaTopPaquetes.Rows[1]["alt"]">
+                                                                    <div class="overlay">
+                                                                        <h5>@Html.Raw(Menu.tablaTopPaquetes.Rows[1][locale.GetResourceSeccion("nombreGET")])</h5>
+                                                                        <p>@Html.Raw(Menu.tablaTopPaquetes.Rows[1]["estado"])</p>
+                                                                        @{string id_paquete = Menu.tablaTopPaquetes.Rows[1]["nombre_pagina"].ToString();}
+                                                                        <a href="@Url.Action("detallepaquete", "paquetes", new { id = id_paquete })">@locale.GetResourceSeccion("verMas")</a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                         }
+                                                    }
+                                                </div>
+                                                <br />
+                                               <div class="row">
+                                                   @{
+                                                       if (Menu.tablaTopPaquetes.Rows.Count >= 3)
+                                                       {
+                                                            <li class="col-md-6 links">
+                                                                <div class="img-div clear-top">
+                                                                    <img src="@Html.Raw(Html.Encode(Menu.tablaTopPaquetes.Rows[2]["pathimg"].ToString().Replace("~", "")))" title="@Menu.tablaTopPaquetes.Rows[2]["title"]" alt="@Menu.tablaTopPaquetes.Rows[2]["alt"]">
+                                                                    <div class="overlay">
+                                                                        <h5>@Html.Raw(Menu.tablaTopPaquetes.Rows[2][locale.GetResourceSeccion("nombreGET")])</h5>
+                                                                        <p>@Html.Raw(Menu.tablaTopPaquetes.Rows[2]["estado"])</p>
+                                                                        @{string id_paquete = Menu.tablaTopPaquetes.Rows[2]["nombre_pagina"].ToString();}
+                                                                        <a href="@Url.Action("detallepaquete", "paquetes", new { id = id_paquete })">@locale.GetResourceSeccion("verMas")</a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        }
+                                                        if (Menu.tablaTopPaquetes.Rows.Count >= 4)
+                                                        {
+                                                            <li class="col-md-6 links">
+                                                                <div class="img-div clear-top">
+                                                                    <img src="@Html.Raw(Html.Encode(Menu.tablaTopPaquetes.Rows[3]["pathimg"].ToString().Replace("~", "")))" title="@Menu.tablaTopPaquetes.Rows[3]["title"]" alt="@Menu.tablaTopPaquetes.Rows[3]["alt"]">
+                                                                    <div class="overlay">
+                                                                        <h5>@Html.Raw(Menu.tablaTopPaquetes.Rows[3][locale.GetResourceSeccion("nombreGET")])</h5>
+                                                                        <p>@Html.Raw(Menu.tablaTopPaquetes.Rows[3]["estado"])</p>
+                                                                        @{string id_paquete = Menu.tablaTopPaquetes.Rows[3]["nombre_pagina"].ToString();}
+                                                                        <a href="@Url.Action("detallepaquete", "paquetes", new { id = id_paquete })">@locale.GetResourceSeccion("verMas")</a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                       }
+                                                    }
+                                               </div>
+                                            </div>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </li>
+                                    <li class="dropdown mega">
+                                        <a class="dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-plane"></i>@locale.GetResource("tours")<i class="fa fa-caret-down"></i></a>
+                                        <ul class="dropdown-menu mega-menu">
+                                            <li class="col-md-3 col-sm-3 desc">
+                                                @{
+                                                    if (Menu.tablaDatosGenerales.Rows[0]["servicioTours"] != "")
+                                                    {
+                                                        string Tours = Menu.tablaDatosGenerales.Rows[0]["servicioTours"].ToString();
+                                                        string[] NombreTU = Regex.Split(Tours, "\r\n");
+                                                        if (NombreTU != null)
+                                                        {
+                                                            int totalTuors = NombreTU.Count();
+                                                            if (totalTuors >= 1)
+                                                            {
+                                                                <h4>@Html.Raw(NombreTU[0])</h4>
+                                                            }
+                                                            if (NombreTU.Length >= 2)
+                                                            {
+                                                                <p>@Html.Raw(NombreTU[1])</p>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            </li>
+                                            <li class="col-md-3 col-sm-4 links">
+                                                <h5>@locale.GetResource("destino")</h5>
+                                                <ul>
+                                                    @foreach (DataRow DestinosT in Menu.TablaDestinosTours.Rows)
+                                                    {
+                                                        string id = DestinosT["id_Estado2"].ToString();
+                                                        <li><a href="@Url.Action("Index", "Tours", new { id = id })">@Html.Raw(DestinosT["Destino"])</a></li>
+                                                    }
+                                                </ul>
+                                               
+                                            </li>
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    @{
+                                                        if (Menu.TablaTuors.Rows.Count >= 1)
+                                                        {
+                                                            <li class="col-md-6 links">
+                                                                <div class="img-div clear-top">
+                                                                    <img src="@Html.Raw(Html.Encode(Menu.TablaTuors.Rows[0]["pathimg"].ToString().Replace("~", "")))" title="@Menu.TablaTuors.Rows[0]["title"]" alt="@Menu.TablaTuors.Rows[0]["alt"]">
+                                                                    <div class="overlay">
+                                                                        <h5>@Html.Raw(Menu.TablaTuors.Rows[0][locale.GetResourceSeccion("nombreGET")])</h5>
+                                                                        <p>@Html.Raw(Menu.TablaTuors.Rows[0]["estado"])</p>
+                                                                        @{string id_paquete = Menu.TablaTuors.Rows[0]["nombre_pagina"].ToString();}
+                                                                        <a href="@Url.Action("detalletour", "tours", new { id = id_paquete })">@locale.GetResourceSeccion("verMas")</a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            }
+                                                            if (Menu.TablaTuors.Rows.Count >= 2)
+                                                            {
+                                                            <li class="col-md-6 links">
+                                                                <div class="img-div clear-top">
+                                                                    <img src="@Html.Raw(Html.Encode(Menu.TablaTuors.Rows[1]["pathimg"].ToString().Replace("~", "")))" title="@Menu.TablaTuors.Rows[1]["title"]" alt="@Menu.TablaTuors.Rows[1]["alt"]">
+                                                                    <div class="overlay">
+                                                                        <h5>@Html.Raw(Menu.TablaTuors.Rows[1][locale.GetResourceSeccion("nombreGET")])</h5>
+                                                                        <p>@Html.Raw(Menu.TablaTuors.Rows[1]["estado"])</p>
+                                                                        @{string id_paquete = Menu.TablaTuors.Rows[1]["nombre_pagina"].ToString();}
+                                                                        <a href="@Url.Action("detalletour", "tours", new { id = id_paquete })">@locale.GetResourceSeccion("verMas")</a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                         }
+                                                    }
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                   @{
+                                                       if (Menu.TablaTuors.Rows.Count >= 3)
+                                                       {
+                                                        <li class="col-md-6 links">
+                                                            <div class="img-div clear-top">
+                                                                <img src="@Html.Raw(Html.Encode(Menu.TablaTuors.Rows[2]["pathimg"].ToString().Replace("~", "")))" title="@Menu.TablaTuors.Rows[2]["title"]" alt="@Menu.TablaTuors.Rows[2]["alt"]">
+                                                                <div class="overlay">
+                                                                    <h5>@Html.Raw(Menu.TablaTuors.Rows[2][locale.GetResourceSeccion("nombreGET")])</h5>
+                                                                    <p>@Html.Raw(Menu.TablaTuors.Rows[2]["estado"])</p>
+                                                                    @{string id_paquete = Menu.TablaTuors.Rows[2]["nombre_pagina"].ToString();}
+                                                                    <a href="@Url.Action("detalletour", "tours", new { id = id_paquete })">@locale.GetResourceSeccion("verMas")</a>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        }
+                                                        if (Menu.TablaTuors.Rows.Count >= 4)
+                                                        {
+                                                            <li class="col-md-6 links">
+                                                                <div class="img-div clear-top">
+                                                                    <img src="@Html.Raw(Html.Encode(Menu.TablaTuors.Rows[3]["pathimg"].ToString().Replace("~", "")))" title="@Menu.TablaTuors.Rows[3]["title"]" alt="@Menu.TablaTuors.Rows[3]["alt"]">
+                                                                    <div class="overlay">
+                                                                        <h5>@Html.Raw(Menu.TablaTuors.Rows[3][locale.GetResourceSeccion("nombreGET")])</h5>
+                                                                        <p>@Html.Raw(Menu.TablaTuors.Rows[3]["estado"])</p>
+                                                                        @{string id_paquete = Menu.TablaTuors.Rows[3]["nombre_pagina"].ToString();}
+                                                                        <a href="@Url.Action("detalletour", "tours", new { id = id_paquete })">@locale.GetResourceSeccion("verMas")</a>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        }
+                                                }
+                                                </div>
+                                            </div>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </li>
+                                    <li class="dropdown mega">
+                                        <a class="dropdown-toggle" href="@Url.Action("Index", "Transportacion")"><i class="fa fa-taxi"></i>@locale.GetResource("transportacion")</a>
+                                        <ul class="dropdown-menu mega-menu">
+                                            <li class="col-md-3 col-sm-3 desc">
+                                                @{
+                                                    if (Menu.tablaDatosGenerales.Rows[0]["servicioTraslado"] != "")
+                                                    {
+                                                        string Trasnporte = Menu.tablaDatosGenerales.Rows[0]["servicioTraslado"].ToString();
+                                                        string[] NombreTrans = Regex.Split(Trasnporte, "\r\n");
+                                                        if (NombreTrans != null)
+                                                        {
+                                                            int totalTrans = NombreTrans.Count();
+                                                            if (totalTrans >= 1)
+                                                            {
+                                                                <h4>@Html.Raw(NombreTrans[0])</h4>
+                                                            }
+                                                            if (NombreTrans.Length >= 2)
+                                                            {
+                                                                <p>@Html.Raw(NombreTrans[1])</p>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            </li>
+                                            @{ 
+                                                if (Menu.TablaVehiculo.Rows.Count >= 1)
+                                                {
+                                                <li class="col-md-3 col-sm-4 links">
+                                                    <div class="img-div clear-top">
+                                                        <img src="@Html.Raw(Html.Encode(Menu.TablaVehiculo.Rows[0]["UrlImagen"].ToString().Replace("~", "")))" title="@Menu.TablaVehiculo.Rows[0]["title"]" alt="@Menu.TablaVehiculo.Rows[0]["alt"]">
+                                                        <div class="overlay">
+                                                            <h5>@Menu.TablaVehiculo.Rows[0]["descripcion"]</h5>
+                                                            @{string IDVehiculo = Menu.TablaVehiculo.Rows[0]["nombre_pagina"].ToString();}
+                                                            <a href="@Url.Action("detalleauto", "transportacion", new { id = IDVehiculo })">@locale.GetResourceSeccion("verMas")</a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                }
+                                                if (Menu.TablaVehiculo.Rows.Count >= 2)
+                                                {
+                                                <li class="col-md-3 col-sm-4 links">
+                                                    <div class="img-div clear-top">
+                                                        <img src="@Html.Raw(Html.Encode(Menu.TablaVehiculo.Rows[1]["UrlImagen"].ToString().Replace("~", "")))" title="@Menu.TablaVehiculo.Rows[1]["title"]" alt="@Menu.TablaVehiculo.Rows[1]["alt"]">
+                                                        <div class="overlay">
+                                                            <h5>@Menu.TablaVehiculo.Rows[1]["descripcion"]</h5>
+                                                            @{string IDVehiculo = Menu.TablaVehiculo.Rows[1]["nombre_pagina"].ToString();}
+                                                            <a href="@Url.Action("detalleauto", "transportacion", new { id = IDVehiculo })">@locale.GetResourceSeccion("verMas")</a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                }
+                                                if (Menu.TablaVehiculo.Rows.Count >= 3)
+                                                {
+                                                <li class="col-md-3 col-sm-4 links">
+                                                    <div class="img-div clear-top">
+                                                        <img src="@Html.Raw(Html.Encode(Menu.TablaVehiculo.Rows[2]["UrlImagen"].ToString().Replace("~", "")))" title="@Menu.TablaVehiculo.Rows[2]["title"]" alt="@Menu.TablaVehiculo.Rows[2]["alt"]">
+                                                        <div class="overlay">
+                                                            <h5>@Menu.TablaVehiculo.Rows[2]["descripcion"]</h5>
+                                                            @{string IDVehiculo = Menu.TablaVehiculo.Rows[2]["nombre_pagina"].ToString();}
+                                                            <a href="@Url.Action("detalleauto", "transportacion", new { id = IDVehiculo })">@locale.GetResourceSeccion("verMas")</a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                }
+                                               }
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </li>
+                                    <li class="dropdown mega">
+                                        <a class="dropdown-toggle" href="@Url.Action("Index", "Promociones")"><i class="fa fa-suitcase"></i>@locale.GetResource("promocion")<i class="fa fa-caret-down"></i></a>
+                                        <ul class="dropdown-menu mega-menu">
+                                            <li class="col-md-3 col-sm-3 desc">
+                                                @{
+                                                    if (Menu.tablaDatosGenerales.Rows[0]["Promociones"] != "")
+                                                    {
+                                                        string Promo = Menu.tablaDatosGenerales.Rows[0]["Promociones"].ToString();
+                                                        string[] NombrePromo = Regex.Split(Promo, "\r\n");
+                                                        if (NombrePromo != null)
+                                                        {
+                                                            int totalPromo = NombrePromo.Count();
+                                                            if (totalPromo >= 1)
+                                                            {
+                                                                <h4>@Html.Raw(NombrePromo[0])</h4>
+                                                            }
+                                                            if (NombrePromo.Length >= 2)
+                                                            {
+                                                                <p>@Html.Raw(NombrePromo[1])</p>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            </li>
+                                            <div class="col-md-9">
+
+                                               <div class="row">
+                                                    @{
+                                                        if (Menu.TablaPromociones.Rows.Count >= 1)
+                                                        {
+                                                       <li class="col-md-4 col-sm-4 links">
+                                                           <div class="img-div clear-top">
+                                                               <img src="@Html.Raw(Html.Encode(Menu.TablaPromociones.Rows[0]["pathMul"].ToString().Replace("~", "")))" title="@Menu.TablaPromociones.Rows[0]["title"]" alt="@Menu.TablaPromociones.Rows[0]["alt"]">
+                                                               <div class="overlay">
+                                                                   <h5>@Menu.TablaPromociones.Rows[0]["Promocion"]</h5>
+                                                                   @{string IDPromocion = Menu.TablaPromociones.Rows[0]["nombre_pagina"].ToString();}
+                                                                   <a href="@Url.Action("detallepromocion", "Promociones", new { id = IDPromocion })">@locale.GetResourceSeccion("verMas")</a>
+                                                               </div>
+                                                           </div>
+                                                       </li>
+                                                        }
+                                                        if (Menu.TablaPromociones.Rows.Count >= 2)
+                                                        {
+                                                       <li class="col-md-4 col-sm-4 links">
+                                                           <div class="img-div clear-top">
+                                                               <img src="@Html.Raw(Html.Encode(Menu.TablaPromociones.Rows[1]["pathMul"].ToString().Replace("~", "")))" title="@Menu.TablaPromociones.Rows[1]["title"]" alt="@Menu.TablaPromociones.Rows[1]["alt"]">
+                                                               <div class="overlay">
+                                                                   <h5>@Menu.TablaPromociones.Rows[1]["Promocion"]</h5>
+                                                                   @{string IDPromocion = Menu.TablaPromociones.Rows[1]["nombre_pagina"].ToString();}
+                                                                   <a href="@Url.Action("detallepromocion", "Promociones", new { id = IDPromocion })">@locale.GetResourceSeccion("verMas")</a>
+                                                               </div>
+                                                           </div>
+                                                       </li>
+                                                        }
+                                                        if (Menu.TablaPromociones.Rows.Count >= 3)
+                                                        {
+                                                       <li class="col-md-4 col-sm-4 links">
+                                                           <div class="img-div clear-top">
+                                                               <img src="@Html.Raw(Html.Encode(Menu.TablaPromociones.Rows[2]["pathMul"].ToString().Replace("~", "")))" title="@Menu.TablaPromociones.Rows[2]["title"]" alt="@Menu.TablaPromociones.Rows[2]["alt"]">
+                                                               <div class="overlay">
+                                                                   <h5>@Menu.TablaPromociones.Rows[2]["Promocion"]</h5>
+                                                                   @{string IDPromocion = Menu.TablaPromociones.Rows[2]["nombre_pagina"].ToString();}
+                                                                   <a href="@Url.Action("detallepromocion", "Promociones", new { id = IDPromocion })">@locale.GetResourceSeccion("verMas")</a>
+                                                               </div>
+                                                           </div>
+                                                       </li>
+                                                        }
+                                                        }
+                                               </div><br />
+                                                <div class="row">
+                                                    @{ 
+                                                        if (Menu.TablaPromociones.Rows.Count >= 4)
+                                                        {
+                                                    <li class="col-md-4 col-sm-4 links">
+                                                        <div class="img-div clear-top">
+                                                            <img src="@Html.Raw(Html.Encode(Menu.TablaPromociones.Rows[3]["pathMul"].ToString().Replace("~", "")))" title="@Menu.TablaPromociones.Rows[3]["title"]" alt="@Menu.TablaPromociones.Rows[3]["alt"]">
+                                                            <div class="overlay">
+                                                                <h5>@Menu.TablaPromociones.Rows[3]["Promocion"]</h5>
+                                                                @{string IDPromocion = Menu.TablaPromociones.Rows[3]["nombre_pagina"].ToString();}
+                                                                <a href="@Url.Action("detallepromocion", "Promociones", new { id = IDPromocion })">@locale.GetResourceSeccion("verMas")</a>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                        }
+                                                        if (Menu.TablaPromociones.Rows.Count >= 5)
+                                                        {
+                                                    <li class="col-md-4 col-sm-4 links">
+                                                        <div class="img-div clear-top">
+                                                            <img src="@Html.Raw(Html.Encode(Menu.TablaPromociones.Rows[4]["pathMul"].ToString().Replace("~", "")))" title="@Menu.TablaPromociones.Rows[4]["title"]" alt="@Menu.TablaPromociones.Rows[4]["alt"]">
+                                                            <div class="overlay">
+                                                                <h5>@Menu.TablaPromociones.Rows[4]["Promocion"]</h5>
+                                                                @{string IDPromocion = Menu.TablaPromociones.Rows[4]["nombre_pagina"].ToString();}
+                                                                <a href="@Url.Action("detallepromocion", "Promociones", new { id = IDPromocion })">@locale.GetResourceSeccion("verMas")</a>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                        }
+                                                        if (Menu.TablaPromociones.Rows.Count >= 6)
+                                                        {
+                                                    <li class="col-md-4 col-sm-4 links">
+                                                        <div class="img-div clear-top">
+                                                            <img src="@Html.Raw(Html.Encode(Menu.TablaPromociones.Rows[5]["pathMul"].ToString().Replace("~", "")))" title="@Menu.TablaPromociones.Rows[5]["title"]" alt="@Menu.TablaPromociones.Rows[5]["alt"]">
+                                                            <div class="overlay">
+                                                                <h5>@Menu.TablaPromociones.Rows[5]["Promocion"]</h5>
+                                                                @{string IDPromocion = Menu.TablaPromociones.Rows[5]["nombre_pagina"].ToString();}
+                                                                <a href="@Url.Action("detallepromocion", "Promociones", new { id = IDPromocion })">@locale.GetResourceSeccion("verMas")</a>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                            }
+                                                        }
+                                                </div>
+                                                
+                                            </div>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </li>
+                                    <li class="dropdown mega">
+                                        <a class="dropdown-toggle" href="@Url.Action("Index", "Galerias")"><i class="fa fa-ship"></i>@locale.GetResource("galeria")</a>
+
+                                        <div class="clearfix"></div>
+                                    </li>
+                                    <li class="dropdown mega">
+                                        <a class="dropdown-toggle" href="@Url.Action("Index", "Blog")"><i class="fa fa-ship"></i>@locale.GetResource("blog")</a>
+
+                                        <div class="clearfix"></div>
+                                    </li>
+                                    <li class="dropdown mega">
+                                        <a class="dropdown-toggle" href="@Url.Action("Index", "Contactos")"><i class="fa fa-file"></i>@locale.GetResource("contacto")</a>
+
+                                        <div class="clearfix"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- END: NAVIGATION -->
+                        </div>
+                        <!--END: NAV-CONTAINER -->
+                    </div>
+                </div>
+                <!-- END: HEADER -->
+            </div>
+        </div>
+
+        @RenderBody()
+
+        <section id="footer">
+            <footer>
+                <div class="row main-footer-sub">
+                    @RenderSection("Newsletter", required: false)
+                </div>
+                <div class="main-footer row">
+                    @RenderSection("Piedepagina", required: false)
+                </div>
+                <div class="main-footer-nav row">
+                    <div class="container clear-padding">
+                        <div class="col-md-6 col-sm-6">
+                            <p>Copyright &copy; @DateTime.Now.Year <a href="http://www.creativasoftline.com">Creativa Softline.</a> All Rights Reserved.</p>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <p>@locale.GetResource("consulta") <a href="@Url.Action("Index", "TerminosYCondiciones")"> @locale.GetResource("terminoYcondiciones")</a></p>
+                        </div>
+                        <div class="go-up">
+                            <a href="#"><i class="fa fa-arrow-up"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </section>
+        <!-- END: FOOTER -->
+    </div>
+    <!-- END: SITE-WRAPPER -->
+    <!-- Load Scripts -->
+    <script src="@Url.Content("~/Content/Pagina/js/respond.js")"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="@Url.Content("~/Content/Pagina/plugins/rs-plugin/js/jquery.themepunch.plugins.min.js")"></script>
+    <script src="@Url.Content("~/Content/Pagina/plugins/rs-plugin/js/jquery.themepunch.revolution.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/Pagina/plugins/showbizpro/js/jquery.themepunch.plugins.min.js")"></script>
+    <script src="@Url.Content("~/Content/Pagina/plugins/owl.carousel.min.js")"></script>
+    <script src="@Url.Content("~/Content/Pagina/js/bootstrap.min.js")"></script>
+    <script src="@Url.Content("~/Content/Pagina/js/jquery-ui.min.js")"></script>
+    <script src="@Url.Content("~/Content/Pagina/js/bootstrap-select.min.js")"></script>
+    <script src="@Url.Content("~/Content/Pagina/plugins/wow.min.js")"></script>
+
+    <script type="text/javascript" src="@Url.Content("~/Content/Pagina/plugins/supersized.3.1.3.min.js")"></script>
+    <script src="@Url.Content("~/Content/Pagina/js/js.js")"></script>
+    <script src="@Url.Content("~/Content/Pagina/js/jquery.uploadPreview.min.js")"></script>
+    <script src="@Url.Content("~/Content/Pagina/js/Comentarios.js")"></script>
+    <script src="@Url.Content("~/Content/Administrador/js/bootstrap-datetimepicker.min.js")"></script>
+    <script src="@Url.Content("~/Content/Pagina/js/Sucribirte.js")"></script>
+    @RenderSection("scriptF", required: false)
+    <script type="text/javascript">
+        window.$zopim||(function(d,s){var z=$zopim=function(c){z._.push(c)},$=z.s=
+        d.createElement(s),e=d.getElementsByTagName(s)[0];z.set=function(o){z.set.
+        _.push(o)};z._=[];z.set._=[];$.async=!0;$.setAttribute('charset','utf-8');
+        $.src='//v2.zopim.com/?27VnJih35uHMb41nA7RCk2yhlYCrTz03';z.t=+new Date;$.
+        type='text/javascript';e.parentNode.insertBefore($,e)})(document,'script');
+    </script>
+    <!--End of Zopim Live Chat Script-->
+    <script type='text/javascript'>
+        function toddmmyyyy(d) {
+            var yyyy = d.getFullYear().toString();
+            var mm = (d.getMonth() + 101).toString().slice(-2);
+            var dd = (d.getDate() + 101).toString().slice(-2);
+            return dd + "/" + mm + "/" + yyyy;
+        }
+        $(function () {
+            var today = new Date();
+            $('#datetimepicker1').datetimepicker({
+                format: "dd/MM/yyyy",
+                startDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+                useCurrent: false
+            }).change(dateChanged1)
+            .on('changeDate', dateChanged1);
+            function dateChanged1(e) {
+            }
+            $('#datetimepicker2').datetimepicker({
+                format: "dd/MM/yyyy",
+                startDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+                useCurrent: false
+            }).change(dateChanged2)
+            .on('changeDate', dateChanged2);
+            function dateChanged2(e) {
+            }
+            $('#timepicker1').datetimepicker({
+                pickDate: false,
+                format: "hh:mm"
+            });
+            $('#timepicker2').datetimepicker({
+                pickDate: false,
+                format: "hh:mm"
+            });
+        });
+        //jQuery(document).ready(function () {
+        //    jQuery('.showbiz-container').showbizpro({
+        //        dragAndScroll: "on",
+        //        visibleElementsArray: [4, 3, 2, 1]
+        //    });
+        //});
+        var revapi;
+        jQuery(document).ready(function () {
+            revapi = jQuery('.tp-banner-full-width').revolution(
+                {
+                    delay: 9000,
+                    startwidth: 1170,
+                    startheight: 650,
+                    hideThumbs: 10,
+                    navigationType: "none",
+                    fullWidth: "on",
+                    forceFullWidth: "on"
+                });
+        });
+
+        $(document).ready(function () {
+            var qnthometour = $('.hometour').length;
+            setInterval(function () {
+                i = 0;
+                while (i < qnthometour) {
+                    var titleimghometourheight = $(".hometour-" + i + " .titleimghometour").height();
+                    var dateDiahometourheight = $(".hometour-" + i + " .dateDiahometour").height();
+                    $(".hometour-" + i + " .descriptionhometour").css({
+                        "height": titleimghometourheight - dateDiahometourheight - 75
+                    });
+                    var tabshometourheight = $(".hometour-" + i + " .tabshometour").height();
+                    var footerhometourheight = $(".hometour-" + i + " .footerhometour").height();
+                    $(".hometour-" + i + " .listhometour").css({
+                        "height": tabshometourheight - footerhometourheight
+                    });
+                    i++;
+                }
+            }, 0);
+        });
+        $(document).ready(function () {
+            $(".hometabs").tabs();
+            $(".hometabs, .tooltip").tooltip({ position: { my: "top+0 top-75", at: "center center" } });
+        });
+
+    </script>
+    <script>
+        function EstadoP(Estado) {
+            $.ajax({
+                url: "/Home/Estado",
+                data: { IdEstado: Estado },
+                dataType: "json",
+                type: "POST",
+                success: function (resultado) {
+                    if (resultado == "OK") {
+                        location.reload();
+                    }
+                }
+            });
+        }
+        function changeLocale(lang) {
+            $.ajax({
+                url: "/Home/CambiarIdioma",
+                data: { lang: lang },
+                dataType: "json",
+                type: "POST",
+                success: function (resultado) {
+                    if (resultado == "OK") {
+                        location.reload();
+                    }
+                }
+            });
+        }
+        function logoutCliente() {
+            $.ajax({
+                url: "/Home/MatarSessionCliente",
+                dataType: "json",
+                type: "POST",
+                success: function (resultado) {
+                    if (resultado == "OK") {
+                        location.reload();
+                    }
+                }
+            });
+        }
+        function regresarASecciones() {
+            $.ajax({
+                url: "/Home/MatarSession",
+                dataType: "json",
+                type: "POST",
+                success: function (resultado) {
+                    if (resultado == "OK") {
+                        window.location = "/";
+                    }
+                }
+            });
+        }
+        function irASeccion(idSeccion) {
+            $.ajax({
+                url: "/Home/IrASeccion",
+                data: { id_seccion: idSeccion },
+                dataType: "json",
+                type: "POST",
+                success: function (resultado) {
+                    if (resultado == "OK") {
+                        location.href = "/";
+                    }
+                }
+            });
+        }
+    </script>
+    @RenderSection("scriptGaleria", required: false)
+</body>
+</html>

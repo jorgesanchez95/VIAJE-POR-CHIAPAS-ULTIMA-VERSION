@@ -1,0 +1,538 @@
+﻿@using System.Data
+@using System.Text.RegularExpressions
+@using CreativaSl.Web.ViajesPorChiapas.Resources
+@model CreativaSl.Web.ViajesPorChiapas.Models.TransportacionModels
+@{
+    Localizate locale = new Localizate();
+}
+@{
+    ViewBag.Title = "DetalleAuto";
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+
+<div class="row page-title page-title3">
+    <div class="container clear-padding text-center">
+        <h3>Renta de Vehículos</h3>
+        <h4>
+            @Model.tablaVehiculos.Rows[0]["descripcion"].ToString()
+        </h4>
+
+    </div>
+</div>
+<!-- END: PAGE TITLE -->
+<!-- START: CAR GALLERY -->
+<div class="row hotel-detail">
+    <div class="container">
+
+        <div class="col-md-8 clear-padding">
+            <div id="gallery" class="carousel slide" data-ride="carousel">
+
+                <div class="carousel-inner" role="listbox">
+                    <div class="item active">
+                        <img src="@Model.tablaVehiculos.Rows[0]["UrlImagen"].ToString().Replace("~", "")" alt="@Model.tablaVehiculos.Rows[0]["alt"].ToString()">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+            <div class="review sidebar-item">
+                <h4><i class="fa fa-edit"></i> Descripción</h4>
+                <div class="sidebar-item-body text-center">
+
+                    <div class="guest-say rating-box">
+                        <h2><i class="fa fa-check-circle"></i> @Model.tablaVehiculos.Rows[0]["descripcion"].ToString()</h2>
+                        <div>
+                            <h3>@Model.tablaVehiculos.Rows[0]["Detalles"].ToString()</h3>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<div class="row product-complete-info">
+    <div class="container">
+        <div class="main-content col-md-8 clear-padding">
+            <div class="room-complete-detail">
+                <div class="tab-content">
+                    <div id="overview" class="tab-pane active in fade">
+                        <h4 class="tab-heading">Detalle de auto</h4>
+                        <div class="car-overview col-md-3 col-sm-4 col-xs-6"><i class="fa fa-tint"></i>@Model.tablaVehiculos.Rows[0]["combustible"].ToString()</div>
+                        <div class="car-overview col-md-3 col-sm-4 col-xs-6"><i class="fa fa-dashboard"></i>@Model.tablaVehiculos.Rows[0]["tramision"].ToString()</div>
+                        <div class="car-overview col-md-3 col-sm-4 col-xs-6"><i class="fa fa-users"></i>@Model.tablaVehiculos.Rows[0]["numPersona"].ToString() Personas</div>
+                        <div class="car-overview col-md-3 col-sm-4 col-xs-6"><i class="fa fa-taxi"></i>@Model.tablaVehiculos.Rows[0]["numPuertas"].ToString() Puertas</div>
+                        
+                        <div class="clearfix"></div><br /><br />
+                        <div id="write-review" class="tab-pane fade active in">
+                            <h4 class="tab-heading">@Html.Raw(locale.GetResourceTransportacion("cotizarTransportacion"))</h4>
+                            <div class="passenger-detail">
+                                <h3>@Html.Raw(locale.GetResourceTransportacion("nombrePaquete"))</h3>
+                                <div class="passenger-detail-body">
+                                    @using (Html.BeginForm("Index", "Transportacion", FormMethod.Post, new { id = "form_transportacion", @class = "form-horizontal" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true)
+                            <div class="col-md-6 ol-sm-6 col6_form">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("nombre"))</label>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.nombreCotizar, new { id = "nombreCotizar", @class = "form-control" })
+                                    <span class="input-group-addon cotizar-form"><i class="fa fa-user fa-fw"></i></span>
+                                </div>
+                               
+                                @Html.ValidationMessageFor(model => model.nombreCotizar)
+                            </div>
+                            <div class="col-md-6 ol-sm-6 col6_form">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("apellidoPaterno"))</label>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.apellidoPaternoCotizar, new { id = "apellidoPaternoCotizar", @class = "form-control" })
+                                    <span class="input-group-addon cotizar-form"><i class="fa fa-user fa-fw"></i></span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.apellidoPaternoCotizar)
+                            </div>
+                            <div class="col-md-6 ol-sm-6 col6_form">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("apellidoMaterno"))</label>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.apellidoMaternoCotizar, new { id = "apellidoMaternoCotizar", @class = "form-control" })
+                                    <span class="input-group-addon cotizar-form"><i class="fa fa-user fa-fw"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 ol-sm-6 col6_form">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("email"))</label>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.emailCotizar, new { id = "emailCotizar", @class = "form-control" })
+                                    <span class="input-group-addon cotizar-form"><i class="fa fa-envelope fa-fw"></i></span>
+                                </div>
+                                
+                                @Html.ValidationMessageFor(model => model.emailCotizar)
+                            </div>
+                            <div class="row">
+                            <div class="col-md-6 ol-sm-6 col6_form">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("telefono"))</label>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.telefonoCotizar, new { id = "telefonoCotizar", @class = "form-control" })
+                                    <span class="input-group-addon cotizar-form"><i class="fa fa-phone fa-fw"></i></span>
+                                </div>
+                               
+                                @Html.ValidationMessageFor(model => model.telefonoCotizar)
+                            </div>
+                            <div class="col-md-6 ol-sm-6 col6_form">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("tipoCarro"))</label>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.id_vehiculo, new { id = "nombrevehiculo", @class = "form-control", ReadOnly = "true", Value = @Model.tablaVehiculos.Rows[0]["descripcion"].ToString() })
+                                    <span class="input-group-addon cotizar-form"><i class="fa fa-car fa-fw"></i></span>
+                                </div>
+                                
+                                @Html.ValidationMessageFor(model => model.id_vehiculo)
+                            </div>
+                                </div>
+                            <div class="col-md-6 ol-sm-6 col6_form">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("fechaLlegada"))</label>
+                                <div id="datetimepicker1" class="input-append date calendar">
+                                    @Html.TextBoxFor(model => model.fechaLlegadaCotizar, "{0:dd/MM/yyyy}", new { id = "fechaLlegadaCotizar", @class = "form-control calendarFecha", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(model => model.fechaLlegadaCotizar)
+                                    <span class="add-on">
+                                        <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 ol-sm-6 col6_form">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("fechaSalida"))</label>
+                                <div id="datetimepicker2" class="input-append date calendar">
+                                    @Html.TextBoxFor(model => model.fechaSalidaCotizar, "{0:dd/MM/yyyy}", new { id = "fechaSalidaCotizar", @class = "form-control calendarFecha", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(model => model.fechaSalidaCotizar)
+                                    <span class="add-on">
+                                        <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 ol-sm-6 col6_form">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("horaLlegada"))</label>
+                                <div id="timepicker1" class="input-append time">
+                                    @Html.TextBoxFor(model => model.horaLlegadaCotizar, new { id = "horaLlegadaCotizar", @class = "form-control calendarFecha", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(model => model.horaLlegadaCotizar)
+                                    <span class="add-on">
+                                        <i data-time-icon="icon-time" data-date-icon="icon-time"></i>
+                                    </span>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 ol-sm-6 col6_form">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("horaSalida"))</label>
+                                <div id="timepicker2" class="input-append time">
+                                    @Html.TextBoxFor(model => model.horaSalidaCotizar, new { id = "horaSalidaCotizar", @class = "form-control calendarFecha", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(model => model.horaSalidaCotizar)
+                                    <span class="add-on">
+                                        <i data-time-icon="icon-time" data-date-icon="icon-time"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 ol-sm-6 col6_form" style="display:none">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("numeroPersonas"))</label>
+                                @Html.DropDownListFor(model => model.numeroPersonasCotizar, new SelectListItem[]
+                                            {
+                                                new SelectListItem() {Text = "1", Value = "1", Selected = true},
+                                                new SelectListItem() {Text = "2", Value = "2"},
+                                                new SelectListItem() {Text = "3", Value = "3"},
+                                                new SelectListItem() {Text = "4", Value = "4"},
+                                                new SelectListItem() {Text = "5", Value = "5"},
+                                                new SelectListItem() {Text = "6", Value = "6"},
+                                                new SelectListItem() {Text = "7", Value = "7"},
+                                                new SelectListItem() {Text = "8", Value = "8"},
+                                                new SelectListItem() {Text = "9", Value = "9"},
+                                                new SelectListItem() {Text = "10", Value = "10"},
+                                                new SelectListItem() {Text = "11", Value = "11"},
+                                                new SelectListItem() {Text = "12", Value = "12"},
+                                                new SelectListItem() {Text = "13", Value = "13"},
+                                                new SelectListItem() {Text = "14", Value = "14"},
+                                                new SelectListItem() {Text = "15", Value = "15"},
+                                                new SelectListItem() {Text = "16", Value = "16"},
+                                                new SelectListItem() {Text = "17", Value = "17"},
+                                                new SelectListItem() {Text = "18", Value = "18"},
+                                                new SelectListItem() {Text = "19", Value = "19"},
+                                                new SelectListItem() {Text = "20", Value = "20"},
+                                                new SelectListItem() {Text = "21", Value = "21"},
+                                                new SelectListItem() {Text = "22", Value = "22"},
+                                                new SelectListItem() {Text = "23", Value = "23"},
+                                                new SelectListItem() {Text = "24", Value = "24"},
+                                                new SelectListItem() {Text = "25", Value = "25"},
+                                                new SelectListItem() {Text = "26", Value = "26"},
+                                                new SelectListItem() {Text = "27", Value = "27"},
+                                                new SelectListItem() {Text = "28", Value = "28"},
+                                                new SelectListItem() {Text = "29", Value = "29"},
+                                                new SelectListItem() {Text = "30", Value = "30"},
+                                                new SelectListItem() {Text = "31", Value = "31"},
+                                                new SelectListItem() {Text = "32", Value = "32"},
+                                                new SelectListItem() {Text = "33", Value = "33"},
+                                                new SelectListItem() {Text = "34", Value = "34"},
+                                                new SelectListItem() {Text = "35", Value = "35"},
+                                                new SelectListItem() {Text = "36", Value = "36"},
+                                                new SelectListItem() {Text = "37", Value = "37"},
+                                                new SelectListItem() {Text = "38", Value = "38"},
+                                                new SelectListItem() {Text = "39", Value = "39"},
+                                                new SelectListItem() {Text = "40", Value = "40"},
+                                                new SelectListItem() {Text = "41", Value = "41"},
+                                                new SelectListItem() {Text = "42", Value = "42"},
+                                                new SelectListItem() {Text = "43", Value = "43"},
+                                                new SelectListItem() {Text = "44", Value = "44"},
+                                                new SelectListItem() {Text = "45", Value = "45"},
+                                                new SelectListItem() {Text = "46", Value = "46"},
+                                                new SelectListItem() {Text = "47", Value = "47"},
+                                                new SelectListItem() {Text = "48", Value = "48"},
+                                                new SelectListItem() {Text = "49", Value = "49"},
+                                                new SelectListItem() {Text = "50", Value = "50"}
+                                            }, new { id = "numeroPersonasCotizar", @class = "form-control" })
+                            </div>
+                            <div class="col-md-6 ol-sm-6 col6_form" style="display:none">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("numeroAdultos"))</label>
+                                @Html.DropDownListFor(model => model.numeroAdultoCotizar, new SelectListItem[]
+                                            {
+                                                new SelectListItem() {Text = "1", Value = "1", Selected = true}
+                                            }, new { id = "numeroAdultoCotizar", @class = "form-control" })
+                            </div>
+                            <div class="col-md-6 ol-sm-6 col6_form" style="display:none">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("menores511"))</label>
+                                @Html.DropDownListFor(model => model.numeroNiños511Cotizar, new SelectListItem[]
+                                            {
+                                            }, new { id = "numeroNiños511Cotizar", @class = "form-control" })
+                            </div>
+                            <div class="col-md-6 ol-sm-6 col6_form" style="display:none">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("menores14"))</label>
+                                @Html.DropDownListFor(model => model.numeroNiños14Cotizar, new SelectListItem[]
+                                            {
+                                            }, new { id = "numeroNiños14Cotizar", @class = "form-control" })
+                            </div>
+                            <div class="col-md-12" style="display:none">
+                                <p id="estatus_numpersonas" style="height:auto; margin-top:40px; font-size:15px; color:white; text-align:center; font-weight:bold;   line-height:35px; background-color:orange"></p>
+                            </div>
+                            <div class="col-md-12">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("detalleServicio"))</label>
+                                @Html.TextAreaFor(model => model.observacionesCotizar, new { id = "observacionesCotizar", @class = "form-control text-area-g", @rows = "4" })
+                                @Html.ValidationMessageFor(model => model.observacionesCotizar)
+                            </div>
+                            <div class="col-md-12">
+                                <label>@Html.Raw(locale.GetResourceTransportacion("termin24Horas"))</label>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit">@Html.Raw(locale.GetResourceTransportacion("reserv"))<i class="fa fa-chevron-right"></i></button>
+                            </div>
+                        }
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-md-4 hotel-detail-sidebar clear-padding">
+                    <div class="col-md-12 sidebar-wrapper clear-padding">
+                        <div class="contact sidebar-item">
+                            <h4 class="text-center"><i class="fa fa-info-circle"></i> Asistencia </h4>
+                            <div class="sidebar-item-body text-center">
+                                <h5 class="text-center">¿Necesitas ayuda?</h5>
+                                <h5 class="text-center"><i class="fa fa-phone"></i> @Model.tablaDatosGenerales.Rows[0]["telefono"].ToString()</h5>
+                                <h5 class="text-center"><i class="fa fa-envelope-o"></i> <a href="mailto:@Model.tablaDatosGenerales.Rows[0]["telefono"].ToString()">Envia correo</a></h5>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                @{
+                    if (Model.tablaDatosGenerales.Rows[0]["descripcionTransportacion"] != "")
+                    {
+                        string Paquete = Model.tablaDatosGenerales.Rows[0]["descripcionTransportacion"].ToString();
+                        string[] NombrePa = Regex.Split(Paquete, "\r\n");
+                        if (NombrePa != null)
+                        {
+                            int totalNombre = NombrePa.Count();
+                            if (totalNombre >= 1)
+                            {
+                                <h4 class="tab-heading">@Html.Raw(NombrePa[0])</h4>
+                            }
+                            if (NombrePa.Length >= 2)
+                            {
+                                <p>@Html.Raw(NombrePa[1])</p>
+                            }
+                        }
+                    }
+                }
+
+
+            </div>
+</div>
+@section Newsletter{
+    <div class="container clear-padding">
+        <div class="col-md-7 col-sm-7">
+            <div class="progressbar fade-right animate1">
+                @{
+                    string newletter = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("newsletter")].ToString();
+                    string[] newsletter = Regex.Split(newletter, "\r\n");
+                    if (newsletter != null)
+                    {
+                        int totalnewsletter = newsletter.Count();
+                        if (totalnewsletter >= 1)
+                        {
+                            <p class="NL">@Html.Raw(newsletter[0])</p>
+                        }
+                        if (totalnewsletter >= 2)
+                        {
+                            <p>@Html.Raw(newsletter[1])</p>
+                        }
+                    }
+                }
+            </div>
+            <form>
+                <div class="col-md-9 col-sm-8 col-xs-6 clear-padding">
+                    <input type="text" id="correoSuscribirse" class="form-control" required />
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 clear-padding">
+                    <button type="button" id="btnSuscribirse"><i class="fa fa-paper-plane"></i> @locale.GetResourceSeccion("suscribirse")</button>
+                </div>
+                <p id="msg_newsletter" style="font-size: 25px;"></p>
+            </form>
+        </div>
+        <div class="col-md-5 col-sm-5">
+            <div class="social-media pull-right">
+                <ul>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["facebook"])"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["twitter"])"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["instagram"])"><i class="fa fa-instagram"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["google"])"><i class="fa fa-google-plus"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["youtube"])"><i class="fa fa-youtube"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+@section Piedepagina{
+    <div class="container clear-padding">
+        <div class="col-md-3 col-sm-6 about-box">
+            @{
+                string pieAcerca = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("pieAcerca")].ToString();
+                string[] pieAcercas = Regex.Split(pieAcerca, "\r\n");
+                if (pieAcercas != null)
+                {
+                    int totalPie = pieAcercas.Count();
+                    if (totalPie >= 1)
+                    {
+                        <h3>@Html.Raw(pieAcercas[0])</h3>
+                    }
+                    if (totalPie >= 2)
+                    {
+                        <p class="descripcion">@Html.Raw(pieAcercas[1])</p>
+                    }
+                }
+            }
+        </div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Popular")</h4>
+            <ul>
+                @foreach (DataRow PaquetPulares in Model.TablaPaquetesPopulares.Rows)
+                {
+                    string id = PaquetPulares["nombre_pagina"].ToString();
+                    <li><a href="@Url.Action("DetallePaquete", "Paquetes", new { id = id })">@Html.Raw(PaquetPulares["nombre"])</a></li>
+                }
+            </ul>
+        </div>
+        <div class="clearfix visible-sm-block"></div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Servicio")</h4>
+            <ul>
+                <li><a href="@Url.Action("Index", "Home")">@locale.GetResource("inicio")</a></li>
+                <li class="activo"><a href="@Url.Action("Index", "Transportacion")">@locale.GetResource("transportacion")</a></li>
+                <li><a href="@Url.Action("Index", "Promociones")">@locale.GetResource("promocion")</a></li>
+                <li><a href="@Url.Action("Index", "Galerias")">@locale.GetResource("galeria")</a></li>
+                <li><a href="@Url.Action("Index", "Blog")">@locale.GetResource("blog")</a></li>
+                <li><a href="@Url.Action("Index", "Contactos")">@locale.GetResource("contacto")</a></li>
+                <li><a href="@Url.Action("Index", "Recomendaciones")">@locale.GetResource("recomendaciones")</a></li>
+            </ul>
+        </div>
+        <div class="col-md-3 col-sm-6 contact-box">
+            <h4>@locale.GetResourceSeccion("contacto")</h4>
+            <p>
+                <i class="fa fa-home"></i>@locale.GetResourceSeccion("direccion"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["direccion"])
+            </p>
+            <p><i class="fa fa-phone"></i>@locale.GetResourceSeccion("telefono"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["telefono"])</p>
+            <p><i class="fa fa-envelope-o"></i>@locale.GetResourceSeccion("correo"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["correo"])</p>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12 text-center we-accept">
+            <h4>@locale.GetResourceSeccion("pago")</h4>
+            <ul>
+                @foreach (DataRow FormasPago in Model.TablaFormasDePago.Rows)
+                {
+                    <li><img class="formas-pago" src="@Html.Raw(Html.Encode(FormasPago["imagen"].ToString().Replace("~", "")))" alt="@Html.Raw(FormasPago["alt"].ToString())" title="@Html.Raw(FormasPago["title"].ToString())"></li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+@section scriptF{
+    <script>
+        var validacionLoad1 = 0;
+        var validacionLoad2 = 0;
+
+        var numeroPersonasCotizar = 0;
+        var numeroAdultoCotizar = 0;
+        var numeroNiños511Cotizar = 0;
+        var numeroNiños14Cotizar = 0;
+        $(document).ready(function () {
+            $("#numeroPersonasCotizar").change(function () {
+                numeroPersonasCotizar = parseInt($("#numeroPersonasCotizar").val());
+               // $("#numeroAdultoCotizar").empty();
+                $("#numeroNiños511Cotizar").empty();
+                $("#numeroNiños14Cotizar").empty();
+                for (var j = 0; j < (numeroPersonasCotizar + 1) ; j++) {
+                    $('#numeroAdultoCotizar').append($('<option>', { value: j, text: j }));
+                    $('#numeroNiños511Cotizar').append($('<option>', { value: j, text: j }));
+                    $('#numeroNiños14Cotizar').append($('<option>', { value: j, text: j }));
+                }
+                $("#numeroAdultoCotizar").val = 0;
+                $("#numeroNiños511Cotizar").val = 0;
+                $("#numeroNiños14Cotizar").val = 0;
+                $("#numeroAdultoCotizar").trigger("change");
+                $("#numeroNiños511Cotizar").trigger("change");
+                $("#numeroNiños14Cotizar").trigger("change");
+            });
+            $("#numeroAdultoCotizar").change(function () {
+                NumPersonasLimite();
+            });
+            $("#numeroNiños511Cotizar").change(function () {
+                NumPersonasLimite();
+            });
+            $("#numeroNiños14Cotizar").change(function () {
+                NumPersonasLimite();
+            });
+            function float2int(value) {
+                return value | 0;
+            }
+            $("#form_transportacion").submit(function (e) {
+                numeroPersonasCotizar = parseInt($("#numeroPersonasCotizar").val());
+                numeroAdultoCotizar = parseInt($("#numeroAdultoCotizar").val());
+                numeroNiños511Cotizar = parseInt($("#numeroNiños511Cotizar").val());
+                numeroNiños14Cotizar = parseInt($("#numeroNiños14Cotizar").val());
+                if (numeroPersonasCotizar > (numeroAdultoCotizar + numeroNiños511Cotizar + numeroNiños14Cotizar)) {
+                    $("#estatus_numpersonas").css('background-color', 'red');
+                    $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizarTours("numeroPersonaMenorSolicitada"))');
+                }
+                else if (numeroPersonasCotizar < (numeroAdultoCotizar + numeroNiños511Cotizar + numeroNiños14Cotizar)) {
+                    $("#estatus_numpersonas").css('background-color', 'red');
+                    $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizarTours("numeroPersonaMayorSolicitada"))');
+                }
+                else {
+                    $("#estatus_numpersonas").css('background-color', 'green');
+                    $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizarTours("numeroPersonasCorrectas"))');
+                    return true;
+                }
+                return false;
+            });
+            $("#BoletoCotizar").change(function () {
+                var aux = 0;
+                aux = $("#BoletoCotizar").val();
+                if (aux == "true") {
+                    $('#aeropuertollegada_div').show();
+                    $('#aeropuertosalida_div').show();
+                }
+                else {
+                    $('#aeropuertollegada_div').hide();
+                    $('#aeropuertosalida_div').hide();
+                }
+            });
+            $("#numeroPersonasCotizar").val = "1";
+            $("#numeroPersonasCotizar").trigger("change");
+            $("#numeroHabitacionesCotizar").trigger("change");
+            $("#BoletoCotizar").trigger("change");
+            function NumPersonasLimite() {
+                var numeroAdultoCotizar = 0;
+                var numeroNiños511Cotizar = 0;
+                var numeroNiños14Cotizar = 0;
+                numeroAdultoCotizar = parseInt($("#numeroAdultoCotizar").val());
+                numeroNiños511Cotizar = parseInt($("#numeroNiños511Cotizar").val());
+                numeroNiños14Cotizar = parseInt($("#numeroNiños14Cotizar").val());
+                if (numeroPersonasCotizar > (numeroAdultoCotizar + numeroNiños511Cotizar + numeroNiños14Cotizar)) {
+                    if (validacionLoad1 < 3) {
+                        $("#estatus_numpersonas").css('background-color', 'orange');
+                        $("#estatus_numpersonas").css('color', 'white');
+                        $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizarTours("validacionLoad1"))');
+                        validacionLoad1 = validacionLoad1 + 1;
+                    }
+                    else {
+                        $("#estatus_numpersonas").css('background-color', 'red');
+                        $("#estatus_numpersonas").css('color', 'white');
+                        $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizarTours("numeroPersonaMenorSolicitada"))');
+                    }
+                }
+                else if (numeroPersonasCotizar < (numeroAdultoCotizar + numeroNiños511Cotizar + numeroNiños14Cotizar)) {
+                    if (validacionLoad1 < 3) {
+                        $("#estatus_numpersonas").css('background-color', 'orange');
+                        $("#estatus_numpersonas").css('color', 'white');
+                        $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizarTours("validacionLoad1"))');
+                        validacionLoad1 = validacionLoad1 + 1;
+                    }
+                    else {
+                        $("#estatus_numpersonas").css('background-color', 'red');
+                        $("#estatus_numpersonas").css('color', 'white');
+                        $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizarTours("numeroPersonaMayorSolicitada"))');
+                    }
+                }
+                else {
+                    $("#estatus_numpersonas").css('background-color', 'green');
+                    $("#estatus_numpersonas").css('color', 'white');
+                    $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizarTours("numeroPersonasCorrectas"))');
+                }
+            }
+        });
+        $(document).ready(function () {
+            jQuery.validator.methods["date"] = function (value, element) { return true; }
+        });
+    </script>
+
+}

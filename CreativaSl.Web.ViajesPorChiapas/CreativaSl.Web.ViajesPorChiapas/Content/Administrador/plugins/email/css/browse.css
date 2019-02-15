@@ -1,0 +1,12 @@
+﻿        .progressbar {
+            width:300px;
+            height:21px;
+        }
+        .progressbarlabel {
+            color: lawngreen;
+            width:300px;
+            height:21px;
+            position:absolute;
+            text-align:center;
+            font-size:small;
+        }

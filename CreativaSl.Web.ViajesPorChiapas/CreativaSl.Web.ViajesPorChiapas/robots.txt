@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /Content
+Disallow: /Scripts
+Disallow: /admin
+Disallow: /Admin
+Sitemap: http://www.viajeporchiapas.com/sitemap.xml

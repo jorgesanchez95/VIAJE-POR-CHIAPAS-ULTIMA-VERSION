@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="armarPaquete" xml:space="preserve">
+    <value>Create VIP package</value>
+  </data>
+  <data name="armarPaqueteVIP" xml:space="preserve">
+    <value>WE OFFER SERVICE VIP PACKAGES WHERE YOU DECIDE TO VISIT YOU AND ALL THE FEATURES OF YOUR TRIP TO EXPERIENCE UNIQUE AND UNFORGETTABLE</value>
+  </data>
+  <data name="cotizar" xml:space="preserve">
+    <value>Quote</value>
+  </data>
+  <data name="descripcion" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="descripcionIGet" xml:space="preserve">
+    <value>descripcionIngles</value>
+  </data>
+  <data name="descripcionPGet" xml:space="preserve">
+    <value>descripcionIngles</value>
+  </data>
+  <data name="desde" xml:space="preserve">
+    <value>Since</value>
+  </data>
+  <data name="detallePaquete" xml:space="preserve">
+    <value>Detail Package</value>
+  </data>
+  <data name="detalles" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="detalleTour" xml:space="preserve">
+    <value>Details Tour</value>
+  </data>
+  <data name="dias" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="incluye" xml:space="preserve">
+    <value>Includes</value>
+  </data>
+  <data name="incluyeGet" xml:space="preserve">
+    <value>incluye_ingles</value>
+  </data>
+  <data name="itinerario" xml:space="preserve">
+    <value>Itinerary</value>
+  </data>
+  <data name="mapa" xml:space="preserve">
+    <value>Map</value>
+  </data>
+  <data name="necesitaAsistencia" xml:space="preserve">
+    <value>Need Assistance</value>
+  </data>
+  <data name="noches" xml:space="preserve">
+    <value>Nights</value>
+  </data>
+  <data name="noIncluye" xml:space="preserve">
+    <value>not Included</value>
+  </data>
+  <data name="noIncluyeGet" xml:space="preserve">
+    <value>noincluye_ingles</value>
+  </data>
+  <data name="nombreGET" xml:space="preserve">
+    <value>nombreIngles</value>
+  </data>
+  <data name="nombrePGET" xml:space="preserve">
+    <value>nombreIngles</value>
+  </data>
+  <data name="nuestroEmail" xml:space="preserve">
+    <value>Our Email</value>
+  </data>
+  <data name="observaciones" xml:space="preserve">
+    <value>Observations</value>
+  </data>
+  <data name="observacionesGet" xml:space="preserve">
+    <value>observacionesIngles</value>
+  </data>
+  <data name="paquetes" xml:space="preserve">
+    <value>Packages</value>
+  </data>
+  <data name="persona" xml:space="preserve">
+    <value>Person</value>
+  </data>
+  <data name="preguntar" xml:space="preserve">
+    <value>Ask</value>
+  </data>
+  <data name="puedeContactarnos" xml:space="preserve">
+    <value>You can contact us from 09:00 a.m to 08:00 p.m. to</value>
+  </data>
+  <data name="recomendaciones" xml:space="preserve">
+    <value>Recommendations</value>
+  </data>
+  <data name="recomendacionesGet" xml:space="preserve">
+    <value>recomendaciones_ingles</value>
+  </data>
+  <data name="tours" xml:space="preserve">
+    <value>Tours</value>
+  </data>
+  <data name="y" xml:space="preserve">
+    <value>and</value>
+  </data>
+  <data name="PaqueteViP" xml:space="preserve">
+    <value>Do you want to quote an exclusive package?</value>
+  </data>
+  <data name="Fin" xml:space="preserve">
+    <value>End of service</value>
+  </data>
+  <data name="finservicio" xml:space="preserve">
+    <value>findeservicios_ingles</value>
+  </data>
+  <data name="Observa" xml:space="preserve">
+    <value>Observations</value>
+  </data>
+</root>

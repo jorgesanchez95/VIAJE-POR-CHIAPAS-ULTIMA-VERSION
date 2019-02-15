@@ -1,0 +1,914 @@
+﻿@using System.Data
+@using System.Text.RegularExpressions
+@using CreativaSl.Web.ViajesPorChiapas.Resources
+@model CreativaSl.Web.ViajesPorChiapas.Models.ClienteModels
+@{
+    var locale = new Localizate();
+}
+@{
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+@section metasTags{
+    @if (Model.tablaMetaTags.Rows.Count >= 1)
+    {
+        <meta charset="utf-8">
+        <title>@Html.Raw(Model.tablaMetaTags.Rows[0]["title"])</title>
+        <meta name="author" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["author"])">
+        <meta name="subject" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["subjetc"])">
+        <meta name="description" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["description"])">
+        <meta name="keywords" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["keywords"])">
+        <meta name="robots" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["robots"])">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="@Html.Raw(Model.tablaMetaTags.Rows[0]["canonical"])" />
+    }
+    else
+    {
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="author" content="">
+        <meta name="subject" content="">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="robots" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="" />
+    }
+}
+<div class="row user-profile">
+    <div class="container">
+        <div class="col-md-12 user-name">
+            @{
+                if (HttpContext.Current.Session["idCliente"] != null)
+                {
+                    <p class="nombreCuenta">Bienvenido, @Html.Raw(Session["nombreCliente"].ToString())</p>
+                }
+            }
+        </div>
+        <div class="col-md-2 col-sm-2">
+            <div class="user-profile-tabs">
+                <ul class="nav nav-tabs">
+                    @{
+                        if (Model.panginator == false)
+                        {
+                            @:
+                            <li class="active"><a data-toggle="tab" href="#profile-overview" class="text-center"><i class="fa fa-bolt"></i> <span></span></a></li>
+                            @:
+                            <li><a data-toggle="tab" href="#booking" class="text-center"><i class="fa fa-history"></i> <span>@locale.GetResourceMiCuenta("solicitud")</span></a></li>
+                            @:
+                            <li><a data-toggle="tab" href="#profile" class="text-center"><i class="fa fa-user"></i> <span>@locale.GetResourceMiCuenta("perfil")</span></a></li>
+                        }
+                        else
+                        {
+                            @:
+                            <li><a data-toggle="tab" href="#profile-overview" class="text-center"><i class="fa fa-bolt"></i> <span></span></a></li>
+                            @:
+                            <li class="active"><a data-toggle="tab" href="#booking" class="text-center"><i class="fa fa-history"></i> <span>@locale.GetResourceMiCuenta("solicitud")</span></a></li>
+                            @:
+                            <li><a data-toggle="tab" href="#profile" class="text-center"><i class="fa fa-user"></i> <span>@locale.GetResourceMiCuenta("perfil")</span></a></li>
+                        }
+                    }
+                    @{
+                        string Conexion = System.Configuration.ConfigurationManager.AppSettings.Get("strConnection");
+                        bool banEmpresa = CreativaSl.Web.ViajesPorChiapas.Models.ClienteDatos.IsEmpresa(Conexion, Session["idCliente"].ToString());
+                    }
+                    @{
+                        if (banEmpresa == true)
+                        {
+                            @:
+                            <li><a href="@Url.Action("cotizarempresa", "tours")" class="text-center"><i class="fa fa-user"></i><span>@locale.GetResourceMiCuenta("tour")</span></a></li>
+                            @:
+                            <li><a href="@Url.Action("cotizarempresa", "transportacion")" class="text-center"><i class="fa fa-user"></i><span>@locale.GetResourceMiCuenta("transportacion")</span></a></li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-10 col-sm-10">
+            <div class="tab-content">
+                @{
+                    if (Model.panginator == false)
+                    {
+                        <div id="profile-overview" class="tab-pane fade in active">
+                            <div class="col-md-12">
+                                <div class="brief-info">
+                                    <div class="col-md-12 col-sm-12">
+                                        <p class="nombreCuenta">@Html.Raw(Model.tablaClientes.Rows[0]["nombreCompleto"])</p>
+                                        <h5><i class="fa fa-envelope-o"></i>@Html.Raw(Model.tablaClientes.Rows[0]["correoelectronico"])</h5>
+                                        <h5><i class="fa fa-phone"></i>@Html.Raw(Model.tablaClientes.Rows[0]["telefono"])</h5>
+                                        <h5><i class="fa fa-map-marker"></i>@Html.Raw(Model.tablaClientes.Rows[0]["vive"])</h5>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="brief-info-footer">
+                                        <a data-toggle="tab" href="#profile"><i class="fa fa-edit"></i>@locale.GetResourceMiCuenta("editarperfil")</a>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="most-recent-booking">
+                                    <h4>Cotizaciones Recientes</h4>
+                                    @foreach (DataRow recientes in Model.tablaCotizacionesRecientes.Rows)
+                                    {
+                                        @:<div class="field-entry">
+                                            @:<div class="col-md-6 col-sm-4 col-xs-4 clear-padding">
+                                                @:<p><i class="fa fa-suitcase"></i>@recientes["nombreProducto"]</p>
+                                                @:
+                                            @:</div>
+                                            @:<div class="col-md-4 col-sm-6 col-xs-6">
+                                                if (Convert.ToInt32(recientes["id_statussolicitud"].ToString()) >= 1 && Convert.ToInt32(recientes["id_statussolicitud"].ToString()) <= 8)
+                                        {
+                                            @:<p class="confirmed"><i class="fa fa-check"></i>@Html.Raw(recientes["descripcionStatusSolicitud"])</p>
+                                                }
+                                        if (Convert.ToInt32(recientes["id_statussolicitud"].ToString()) >= 9 && Convert.ToInt32(recientes["id_statussolicitud"].ToString()) <= 14)
+                                        {
+                                            @:<p class="failed"><i class="fa fa-remove"></i>@Html.Raw(recientes["descripcionStatusSolicitud"])</p>
+                                                }
+                                        @:
+                                    @:</div>
+                                            @:<div class="col-md-2 col-sm-2 col-xs-2 text-center clear-padding">
+                                                if (banEmpresa == false)
+                                        {
+                                            @:<a href="@Url.Action("detallesolicitud", "micuenta", new { id = @recientes["id_solicitud"] })">@locale.GetResourceMiCuenta("detalles")</a>
+                                                }
+                                        @:
+                                    @:</div>
+                                            @:
+                                        @:</div>
+                                        @:<div class="clearfix"></div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div id="booking" class="tab-pane fade in">
+                            <div class="clearfix"></div>
+                            <div class="col-md-12">
+                                @foreach (DataRow cotizaciones in Model.tablaCotizaciones.Rows)
+                                {
+                                    if (Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) != 8)
+                                    {
+                                        string id = cotizaciones["id_solicitud"].ToString();
+                                        string categoriaHotel = "";
+                                        int numCategoria = (int)Convert.ToSingle(cotizaciones["categoriaHotel"]);
+                                        for (int j = 0; j < numCategoria; j++)
+                                        {
+                                            categoriaHotel += @"<i class=""fa fa-star""></i>";
+                                        }
+                                        @:<div class="item-entry">
+                                            @:<span>@Html.Raw(cotizaciones["folio"])</span>
+                                            @:<div class="item-content">
+                                                @:<div class="item-body">
+                                                    @:<div class="col-md-2 col-sm-2 clear-padding text-center">
+                                                        @:<img src="@Url.Content(cotizaciones["imgProducto"].ToString())" alt="cruise">
+                                                        @:<div class="col-md-4 col-sm-4">
+                                                            @:<p><a class="detallesSolicitud" href="@Url.Action("detallesolicitud", "micuenta", new { id = @cotizaciones["id_solicitud"].ToString() })">@locale.GetResourceMiCuenta("detalles")</a></p>
+                                                            @:
+                                                        @:</div>
+                                                        @:
+                                                    @:</div>
+                                                    @:<div class="col-md-6 col-sm-6">
+                                                        @:<h4>@Html.Raw(cotizaciones["nombreProducto"]) @Html.Raw(categoriaHotel)</h4>
+                                                        @:<p>@locale.GetResourceMiCuenta("tipo_solicitud"): @Html.Raw(cotizaciones["descripcion"])</p>
+                                                        @:<p>@locale.GetResourceMiCuenta("fecha_llegada"): @Html.Raw(Convert.ToDateTime(cotizaciones["fechaLlegada"]).ToShortDateString() + " " + cotizaciones["horaLlegada"])</p>
+                                                        @:<p>@locale.GetResourceMiCuenta("fecha_salida") : @Html.Raw(Convert.ToDateTime(cotizaciones["fechaSalida"]).ToShortDateString() + " " + cotizaciones["horaSalida"])</p>
+                                                        @:
+                                                    @:</div>
+                                                    @:<div class="col-md-4 col-sm-4">
+                                                        if (Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) >= 1 && Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) <= 8)
+                                        {
+                                            @:<p class="confirmed"><i class="fa fa-check"></i>@Html.Raw(cotizaciones["descripcionStatusSolicitud"])</p>
+                                                        }
+                                        if (Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) >= 9 && Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) <= 14)
+                                        {
+                                            @:<p class="failed"><i class="fa fa-remove"></i>@Html.Raw(cotizaciones["descripcionStatusSolicitud"])</p>
+                                                        }
+                                        @:
+                                    @:</div>
+                                                    if (Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) == 1 || Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) == 2 || Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) == 3 || Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) == 4)
+                                        {
+                                            if (banEmpresa == false)
+                                            {
+                                                @:<div class="col-md-4 col-sm-4">
+                                                    @:<p><a class="cancelSolicitud boton-cotizar" href="@Url.Action("deletesolicitud", "micuenta", new { id = id })">@locale.GetResourceMiCuenta("cancelar")</a></p>
+                                                                @:
+                                                            @:</div>
+                                                        }
+                                        }
+                                        if (Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) >= 1 && Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) <= 4)
+                                        {
+                                            if (banEmpresa == false)
+                                            {
+                                                @:<div class="col-md-4 col-sm-4">
+                                                    @:<p><a class="cotizacionesSolicitud boton-cotizar" href="@Url.Action("cotizacionessolicitud", "micuenta", new { id = id })">@locale.GetResourceMiCuenta("cotizaciones")</a></p>
+                                                                @:
+                                                            @:</div>
+                                                        }
+                                        }
+                                        @:
+                                    @:</div>
+                                                @:<div class="item-footer">
+                                                    @:<p><strong>@locale.GetResourceMiCuenta("fecha_solicitud"):</strong> @Html.Raw(Convert.ToDateTime(cotizaciones["fechasolicitud"]).ToShortDateString() + " " + cotizaciones["horasolicitud"])<strong>Order Total:</strong> @Html.Raw(String.Format(" {0:C}", cotizaciones["subtotal"]))</p>
+                                                    @:
+                                                @:</div>
+                                                @:<div class="clearfix"></div>
+                                                @:
+                                            @:</div>
+                                            @:
+                                        @:</div>
+                                    }
+                                    else
+                                    {
+                                        string categoriaHotel = "";
+                                        int numCategoria = (int)Convert.ToSingle(cotizaciones["categoriaHotel"]);
+                                        for (int j = 0; j < numCategoria; j++)
+                                        {
+                                            categoriaHotel += @"<i class=""fa fa-star""></i>";
+                                        }
+                                        @:<div class="item-entry completed">
+                                            @:<span>@Html.Raw(cotizaciones["folio"])</span>
+                                            @:<div class="item-content">
+                                                @:<div class="item-body">
+                                                    @:<div class="col-md-2 col-sm-2 clear-padding text-center">
+                                                        @:<img src="@Url.Content(cotizaciones["imgProducto"].ToString())" alt="cruise">
+                                                        @:<div class="col-md-4 col-sm-4">
+                                                            @:<p><a class="detallesSolicitud" href="@Url.Action("detallesolicitud", "micuenta", new { id = @cotizaciones["id_solicitud"].ToString() })">Detalles</a></p>
+                                                            @:
+                                                        @:</div>
+                                                        @:
+                                                    @:</div>
+                                                    @:<div class="col-md-4 col-sm-4">
+                                                        @:<h4>@Html.Raw(cotizaciones["nombreProducto"]) @Html.Raw(categoriaHotel)</h4>
+                                                        @:<p>@locale.GetResourceMiCuenta("tipo_solicitud"): @Html.Raw(cotizaciones["descripcion"])</p>
+                                                        @:<p>@locale.GetResourceMiCuenta("fecha_llegada"): @Html.Raw(Convert.ToDateTime(cotizaciones["fechaLlegada"]).ToShortDateString() + " " + cotizaciones["horaLlegada"])</p>
+                                                        @:<p>@locale.GetResourceMiCuenta("fecha_salida") : @Html.Raw(Convert.ToDateTime(cotizaciones["fechaSalida"]).ToShortDateString() + " " + cotizaciones["horaSalida"])</p>
+                                                        @:
+                                                    @:</div>
+                                                    @:<div class="col-md-3 col-sm-3">
+                                                        @:<p class="confirmed"><i class="fa fa-check"></i>@Html.Raw(cotizaciones["descripcionStatusSolicitud"])</p>
+                                                        @:
+                                                    @:</div>
+                                                    @:
+                                                @:</div>
+                                                @:<div class="item-footer">
+                                                    @:<p><strong>@locale.GetResourceMiCuenta("fecha_solicitud"):</strong> @Html.Raw(Convert.ToDateTime(cotizaciones["fechasolicitud"]).ToShortDateString() + " " + cotizaciones["horasolicitud"])<strong>Order Total:</strong> @Html.Raw(String.Format(" {0:C}", cotizaciones["subtotal"]))</p>
+                                                    @:
+                                                @:</div>
+                                                @:<div class="clearfix"></div>
+                                                @:
+                                            @:</div>
+                                            @:
+                                        @:</div>
+                                    }
+                                }
+                                <div class="bottom-pagination">
+                                    <nav class="pull-right">
+                                        <ul class="pagination pagination-lg">
+                                            @{
+                                                double numeroPagina = 0;
+                                                try
+                                                {
+                                                    numeroPagina = ((double)Model.numeroSolicitudes / Model.fetchNext);
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    numeroPagina = 0;
+                                                }
+                                                int numeroPaginaReal = (int)numeroPagina;
+                                                double residuo = numeroPagina - numeroPaginaReal;
+                                                if (residuo > 0.1)
+                                                {
+                                                    numeroPaginaReal = numeroPaginaReal + 1;
+                                                }
+                                                for (int i = 1; i <= numeroPaginaReal; i++)
+                                                {
+                                                    if (i == Model.current)
+                                                    {
+                                                        <li class="active"><a href="/MiCuenta/Index/?current=@Html.Raw(i)" class="paginator">@Html.Raw(i) <span class="sr-only">(current)</span></a></li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li><a href="/MiCuenta/Index/?current=@Html.Raw(i)" class="paginator">@Html.Raw(i) <span class="sr-only">(current)</span></a></li>
+                                                    }
+                                                }
+                                            }
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="profile" class="tab-pane fade in">
+                            <div class="col-md-6">
+                                <div class="user-personal-info">
+                                    <p class="CuentaH4">Información Personal</p>
+                                    <div class="user-info-body">
+                                        @using (Html.BeginForm("EditDatos", "MiCuenta", FormMethod.Post, new { @class = "form-horizontal" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            @Html.ValidationSummary(true)
+                                            @Html.HiddenFor(model => model.id_cliente)
+                                            <div class="col-md-4 col-sm-4">
+                                                <label class="control-label">@locale.GetResourceMiCuenta("nombre")<span class="required"> *</span></label>
+                                                @Html.TextBoxFor(model => model.nombre, new { id = "nombre", @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.nombre)
+                                            </div>
+                                            <div class="col-md-4 col-sm-4">
+                                                <label class="control-label">@locale.GetResourceMiCuenta("apellidoPaterno")<span class="required"> *</span></label>
+                                                @Html.TextBoxFor(model => model.apPat, new { id = "apPat", @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.apPat)
+                                            </div>
+                                            <div class="col-md-4 col-sm-4">
+                                                <label class="control-label">@locale.GetResourceMiCuenta("apellidoMaterno")<span class="required"> *</span></label>
+                                                @Html.TextBoxFor(model => model.apMat, new { id = "apMat", @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.apMat)
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            <div class="col-md-12 col-sm-12">
+                                                <label class="control-label">@locale.GetResourceMiCuenta("genero")<span class="required"> *</span></label>
+                                                @Html.DropDownListFor(model => model.tablaGeneroCmb, ViewData["cmbGeneros"] as SelectList, new { id = "ListGeneros", @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.tablaGeneroCmb)
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            <div class="col-md-12">
+                                                <label class="control-label">@locale.GetResourceMiCuenta("correoelectronico")<span class="required"> *</span></label>
+                                                @Html.TextBoxFor(model => model.email, new { id = "email", @class = "form-control", @readonly = "readonly" })
+                                                @Html.ValidationMessageFor(model => model.email)
+                                            </div>
+                                                <div class="clearfix"></div>
+                                                <div class="col-md-12">
+                                                    <label class="control-label">@locale.GetResourceMiCuenta("telefono")<span class="required"> *</span></label>
+                                                    @Html.TextBoxFor(model => model.telefono, new { id = "telefono", @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.telefono)
+                                                </div>
+                                                <div class="clearfix"></div>
+                                                <div class="col-md-12">
+                                                    <div class="control-group">
+                                                        <label class="control-label">@locale.GetResourceMiCuenta("fecha_nacimiento")<span class="required"> *</span></label>
+                                                        <div class="controls">
+                                                            <div id="datetimepicker1" class="input-append date calendar">
+                                                                @Html.TextBoxFor(model => model.fechaNac, "{0:dd/MM/yyyy}", new { id = "fechaNac", @class = "form-control calendarFecha", @readonly = "readonly" })
+                                                                <span class="add-on">
+                                                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                                                                    </i>
+                                                                </span>
+                                                            </div>
+                                                            @Html.ValidationMessageFor(model => model.fechaNac)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="col-md-6 col-sm-6 clear-padding">
+                                                        <label class="control-label">@locale.GetResourceMiCuenta("estado")<span class="required"> *</span></label>
+                                                        @Html.DropDownListFor(model => model.tablaEstadosCmb, ViewData["cmbEstados"] as SelectList, new { id = "ListEstado", @class = "form-control" })
+                                                        @Html.ValidationMessageFor(model => model.tablaEstadosCmb)
+                                                    </div>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <label class="control-label">@locale.GetResourceMiCuenta("municipio")<span class="required"> *</span></label>
+                                                        @Html.DropDownListFor(model => model.tablaMunicipiosCmb, ViewData["cmbMunicipios"] as SelectList, new { id = "ListMunicipio", @class = "form-control" })
+                                                        @Html.ValidationMessageFor(model => model.tablaMunicipiosCmb)
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                                <div class="col-md-12">
+                                                    <label class="control-label">@locale.GetResourceMiCuenta("Colonia")</label>
+                                                    @Html.TextBoxFor(model => model.colonia, new { id = "colonia", @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.colonia)
+                                                </div>
+                                                <div class="clearfix"></div>
+                                                <div class="col-md-6 col-sm-6 col-xs-6 text-center">
+                                                    <button type="submit">@locale.GetResourceMiCuenta("guardarcambios")</button>
+                                                </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="user-change-password">
+                                    <p class="CuentaH4">@locale.GetResourceMiCuenta("cambiarcontraseña")</p>
+                                    <div class="change-password-body">
+                                        @using (Html.BeginForm("EditDatos", "MiCuenta", FormMethod.Post, new { @class = "form-horizontal" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            @Html.ValidationSummary(true)
+                                            @Html.HiddenFor(model => model.id_cliente)
+                                            <div class="col-md-12">
+                                                <label class="control-label">@locale.GetResourceMiCuenta("contraseñaactual")<span class="required"> *</span></label>
+                                                @Html.PasswordFor(model => model.password, new { id = "password", @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.password)
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="control-label">@locale.GetResourceMiCuenta("nuevascontraseña")<span class="required"> *</span></label>
+                                                @Html.PasswordFor(model => model.passwordNew, new { id = "passwordNew", @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.passwordNew)
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="control-label">@locale.GetResourceMiCuenta("confirmarcontraseña")<span class="required"> *</span></label>
+                                                @Html.PasswordFor(model => model.passwordConfirm, new { id = "passwordConfirm", @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.passwordConfirm)
+                                            </div>
+                                            <div class="col-md-12 text-center">
+                                                <button type="submit">@locale.GetResourceMiCuenta("guardarcambios")<</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                                                }
+                                                else
+                                                {
+                                                    <div id="profile-overview" class="tab-pane fade in">
+                                                        <div class="col-md-12">
+                                                            <div class="brief-info">
+                                                                <div class="col-md-12 col-sm-12">
+                                                                    <p class="nombreCuenta">@Html.Raw(Model.tablaClientes.Rows[0]["nombreCompleto"])</p>
+                                                                    <h5><i class="fa fa-envelope-o"></i>@Html.Raw(Model.tablaClientes.Rows[0]["correoelectronico"])</h5>
+                                                                    <h5><i class="fa fa-phone"></i>@Html.Raw(Model.tablaClientes.Rows[0]["telefono"])</h5>
+                                                                    <h5><i class="fa fa-map-marker"></i>@Html.Raw(Model.tablaClientes.Rows[0]["vive"])</h5>
+                                                                </div>
+                                                                <div class="clearfix"></div>
+                                                                <div class="brief-info-footer">
+                                                                    <a data-toggle="tab" href="#profile"><i class="fa fa-edit"></i>@locale.GetResourceMiCuenta("editarperfil")</a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearfix"></div>
+                                                            <div class="most-recent-booking">
+                                                                <h4>Cotizaciones Recientes</h4>
+                                                                @foreach (DataRow recientes in Model.tablaCotizacionesRecientes.Rows)
+                                                                {
+                                                                    @:<div class="field-entry">
+                                                                        @:<div class="col-md-6 col-sm-4 col-xs-4 clear-padding">
+                                                                            @:<p><i class="fa fa-suitcase"></i>@recientes["nombreProducto"]</p>
+                                                                            @:
+                                                                        @:</div>
+                                                                        @:<div class="col-md-4 col-sm-6 col-xs-6">
+                                                if (Convert.ToInt32(recientes["id_statussolicitud"].ToString()) >= 1 && Convert.ToInt32(recientes["id_statussolicitud"].ToString()) <= 8)
+                                                                    {
+                                                                        @:<p class="confirmed"><i class="fa fa-check"></i>@Html.Raw(recientes["descripcionStatusSolicitud"])</p>
+                                                }
+                                                                    if (Convert.ToInt32(recientes["id_statussolicitud"].ToString()) >= 9 && Convert.ToInt32(recientes["id_statussolicitud"].ToString()) <= 14)
+                                                                    {
+                                                                        @:<p class="failed"><i class="fa fa-remove"></i>@Html.Raw(recientes["descripcionStatusSolicitud"])</p>
+                                                }
+                                                                    @:
+                                                                @:</div>
+                                                                @:<div class="col-md-2 col-sm-2 col-xs-2 text-center clear-padding">
+                                                                    @:<a href="@Url.Action("detallesolicitud", "micuenta", new { id = @recientes["id_solicitud"].ToString() })">@locale.GetResourceMiCuenta("detalles")</a>
+                                                                    @:
+                                                                @:</div>
+                                                                @:
+                                                            @:</div>
+                                                            @:<div class="clearfix"></div>
+                                    }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="booking" class="tab-pane fade in active">
+                                                        <div class="clearfix"></div>
+                                                        <div class="col-md-12">
+                                                            @foreach (DataRow cotizaciones in Model.tablaCotizaciones.Rows)
+                                                            {
+                                                                if (Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) != 8)
+                                                                {
+                                                                    string id = cotizaciones["id_solicitud"].ToString();
+                                                                    string categoriaHotel = "";
+                                                                    int numCategoria = (int)Convert.ToSingle(cotizaciones["categoriaHotel"]);
+                                                                    for (int j = 0; j < numCategoria; j++)
+                                                                    {
+                                                                        categoriaHotel += @"<i class=""fa fa-star""></i>";
+                                                                    }
+                                                                    @:<div class="item-entry">
+                                                                        @:<span>@Html.Raw(cotizaciones["folio"])</span>
+                                                                        @:<div class="item-content">
+                                                                            @:<div class="item-body">
+                                                                                @:<div class="col-md-2 col-sm-2 clear-padding text-center">
+                                                                                    @:<img src="@Url.Content(cotizaciones["imgProducto"].ToString())" alt="cruise">
+                                                                                    @:<div class="col-md-4 col-sm-4">
+                                                                                        @:<p><a class="detallesSolicitud" href="@Url.Action("detallesolicitud", "micuenta", new { id = @cotizaciones["id_solicitud"].ToString() })">@locale.GetResourceMiCuenta("detalles")</a></p>
+                                                                                        @:
+                                                                                    @:</div>
+                                                                                    @:
+                                                                                @:</div>
+                                                                                @:<div class="col-md-6 col-sm-6">
+                                                                                    @:<h4>@Html.Raw(cotizaciones["nombreProducto"]) @Html.Raw(categoriaHotel)</h4>
+                                                                                    @:<p>@locale.GetResourceMiCuenta("tipo_solicitud"): @Html.Raw(cotizaciones["descripcion"])</p>
+                                                                                    @:<p>@locale.GetResourceMiCuenta("fecha_llegada"): @Html.Raw(Convert.ToDateTime(cotizaciones["fechaLlegada"]).ToShortDateString() + " " + cotizaciones["horaLlegada"])</p>
+                                                                                    @:<p>@locale.GetResourceMiCuenta("fecha_salida") : @Html.Raw(Convert.ToDateTime(cotizaciones["fechaSalida"]).ToShortDateString() + " " + cotizaciones["horaSalida"])</p>
+                                                                                    @:
+                                                                                @:</div>
+                                                                                @:<div class="col-md-4 col-sm-4">
+                                                        if (Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) >= 1 && Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) <= 8)
+                                                                    {
+                                                                        @:<p class="confirmed"><i class="fa fa-check"></i>@Html.Raw(cotizaciones["descripcionStatusSolicitud"])</p>
+                                                        }
+                                                                    if (Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) >= 9 && Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) <= 14)
+                                                                    {
+                                                                        @:<p class="failed"><i class="fa fa-remove"></i>@Html.Raw(cotizaciones["descripcionStatusSolicitud"])</p>
+                                                        }
+                                                                    @:
+                                                                @:</div>
+                                                    if (Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) == 1 || Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) == 2 || Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) == 3 || Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) == 4)
+                                                                    {
+                                                                        if (banEmpresa == false)
+                                                                        {
+                                                                            @:<div class="col-md-4 col-sm-4">
+                                                                                @:<p><a class="cancelSolicitud boton-cotizar" href="@Url.Action("deletesolicitud", "micuenta", new { id = id })">Cancel</a></p>
+                                                                                @:
+                                                                            @:</div>
+                                                        }
+                                                                    }
+                                                                    if (Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) >= 1 && Convert.ToInt32(cotizaciones["id_statussolicitud"].ToString()) <= 4)
+                                                                    {
+                                                                        if (banEmpresa == false)
+                                                                        {
+                                                                            @:<div class="col-md-4 col-sm-4">
+                                                                                @:<p><a class="cotizacionesSolicitud boton-cotizar" href="@Url.Action("cotizacionessolicitud", "micuenta", new { id = id })">Cotizaciones</a></p>
+                                                                                @:
+                                                                            @:</div>
+                                                        }
+                                                                    }
+                                                                    @:
+                                                                @:</div>
+                                                                @:<div class="item-footer">
+                                                                    @:<p><strong>@locale.GetResourceMiCuenta("fecha_solicitud"):</strong> @Html.Raw(Convert.ToDateTime(cotizaciones["fechasolicitud"]).ToShortDateString() + " " + cotizaciones["horasolicitud"])<strong>Order Total:</strong> @Html.Raw(String.Format("Order Total: {0:C}", cotizaciones["subtotal"]))</p>
+                                                                    @:
+                                                                @:</div>
+                                                                @:<div class="clearfix"></div>
+                                                                @:
+                                                            @:</div>
+                                                            @:
+                                                        @:</div>
+                                    }
+                                                                else
+                                                                {
+                                                                    string categoriaHotel = "";
+                                                                    int numCategoria = (int)Convert.ToSingle(cotizaciones["categoriaHotel"]);
+                                                                    for (int j = 0; j < numCategoria; j++)
+                                                                    {
+                                                                        categoriaHotel += @"<i class=""fa fa-star""></i>";
+                                                                    }
+                                                                    @:<div class="item-entry completed">
+                                                                        @:<span>@Html.Raw(cotizaciones["folio"])</span>
+                                                                        @:<div class="item-content">
+                                                                            @:<div class="item-body">
+                                                                                @:<div class="col-md-2 col-sm-2 clear-padding text-center">
+                                                                                    @:<img src="@Url.Content(cotizaciones["imgProducto"].ToString())" alt="cruise">
+                                                                                    @:<div class="col-md-4 col-sm-4">
+                                                                                        @:<p><a class="detallesSolicitud" href="@Url.Action("detallesolicitud", "micuenta", new { id = @cotizaciones["id_producto"] })">Detalles</a></p>
+                                                                                        @:
+                                                                                    @:</div>
+                                                                                    @:
+                                                                                @:</div>
+                                                                                @:<div class="col-md-4 col-sm-4">
+                                                                                    @:<h4>@Html.Raw(cotizaciones["nombreProducto"]) @Html.Raw(categoriaHotel)</h4>
+                                                                                    @:<p>@locale.GetResourceMiCuenta("tipo_solicitud"): @Html.Raw(cotizaciones["descripcion"])</p>
+                                                                                    @:<p>@locale.GetResourceMiCuenta("fecha_llegada"): @Html.Raw(Convert.ToDateTime(cotizaciones["fechaLlegada"]).ToShortDateString() + " " + cotizaciones["horaLlegada"])</p>
+                                                                                    @:<p>@locale.GetResourceMiCuenta("fecha_salida") : @Html.Raw(Convert.ToDateTime(cotizaciones["fechaSalida"]).ToShortDateString() + " " + cotizaciones["horaSalida"])</p>
+                                                                                    @:
+                                                                                @:</div>
+                                                                                @:<div class="col-md-3 col-sm-3">
+                                                                                    @:<p class="confirmed"><i class="fa fa-check"></i>@Html.Raw(cotizaciones["descripcionStatusSolicitud"])</p>
+                                                                                    @:
+                                                                                @:</div>
+                                                                                @:
+                                                                            @:</div>
+                                                                            @:<div class="item-footer">
+                                                                                @:<p><strong>@locale.GetResourceMiCuenta("fecha_solicitud"):</strong> @Html.Raw(Convert.ToDateTime(cotizaciones["fechasolicitud"]).ToShortDateString() + " " + cotizaciones["horasolicitud"])<strong>Order Total:</strong> @Html.Raw(String.Format("Order Total: {0:C}", cotizaciones["subtotal"]))</p>
+                                                                                @:
+                                                                            @:</div>
+                                                                            @:<div class="clearfix"></div>
+                                                                            @:
+                                                                        @:</div>
+                                                                        @:
+                                                                    @:</div>
+                                    }
+                                                            }
+                                                            <div class="bottom-pagination">
+                                                                <nav class="pull-right">
+                                                                    <ul class="pagination pagination-lg">
+                                                                        @{
+                                                                            double numeroPagina = 0;
+                                                                            try
+                                                                            {
+                                                                                numeroPagina = ((double)Model.numeroSolicitudes / Model.fetchNext);
+                                                                            }
+                                                                            catch (Exception)
+                                                                            {
+                                                                                numeroPagina = 0;
+                                                                            }
+                                                                            int numeroPaginaReal = (int)numeroPagina;
+                                                                            double residuo = numeroPagina - numeroPaginaReal;
+
+                                                                            if (residuo > 0.1)
+                                                                            {
+                                                                                numeroPaginaReal = numeroPaginaReal + 1;
+                                                                            }
+                                                                            for (int i = 1; i <= numeroPaginaReal; i++)
+                                                                            {
+                                                                                if (i == Model.current)
+                                                                                {
+                                                                                    <li class="active"><a href="/MiCuenta/Index/?current=@Html.Raw(i)" class="paginator">@Html.Raw(i) <span class="sr-only">(current)</span></a></li>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <li><a href="/MiCuenta/Index/?current=@Html.Raw(i)" class="paginator">@Html.Raw(i) <span class="sr-only">(current)</span></a></li>
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    </ul>
+                                                                </nav>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="profile" class="tab-pane fade in">
+                                                        <div class="col-md-6">
+                                                            <div class="user-personal-info">
+                                                                <p class="CuentaH4">@locale.GetResourceMiCuenta("informacionpersonal")</p>
+                                                                <div class="user-info-body">
+                                                                    @using (Html.BeginForm("EditDatos", "MiCuenta", FormMethod.Post, new { @class = "form-horizontal" }))
+                                                                    {
+                                                                        @Html.AntiForgeryToken()
+                                                                        @Html.ValidationSummary(true)
+
+                                                                        @Html.HiddenFor(model => model.id_cliente)
+                                                                        <div class="col-md-4 col-sm-4">
+                                                                            <label class="control-label">@locale.GetResourceMiCuenta("nombre")<span class="required"> *</span></label>
+                                                                            @Html.TextBoxFor(model => model.nombre, new { id = "nombre", @class = "form-control" })
+                                                                            @Html.ValidationMessageFor(model => model.nombre)
+                                                                        </div>
+                                                                        <div class="col-md-4 col-sm-4">
+                                                                            <label class="control-label">@locale.GetResourceMiCuenta("apellidoPaterno")<span class="required"> *</span></label>
+                                                                            @Html.TextBoxFor(model => model.apPat, new { id = "apPat", @class = "form-control" })
+                                                                            @Html.ValidationMessageFor(model => model.apPat)
+                                                                        </div>
+                                                                        <div class="col-md-4 col-sm-4">
+                                                                            <label class="control-label">@locale.GetResourceMiCuenta("apellidoMaterno")<span class="required"> *</span></label>
+                                                                            @Html.TextBoxFor(model => model.apMat, new { id = "apMat", @class = "form-control" })
+                                                                            @Html.ValidationMessageFor(model => model.apMat)
+                                                                        </div>
+                                                                        <div class="clearfix"></div>
+                                                                        <div class="col-md-12 col-sm-12">
+                                                                            <label class="control-label">@locale.GetResourceMiCuenta("genero")<span class="required"> *</span></label>
+                                                                            @Html.DropDownListFor(model => model.tablaGeneroCmb, ViewData["cmbGeneros"] as SelectList, new { id = "ListGeneros", @class = "form-control" })
+                                                                            @Html.ValidationMessageFor(model => model.tablaGeneroCmb)
+                                                                        </div>
+                                                                        <div class="clearfix"></div>
+                                                                        <div class="col-md-12">
+                                                                            <label class="control-label">@locale.GetResourceMiCuenta("correoelectronico")<span class="required"> *</span></label>
+                                                                            @Html.TextBoxFor(model => model.email, new { id = "email", @class = "form-control", @readonly = "readonly" })
+                                                                            @Html.ValidationMessageFor(model => model.email)
+                                                                        </div>
+                                                                        <div class="clearfix"></div>
+                                                                        <div class="col-md-12">
+                                                                            <label class="control-label">@locale.GetResourceMiCuenta("telefono")<span class="required"> *</span></label>
+                                                                            @Html.TextBoxFor(model => model.telefono, new { id = "telefono", @class = "form-control" })
+                                                                            @Html.ValidationMessageFor(model => model.telefono)
+                                                                        </div>
+                                                                        <div class="clearfix"></div>
+                                                                        <div class="col-md-12">
+                                                                            <div class="control-group">
+                                                                                <label class="control-label">@locale.GetResourceMiCuenta("fecha_nacimiento")<span class="required"> *</span></label>
+                                                                                <div class="controls">
+                                                                                    <div id="datetimepicker1" class="input-append date calendar">
+                                                                                        @Html.TextBoxFor(model => model.fechaNac, "{0:dd/MM/yyyy}", new { id = "fechaNac", @class = "form-control", @readonly = "readonly" })
+                                                                                        <span class="add-on">
+                                                                                            <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                                                                                            </i>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    @Html.ValidationMessageFor(model => model.fechaNac)
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-12">
+                                                                            <div class="col-md-6 col-sm-6 clear-padding">
+                                                                                <label class="control-label">@locale.GetResourceMiCuenta("estado")<span class="required"> *</span></label>
+                                                                                @Html.DropDownListFor(model => model.tablaEstadosCmb, ViewData["cmbEstados"] as SelectList, new { id = "ListEstado", @class = "form-control" })
+                                                                                @Html.ValidationMessageFor(model => model.tablaEstadosCmb)
+                                                                            </div>
+                                                                            <div class="col-md-6 col-sm-6">
+                                                                                <label class="control-label">@locale.GetResourceMiCuenta("municipio")<span class="required"> *</span></label>
+                                                                                @Html.DropDownListFor(model => model.tablaMunicipiosCmb, ViewData["cmbMunicipios"] as SelectList, new { id = "ListMunicipio", @class = "form-control" })
+                                                                                @Html.ValidationMessageFor(model => model.tablaMunicipiosCmb)
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="clearfix"></div>
+                                                                        <div class="col-md-12">
+                                                                            <label class="control-label">@locale.GetResourceMiCuenta("colonia")</label>
+                                                                            @Html.TextBoxFor(model => model.colonia, new { id = "colonia", @class = "form-control" })
+                                                                            @Html.ValidationMessageFor(model => model.colonia)
+                                                                        </div>
+                                                                        <div class="clearfix"></div>
+                                                                        <div class="col-md-6 col-sm-6 col-xs-6 text-center">
+                                                                            <button type="submit">@locale.GetResourceMiCuenta("guardarcambios")</button>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="user-change-password">
+                                                                <p class="CuentaH4">Cambiar Contraseña</p>
+                                                                <div class="change-password-body">
+                                                                    @using (Html.BeginForm("EditDatos", "MiCuenta", FormMethod.Post, new { @class = "form-horizontal" }))
+                                                                    {
+                                                                        @Html.AntiForgeryToken()
+                                                                        @Html.ValidationSummary(true)
+
+                                                                        @Html.HiddenFor(model => model.id_cliente)
+                                                                        <div class="col-md-12">
+                                                                            <label class="control-label">@locale.GetResourceMiCuenta("contraseñaactual")<span class="required"> *</span></label>
+                                                                            @Html.PasswordFor(model => model.password, new { id = "password", @class = "form-control" })
+                                                                            @Html.ValidationMessageFor(model => model.password)
+                                                                        </div>
+                                                                        <div class="col-md-12">
+                                                                            <label class="control-label">@locale.GetResourceMiCuenta("nuevascontraseña")<span class="required"> *</span></label>
+                                                                            @Html.PasswordFor(model => model.passwordNew, new { id = "passwordNew", @class = "form-control" })
+                                                                            @Html.ValidationMessageFor(model => model.passwordNew)
+                                                                        </div>
+                                                                        <div class="col-md-12">
+                                                                            <label class="control-label">@locale.GetResourceMiCuenta("confirmarcontraseña")<span class="required"> *</span></label>
+                                                                            @Html.PasswordFor(model => model.passwordConfirm, new { id = "passwordConfirm", @class = "form-control" })
+                                                                            @Html.ValidationMessageFor(model => model.passwordConfirm)
+                                                                        </div>
+                                                                        <div class="col-md-12 text-center">
+                                                                            <button type="submit">@locale.GetResourceMiCuenta("guardarcambios")</button>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                                            }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section Newsletter{
+    <div class="container clear-padding">
+        <div class="col-md-7 col-sm-7">
+            <div class="progressbar fade-right animate1">
+                @{
+                    string newletter = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("newsletter")].ToString();
+                    string[] newsletter = Regex.Split(newletter, "\r\n");
+                    if (newsletter != null)
+                    {
+                        int totalnewsletter = newsletter.Count();
+                        if (totalnewsletter >= 1)
+                        {
+                            <p class="NL">@Html.Raw(newsletter[0])</p>
+                        }
+                        if (totalnewsletter >= 2)
+                        {
+                            <p>@Html.Raw(newsletter[1])</p>
+                        }
+                    }
+                }
+            </div>
+            <form>
+                <div class="col-md-9 col-sm-8 col-xs-6 clear-padding">
+                    <input type="text" id="correoSuscribirse" class="form-control" required />
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 clear-padding">
+                    <button type="button" id="btnSuscribirse"><i class="fa fa-paper-plane"></i> @locale.GetResourceSeccion("suscribirse")</button>
+                </div>
+                <p id="msg_newsletter" style="font-size: 25px;"></p>
+            </form>
+        </div>
+        <div class="col-md-5 col-sm-5">
+            <div class="social-media pull-right">
+                <ul>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["facebook"])"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["twitter"])"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["instagram"])"><i class="fa fa-instagram"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["google"])"><i class="fa fa-google-plus"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["youtube"])"><i class="fa fa-youtube"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+@section Piedepagina{
+    <div class="container clear-padding">
+        <div class="col-md-3 col-sm-6 about-box">
+            @{
+                string pieAcerca = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("pieAcerca")].ToString();
+                string[] pieAcercas = Regex.Split(pieAcerca, "\r\n");
+                if (pieAcercas != null)
+                {
+                    int totalPie = pieAcercas.Count();
+                    if (totalPie >= 1)
+                    {
+                        <h3>@Html.Raw(pieAcercas[0])</h3>
+                    }
+                    if (totalPie >= 2)
+                    {
+                        <p class="descripcion">@Html.Raw(pieAcercas[1])</p>
+                    }
+                }
+            }
+        </div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Popular")</h4>
+            <ul>
+                @foreach (DataRow PaquetPulares in Model.TablaPaquetesPopulares.Rows)
+                {
+                    string id = PaquetPulares["nombre_pagina"].ToString();
+                    <li><a href="@Url.Action("DetallePaquete", "Paquetes", new { id = id })">@Html.Raw(PaquetPulares["nombre"])</a></li>
+                }
+            </ul>
+        </div>
+        <div class="clearfix visible-sm-block"></div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Servicio")</h4>
+            <ul>
+                <li><a href="@Url.Action("Index", "Home")">@locale.GetResource("inicio")</a></li>
+                <li><a href="@Url.Action("Index", "Transportacion")">@locale.GetResource("transportacion")</a></li>
+                <li><a href="@Url.Action("Index", "Promociones")">@locale.GetResource("promocion")</a></li>
+                <li><a href="@Url.Action("Index", "Galerias")">@locale.GetResource("galeria")</a></li>
+                <li><a href="@Url.Action("Index", "Blog")">@locale.GetResource("blog")</a></li>
+                <li><a href="@Url.Action("Index", "Contactos")">@locale.GetResource("contacto")</a></li>
+                <li><a href="@Url.Action("Index", "Recomendaciones")">@locale.GetResource("recomendaciones")</a></li>
+            </ul>
+        </div>
+        <div class="col-md-3 col-sm-6 contact-box">
+            <h4>@locale.GetResourceSeccion("contacto")</h4>
+            <p>
+                <i class="fa fa-home"></i>@locale.GetResourceSeccion("direccion"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["direccion"])
+            </p>
+            <p><i class="fa fa-phone"></i>@locale.GetResourceSeccion("telefono"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["telefono"])</p>
+            <p><i class="fa fa-envelope-o"></i>@locale.GetResourceSeccion("correo"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["correo"])</p>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12 text-center we-accept">
+            <h4>@locale.GetResourceSeccion("pago")</h4>
+            <ul>
+                @foreach (DataRow FormasPago in Model.TablaFormasDePago.Rows)
+                {
+                    <li><img class="formas-pago" src="@Html.Raw(Html.Encode(FormasPago["imagen"].ToString().Replace("~", "")))" alt="@Html.Raw(FormasPago["alt"].ToString())" title="@Html.Raw(FormasPago["title"].ToString())"></li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+@section scriptF{
+    <script>
+        var auxbol = 1;
+        $(document).ready(function () {
+            $("#ListGeneros").val('@Model.id_genero');
+            $("#ListOcupaciones").val('@Model.id_ocupacion');
+            $("#ListEstado").val('@Model.id_estado');
+            getMunicipio('@Model.id_estado');
+
+            $("#ListEstado").change(function () {
+                var id = $("#ListEstado").val();
+                getMunicipio(id);
+            });
+            function getMunicipio(id) {
+                $.ajax({
+                    url: "/Micuenta/Municipio",
+                    data: { id: id },
+                    dataType: "json",
+                    type: "POST",
+                    error: function () {
+                        $("#ListMunicipio").html('');
+                    },
+                    success: function (municipio) {
+                        var items = "";
+                        for (var i = 0; i < municipio.length; i++) {
+                            items += "<option value=\"" + municipio[i].id_municipio + "\">" + municipio[i].descripcion + "</option>";
+                        }
+                        $("#ListMunicipio").html(items);
+                        if (auxbol == 1) {
+                            $("#ListMunicipio").val('@Model.id_municipio');
+                            auxbol = 0;
+                        }
+                    }
+                });
+            }
+        });
+</script>
+<script>
+        jQuery(document).ready(function () {
+            jQuery(function ($) {
+                var swipeboxInstance = $(".swipebox-isotope:not(.isotope-hidden .swipebox-isotope)").swipebox();
+                var $container = $('#grid');
+                var optionFilter = $('#filter'),
+                    optionFilterLinks = optionFilter.find('a');
+                optionFilterLinks.attr('href', '#');
+                onAnimationCompleted = function () {
+                    swipeboxInstance.refresh();
+                };
+                optionFilterLinks.click(function () {
+                    var selector = $(this).attr('data-filter');
+                    $container.isotope({
+                        filter: '.' + selector,
+                        itemSelector: '.item',
+                        layoutMode: 'fitRows',
+                        animationEngine: 'best-available',
+                    }, onAnimationCompleted);
+                    optionFilterLinks.removeClass('selected');
+                    $(this).addClass('selected');
+                    return false;
+                });
+            });
+        });
+</script>
+    }

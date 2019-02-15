@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="aeropuertoLlegada" xml:space="preserve">
+    <value>Aeropuerto de Llegada</value>
+  </data>
+  <data name="aeropuertoSalida" xml:space="preserve">
+    <value>Aeropuerto de Salida</value>
+  </data>
+  <data name="apellidoMaterno" xml:space="preserve">
+    <value>Apellido Materno</value>
+  </data>
+  <data name="apellidoPaterno" xml:space="preserve">
+    <value>Apellido Paterno</value>
+  </data>
+  <data name="armarPaqueteVip" xml:space="preserve">
+    <value>Armar paquete VIP</value>
+  </data>
+  <data name="categoriaHotel" xml:space="preserve">
+    <value>Categoría de Hotel</value>
+  </data>
+  <data name="CorreoNoValido" xml:space="preserve">
+    <value>Correo no válido</value>
+  </data>
+  <data name="cotizacionPaquete" xml:space="preserve">
+    <value>Cotización Paquete</value>
+  </data>
+  <data name="cotizar" xml:space="preserve">
+    <value>COTIZAR</value>
+  </data>
+  <data name="cotizarpaquetes" xml:space="preserve">
+    <value>Cotizar Paquete</value>
+  </data>
+  <data name="cuentaBoletoAvion" xml:space="preserve">
+    <value>Cuenta con boleto de avión</value>
+  </data>
+  <data name="email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="fechaLlegada" xml:space="preserve">
+    <value>Fecha de Llegada</value>
+  </data>
+  <data name="fechaSalida" xml:space="preserve">
+    <value>Fecha de Salida</value>
+  </data>
+  <data name="graciasSuscribirse" xml:space="preserve">
+    <value>Gracias por suscribirse</value>
+  </data>
+  <data name="horaLlegada" xml:space="preserve">
+    <value>Hora de Llegada</value>
+  </data>
+  <data name="horaSalida" xml:space="preserve">
+    <value>Hora de Salida</value>
+  </data>
+  <data name="menores14" xml:space="preserve">
+    <value>Menores de 0-2</value>
+  </data>
+  <data name="menores511" xml:space="preserve">
+    <value>Menores de 3-10</value>
+  </data>
+  <data name="msghabitaciones" xml:space="preserve">
+    <value>Por políticas internas de los hoteles, solo se permiten 4 personas máximo por habitación. En caso de requerir una cantidad mayor de personas por habitación, escríbanos para que un asesor le ayude.</value>
+  </data>
+  <data name="necesitaAyuda" xml:space="preserve">
+    <value>NECESITA AYUDA</value>
+  </data>
+  <data name="necesitaAyudaComunicarse" xml:space="preserve">
+    <value>Si necesita ayuda no dude en comunicarse con nosotros y con gusto lo apoyaremos.</value>
+  </data>
+  <data name="nombre" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="noSePudoRealizarCotizacion" xml:space="preserve">
+    <value>No se pudo realizar la cotización le agradeceríamos si se pudiera comunicar a los teléfonos de la oficina</value>
+  </data>
+  <data name="numeroAdultos" xml:space="preserve">
+    <value>Número de Adultos</value>
+  </data>
+  <data name="numeroCamaAsignadaMayorSolicitada" xml:space="preserve">
+    <value>Número de camas asignadas mayor a la solicitada</value>
+  </data>
+  <data name="numeroCamaAsignadaMenorSolicitada" xml:space="preserve">
+    <value>Número de camas asignadas menor a la solicitada</value>
+  </data>
+  <data name="numeroCamas" xml:space="preserve">
+    <value>Número de camas</value>
+  </data>
+  <data name="numeroCamasAsignadaMenorSolicitada" xml:space="preserve">
+    <value>Número de camas asignadas menor a la solicitada</value>
+  </data>
+  <data name="numeroHabitaciones" xml:space="preserve">
+    <value>Numero de habitaciones</value>
+  </data>
+  <data name="numeroNiño14AsignadaMayorSolicitada" xml:space="preserve">
+    <value>Número de Niños 0-2 asignadas mayor a la solicitada</value>
+  </data>
+  <data name="numeroNiño14AsignadaMenorSolicitada" xml:space="preserve">
+    <value>Número de Niños 0-2 asiganados menor a la solicitada</value>
+  </data>
+  <data name="numeroNiño51AsignadaMayorSolicitada" xml:space="preserve">
+    <value>Número de Niños 3-10 asignadas mayor a la solicitada</value>
+  </data>
+  <data name="numeroNiño51AsignadaMenorSolicitada" xml:space="preserve">
+    <value>Número de Niños 3-10 asignados menor a la solicitada</value>
+  </data>
+  <data name="numeroNiños14" xml:space="preserve">
+    <value>Número de Niños 0-2</value>
+  </data>
+  <data name="numeroNiños511" xml:space="preserve">
+    <value>Número de Niños 3-10</value>
+  </data>
+  <data name="numeroPersonaAdultaAsignadaMayorSolicitada" xml:space="preserve">
+    <value>Número de personas Adultas asiganadas mayor a la solicitada</value>
+  </data>
+  <data name="numeroPersonaAdultaAsignadaMenorSolicitada" xml:space="preserve">
+    <value>Número de personas Adultas asiganadas menor a la solicitada</value>
+  </data>
+  <data name="numeroPersonaAsignadaCorrectamente" xml:space="preserve">
+    <value>La cantidad de personas por habitación es correcta</value>
+  </data>
+  <data name="numeroPersonaCorrecta" xml:space="preserve">
+    <value>La información de personas por edad es correcta</value>
+  </data>
+  <data name="numeroPersonaMayorSolicitada" xml:space="preserve">
+    <value>La cantidad total de personas no coinciden con el desglose por rango</value>
+  </data>
+  <data name="numeroPersonaMenorSolicitada" xml:space="preserve">
+    <value>La cantidad total de personas no coinciden con el desglose por rango</value>
+  </data>
+  <data name="numeroPersonas" xml:space="preserve">
+    <value>Total de personas</value>
+  </data>
+  <data name="numeroPersonasAdultasAsignadaMayorSolicitada" xml:space="preserve">
+    <value>Número de personas Adultas asiganadas mayor a la solicitada</value>
+  </data>
+  <data name="numeroPersonasAdultasAsignadaMenosSolicitada" xml:space="preserve">
+    <value>Número de personas Adultas asiganadas menor a la solicitada</value>
+  </data>
+  <data name="numeroPersonasCorrectas" xml:space="preserve">
+    <value>La información de personas por edad es correcta</value>
+  </data>
+  <data name="numeroPersonasHabitacion" xml:space="preserve">
+    <value>Número de personas por habitación</value>
+  </data>
+  <data name="numeroPersonasMayorSolicitada" xml:space="preserve">
+    <value>La cantidad total de personas no coinciden con el desglose por rango</value>
+  </data>
+  <data name="numeroPersonasMenorSolicitada" xml:space="preserve">
+    <value>La cantidad total de personas no coinciden con el desglose por rango</value>
+  </data>
+  <data name="ofrecemosServicioPaqueteVip" xml:space="preserve">
+    <value>LE OFRECEMOS EL SERVICIO DE PAQUETES VIP, DONDE USTED DECIDE DÓNDE VISITAR Y TODAS LAS CARACTERÍSTICAS DE SU VIAJE PARA QUE SU EXPERIENCIA SEA ÚNICA E INOLVIDABLE</value>
+  </data>
+  <data name="telefono" xml:space="preserve">
+    <value>Teléfono</value>
+  </data>
+  <data name="termino24Horas" xml:space="preserve">
+    <value>Gracias por contactarnos</value>
+  </data>
+  <data name="termino24Horas2" xml:space="preserve">
+    <value>¡GRACIAS!, la información sobre su solicitud ya fue enviada a su correo. Agradecemos verificar su carpeta de spam o correos no deseados.</value>
+  </data>
+  <data name="termino24Horas3" xml:space="preserve">
+    <value>En un término máximo de 48, uno de nuestros agentes se contactará con usted por medio de correo electrónico para atender su solicitud.</value>
+  </data>
+  <data name="validacionLoad1" xml:space="preserve">
+    <value>Por favor especifique el rango de las personas que viajaran</value>
+  </data>
+  <data name="validacionLoad2" xml:space="preserve">
+    <value>Por favor, indique la cantidad de personas por habitación. Recuerde que solo se permite un máximo de 4 personas por habitación.</value>
+  </data>
+  <data name="validacionWill01" xml:space="preserve">
+    <value>Una o más habitaciones superan el máximo de personas permitidas</value>
+  </data>
+</root>

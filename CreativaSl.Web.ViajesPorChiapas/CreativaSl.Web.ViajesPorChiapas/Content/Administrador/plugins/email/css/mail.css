@@ -1,0 +1,161 @@
+﻿        .email_image_thumbnail1:hover {
+            cursor: pointer;
+        }
+        .email_image_thumbnail1_selected {
+            border: 2px solid black;
+        }
+        .email_modal_image1_visor {
+            overflow-y: scroll;
+        }
+        .email_file_button1 {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .email_file_button1 input[type="file"]{
+            position: absolute;
+            cursor: inherit;
+            font-size: 100px;
+            text-align: right;
+            outline: none;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            background: white;
+            opacity: 0;
+            display: block;
+        }
+        .email_file_button1 input[type="file"]:hover {
+            cursor: pointer;
+        }
+
+
+
+
+       .email_image_thumbnail3:hover {
+            cursor: pointer;
+        }
+        .email_image_thumbnail3_selected {
+            border: 2px solid black;
+        }
+        .email_modal_image_visor3 {
+            overflow-y: scroll;
+        }
+        .email_file_button3 {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .email_file_button3 input[type="file"]{
+            position: absolute;
+            cursor: inherit;
+            font-size: 100px;
+            text-align: right;
+            outline: none;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            background: white;
+            opacity: 0;
+            display: block;
+        }
+        .email_file_button3 input[type="file"]:hover {
+            cursor: pointer;
+        }
+
+
+
+        .email_image_thumbnail4:hover {
+            cursor: pointer;
+        }
+        .email_image_thumbnail4_selected {
+            border: 2px solid black;
+        }
+        .email_modal_image_visor4 {
+            overflow-y: scroll;
+        }
+        .email_file_button4 {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .email_file_button4 input[type="file"]{
+            position: absolute;
+            cursor: inherit;
+            font-size: 100px;
+            text-align: right;
+            outline: none;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            background: white;
+            opacity: 0;
+            display: block;
+        }
+        .email_file_button4 input[type="file"]:hover {
+            cursor: pointer;
+        }
+
+
+        .email_image_thumbnail5:hover {
+            cursor: pointer;
+        }
+        .email_image_thumbnail5_selected {
+            border: 2px solid black;
+        }
+        .email_modal_image_visor5 {
+            overflow-y: scroll;
+        }
+        .email_file_button5 {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .email_file_button5 input[type="file"]{
+            position: absolute;
+            cursor: inherit;
+            font-size: 100px;
+            text-align: right;
+            outline: none;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            background: white;
+            opacity: 0;
+            display: block;
+        }
+        .email_file_button5 input[type="file"]:hover {
+            cursor: pointer;
+        }
+
+
+
+
+
+
+
+        .email_modal_to {
+            height: 100px;
+            width: 100%;
+        }
+        .email_modal_contacts {
+            height: 100px;
+            width: 100%;
+        }
+        .email_modal_toggle {
+            height: 40px;
+            position: relative;
+            padding-top: 60px;
+        }
+        .email_modal_toggle button {
+            position: absolute;
+            top: 50%;
+            margin-top: -17px;            
+        }
+        .field-validation-error {
+            color: red;
+        }

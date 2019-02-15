@@ -1,0 +1,92 @@
+﻿@model CreativaSl.Web.ViajesPorChiapas.Models.TestimonialesModels
+@{
+    ViewBag.Title = "MostrarComentario";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+@section featured
+{
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Administrador/plugins/cropper/cropper.min.css")" />
+
+    @{
+        var message = TempData["message"] ?? string.Empty;
+        var typemessage = TempData["typemessage"] ?? string.Empty;
+    }
+    <div class="page-content">
+        <div id="Error" class="error message" style="display: none">
+            <h3></h3>
+        </div>
+        <div id="Success" class="success message" style="display: none">
+            <h3></h3>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h3 class="page-title">Viaje Por Chiapas<small>  Administración</small></h3>
+                </div>
+               
+            </div>
+            <div class="tab-pane">
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Editar Vehículos</div>
+                    </div>
+                    
+                </div>
+            </div>
+           <div class="container-fluid" style="background-color:#c3c3c31f; border-radius:50px">
+            
+               <div class="jumbotron">
+                   <h3 class="display-3 text-center">@Model.nombre comentó</h3>
+                   <br />
+                   <div class="text-center">
+                       <img src="@Html.Raw(Html.Encode(Model.urlimagen.ToString().Replace("~", "")))" width="200px"  style="height: 200px;border-radius: 50%!important;" >
+                   </div>
+                   <br />
+                   <h4 class="text-center">@Model.comentario</h4>
+                   <p class="lead">
+                       <a class="btn btn-primary btn-lg" href="@Url.Action("Index","Testimoniales")" role="button">Regresar</a>
+                   </p>
+               </div>
+           </div>
+
+            
+</div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#ListTipo").val('@Model.id_testimoniales');
+        });
+
+        jQuery(document).ready(function () {
+            var message = '@message';
+            var typemessage = '@typemessage';
+
+            if (typemessage && message) {
+                if (typemessage == '1') {
+                    $('#Success').html('<h3>' + message + '<h3>');
+                    $('#Success').css("display", "block");
+                    $('#Success').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Success').css("display", "block");
+                }
+                else if (typemessage == '2') {
+                    $('#Error').html('<h3>' + message + '<h3>');
+                    $('#Error').css("display", "block");
+                    $('#Error').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Error').css("display", "block");
+                }
+            }
+        });
+    </script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/cropper/cropper.min.js")"></script>
+    <script src="@Url.Content("~/Content/Administrador/scripts/image-cropper.js")"></script>
+}
+
+
+
+
+
+
+
+

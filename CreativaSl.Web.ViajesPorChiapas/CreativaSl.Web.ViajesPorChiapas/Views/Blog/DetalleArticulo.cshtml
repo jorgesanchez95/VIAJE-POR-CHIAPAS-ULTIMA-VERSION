@@ -1,0 +1,323 @@
+﻿@using System.Data
+@using System.Text.RegularExpressions
+@using CreativaSl.Web.ViajesPorChiapas.Resources
+@model CreativaSl.Web.ViajesPorChiapas.Models.ArticulosModels
+@{
+    var locale = new Localizate();
+}
+@{
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+@section metasTags{
+    @if (Model.tablaMetaTags.Rows.Count >= 1)
+    {
+        <meta charset="utf-8">
+        <title>@Html.Raw(Model.tablaMetaTags.Rows[0]["title"])</title>
+        <meta name="author" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["author"])">
+        <meta name="subject" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["subjetc"])">
+        <meta name="description" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["description"])">
+        <meta name="keywords" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["keywords"])">
+        <meta name="robots" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["robots"])">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="@Html.Raw(Model.tablaMetaTags.Rows[0]["canonical"])" />
+
+        string Imagen = "http://www.viajeporchiapas.com" + Model.tablaArticulo.Rows[0]["pathImg"].ToString().Replace("~", "");
+        <meta property="og:url" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["canonical"])" />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["title"])" />
+        <meta property="og:description" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["description"])" />
+        <meta property="og:image" content="@Imagen"/>
+
+    }
+    else
+    {
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="author" content="">
+        <meta name="subject" content="">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="robots" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="" />
+    }
+}
+@section RedSocial{
+    <div id="fb-root"></div>
+<script>
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = 'https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v2.11';
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+    }
+<section>
+    <!-- START: PAGE TITLE -->
+    <div class="row page-title">
+        <div class="container clear-padding text-center flight-title">
+            <h3>DETALLE DE BLOG</h3>
+            <h4 class="thank">@Html.Raw(@Model.tablaArticulo.Rows[0][locale.GetResourceDetalleArticulo("titulo")])</h4>
+        </div>
+    </div>
+    <!-- END: PAGE TITLE -->
+</section>
+<!-- BEGIN: PAGE TITLE SECTION -->
+<!-- BEGIN: CONETNT SECTION -->
+<section>
+    <!-- START: POST LISTING -->
+    <div class="row">
+        <div class="container clear-padding">
+            <div>
+                <div class="col-md-8 col-sm-8">
+                    <div class="single-post-wrapper">
+                        <div class="blog-title">
+                            <h3>@Html.Raw(@Model.tablaArticulo.Rows[0][locale.GetResourceDetalleArticulo("titulo")])</h3>
+                            <p>
+                                <i class="fa fa-user"></i><a href="#">@Html.Raw(@Model.tablaArticulo.Rows[0]["creadoPor"])</a><i class="fa fa-tags"></i>
+                                @if (Model.tablaArticulo.Rows[0]["Tags"] != "")
+                                {
+                                    string tag = Model.tablaArticulo.Rows[0]["Tags"].ToString();
+                                    string[] tags = Regex.Split(tag, "{");
+                                    if (tags != null)
+                                    {
+                                        foreach (var itinerar in tags)
+                                        {
+                                            if (itinerar != "")
+                                            {
+                                                string[] tagsId = Regex.Split(itinerar, "}");
+                                                @:<a href="@Html.Raw(tagsId[0])">@Html.Raw(tagsId[1])</a>,
+                                        }
+                                        }
+                                    }
+                                }
+                        </div>
+                        <div class="main-content">
+                            @if (@Model.tablaArticulo.Rows[0]["urlYoutube"].ToString() != "")
+                            {
+                                <iframe class="youtube-video-detail video" src="@Html.Raw(@Model.tablaArticulo.Rows[0]["urlYoutube"]).ToString().Replace("https://www.youtube.com/watch?v=", "https://www.youtube.com/embed/")" allowfullscreen></iframe>
+                            }
+                            else if (@Model.tablaArticulo.Rows[0]["pathImg"].ToString() != "")
+                            {
+                                <img src="@Html.Raw(Html.Encode(@Model.tablaArticulo.Rows[0]["pathImg"].ToString().Replace("~", "")))" title="@Model.tablaArticulos.Rows[0]["title"]" alt="@Model.tablaArticulos.Rows[0]["alt"]">
+
+                            }
+                            <p style="white-space:pre-line"><strong>@Html.Raw(@Model.tablaArticulo.Rows[0][locale.GetResourceDetalleArticulo("titulo")])</strong> </p>
+                            <p style="white-space:pre-line">@Html.Raw(@Model.tablaArticulo.Rows[0][locale.GetResourceDetalleArticulo("contenido")])</p>
+                            <div class="clearfix"></div>
+                            <div class="row">
+                                <div class="fb-comments" data-href="@Request.Url.AbsoluteUri" data-numposts="5" data-width="100%" data-colorscheme="light"></div>
+                            </div>
+                            <div id="fb-root"></div>
+                            <script>
+                            (function (d, s, id) {
+                                var js, fjs = d.getElementsByTagName(s)[0];
+                                if (d.getElementById(id)) return;
+                                js = d.createElement(s);
+                                js.id = id;
+                                js.src = "//connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v2.6";
+                                fjs.parentNode.insertBefore(js, fjs);
+                            }(document, 'script', 'facebook-jssdk'));
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 booking-sidebar">
+                    <!-- <div class="sidebar-search">
+                        <form >
+                            <div class="input-group">
+                                <input class="form-control" type="text" placeholder="Search Blog">
+                                <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+                            </div>
+                        </form>
+                    </div> -->
+                    <div class="sidebar-item recent-post">
+                        <h4><i class="fa fa-clock-o"></i>@locale.GetResourceDetalleArticulo("publicacionespulares")</h4>
+                        <div class="sidebar-body">
+                            @foreach (DataRow articulosPopuares in Model.tablaArticulosPopulares.Rows)
+                            {
+                                <div class="wrapper">
+                                    <div class="col-md-3 col-sm-3 col-xs-3 clear-padding">
+                                        @if (articulosPopuares["urlYoutube"].ToString() != "" && articulosPopuares["urlYoutube"].ToString().Contains("www.youtube.com"))
+                                        {
+                                            <iframe class="youtube-video" src="@Html.Raw(articulosPopuares["urlYoutube"]).ToString().Replace("https://www.youtube.com/watch?v=", "https://www.youtube.com/embed/")" allowfullscreen></iframe>
+                                        }
+                                        @if (articulosPopuares["pathImg"].ToString() != "")
+                                        {
+                                            <img src="@Html.Raw(Html.Encode(articulosPopuares["pathImg"].ToString().Replace("~", "")))" title="@Html.Raw(articulosPopuares["title"].ToString())" alt="@Html.Raw(articulosPopuares["alt"].ToString())">
+                                        }
+                                    </div>
+                                    <div class="col-md-9 col-sm-9 col-xs-9">
+                                        @{string id_post = articulosPopuares["nombre_pagina"].ToString();}
+                                        <a href="@Url.Action("detallearticulo", "blog", new { id = id_post })">@Html.Raw(articulosPopuares[locale.GetResourceDetalleArticulo("titulo")])</a>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                               }
+                        </div>
+                    </div>
+                    <div class="sidebar-item post-cat">
+                        <h4><i class="fa fa-archive"></i>@locale.GetResourceDetalleArticulo("tags")</h4>
+                        <div class="sidebar-body">
+                            <ul class="list-group">
+                                @foreach (DataRow tags in Model.tablaTags.Rows)
+                                {
+                                    <li class="list-group-item">
+                                        <span class="badge">@tags["Total"]</span>
+                                        <a href="@tags["id_tag"]" id="@tags["id_tag"]" class="btnFiltrar"><i class="@Html.Raw(tags["icon"])"></i>@Html.Raw(" " + tags[locale.GetResourceDetalleArticulo("nombre")])</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: POST LISTING -->
+</section>
+@section Newsletter{
+    <div class="container clear-padding">
+        <div class="col-md-7 col-sm-7">
+            <div class="progressbar fade-right animate1">
+                @{
+                    string newletter = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("newsletter")].ToString();
+                    string[] newsletter = Regex.Split(newletter, "\r\n");
+                    if (newsletter != null)
+                    {
+                        int totalnewsletter = newsletter.Count();
+                        if (totalnewsletter >= 1)
+                        {
+                            <p class="NL">@Html.Raw(newsletter[0])</p>
+                        }
+                        if (totalnewsletter >= 2)
+                        {
+                            <p>@Html.Raw(newsletter[1])</p>
+                        }
+                    }
+                }
+            </div>
+            <form>
+                <div class="col-md-9 col-sm-8 col-xs-6 clear-padding">
+                    <input type="text" id="correoSuscribirse" class="form-control" required />
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 clear-padding">
+                    <button type="button" id="btnSuscribirse"><i class="fa fa-paper-plane"></i> @locale.GetResourceSeccion("suscribirse")</button>
+                </div>
+                <p id="msg_newsletter" style="font-size: 25px;"></p>
+            </form>
+        </div>
+        <div class="col-md-5 col-sm-5">
+            <div class="social-media pull-right">
+                <ul>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["facebook"])"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["twitter"])"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["instagram"])"><i class="fa fa-instagram"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["google"])"><i class="fa fa-google-plus"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["youtube"])"><i class="fa fa-youtube"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+@section Piedepagina{
+    <div class="container clear-padding">
+        <div class="col-md-3 col-sm-6 about-box">
+            @{
+                string pieAcerca = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("pieAcerca")].ToString();
+                string[] pieAcercas = Regex.Split(pieAcerca, "\r\n");
+                if (pieAcercas != null)
+                {
+                    int totalPie = pieAcercas.Count();
+                    if (totalPie >= 1)
+                    {
+                        <h3>@Html.Raw(pieAcercas[0])</h3>
+                    }
+                    if (totalPie >= 2)
+                    {
+                        <p class="descripcion">@Html.Raw(pieAcercas[1])</p>
+                    }
+                }
+            }
+        </div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Popular")</h4>
+            <ul>
+                @foreach (DataRow PaquetPulares in Model.TablaPaquetesPopulares.Rows)
+                {
+                    string id = PaquetPulares["nombre_pagina"].ToString();
+                    <li><a href="@Url.Action("DetallePaquete", "Paquetes", new { id = id })">@Html.Raw(PaquetPulares["nombre"])</a></li>
+                }
+            </ul>
+        </div>
+        <div class="clearfix visible-sm-block"></div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Servicio")</h4>
+            <ul>
+                <li><a href="@Url.Action("Index", "Home")">@locale.GetResource("inicio")</a></li>
+                <li><a href="@Url.Action("Index", "Transportacion")">@locale.GetResource("transportacion")</a></li>
+                <li><a href="@Url.Action("Index", "Promociones")">@locale.GetResource("promocion")</a></li>
+                <li><a href="@Url.Action("Index", "Galerias")">@locale.GetResource("galeria")</a></li>
+                <li class="activo"><a href="@Url.Action("Index", "Blog")">@locale.GetResource("blog")</a></li>
+                <li><a href="@Url.Action("Index", "Contactos")">@locale.GetResource("contacto")</a></li>
+                <li><a href="@Url.Action("Index", "Recomendaciones")">@locale.GetResource("recomendaciones")</a></li>
+            </ul>
+        </div>
+        <div class="col-md-3 col-sm-6 contact-box">
+            <h4>@locale.GetResourceSeccion("contacto")</h4>
+            <p>
+                <i class="fa fa-home"></i>@locale.GetResourceSeccion("direccion"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["direccion"])
+            </p>
+            <p><i class="fa fa-phone"></i>@locale.GetResourceSeccion("telefono"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["telefono"])</p>
+            <p><i class="fa fa-envelope-o"></i>@locale.GetResourceSeccion("correo"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["correo"])</p>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12 text-center we-accept">
+            <h4>@locale.GetResourceSeccion("pago")</h4>
+            <ul>
+                @foreach (DataRow FormasPago in Model.TablaFormasDePago.Rows)
+                {
+                    <li><img class="formas-pago" src="@Html.Raw(Html.Encode(FormasPago["imagen"].ToString().Replace("~", "")))" alt="@Html.Raw(FormasPago["alt"].ToString())" title="@Html.Raw(FormasPago["title"].ToString())"></li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+@section scriptF{
+<script src="@Url.Content("~/Content/Pagina/js/Sucribirte.js")"></script>
+<script src="@Url.Content("~/Content/Pagina/js/BuscarBlog.js")"></script>
+<script>
+        $(document).ready(function () {
+            BuscarBlog.init();
+            Suscribite.init();
+        });
+</script>
+<script>
+        jQuery(document).ready(function () {
+            jQuery(function ($) {
+                var swipeboxInstance = $(".swipebox-isotope:not(.isotope-hidden .swipebox-isotope)").swipebox();
+                var $container = $('#grid');
+                var optionFilter = $('#filter'),
+                optionFilterLinks = optionFilter.find('a');
+                optionFilterLinks.attr('href', '#');
+                onAnimationCompleted = function () {
+                    swipeboxInstance.refresh();
+                };
+                optionFilterLinks.click(function () {
+                    var selector = $(this).attr('data-filter');
+                    $container.isotope({
+                        filter: '.' + selector,
+                        itemSelector: '.item',
+                        layoutMode: 'fitRows',
+                        animationEngine: 'best-available',
+                    }, onAnimationCompleted);
+                    optionFilterLinks.removeClass('selected');
+                    $(this).addClass('selected');
+                    return false;
+                });
+            });
+        });
+</script>
+    }

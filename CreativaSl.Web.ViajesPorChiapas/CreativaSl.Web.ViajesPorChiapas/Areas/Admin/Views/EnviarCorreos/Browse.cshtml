@@ -1,0 +1,75 @@
+﻿@{
+    var aux = TempData["aux"] ?? string.Empty;
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Seleccionar archivo...</title>
+    <link href="@Url.Content("~/Content/Administrador/plugins/email/css/bootstrap.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/Administrador/plugins/email/css/myStyleV.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Content/Administrador/js/jquery-2.1.4.min.js")"></script>
+    <script src="@Url.Content("~/Content/Administrador/js/bootstrap.min.js")"></script>
+    <script src="@Url.Content("~/Content/Administrador/js/bootstrap-filestyle.min.js")"></script>
+    <script src="@Url.Content("~/Content/Administrador/js/myScriptV.js")"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/email/js/jquery-ui.min.js")"></script>
+    <link href="@Url.Content("~/Content/Administrador/plugins/email/css/jquery-ui.css")" rel="stylesheet" />
+    <link rel="shortcut icon" href="@Url.Content("~/" + "favicon.png")" />
+    <link href="@Url.Content("~/Content/Administrador/plugins/email/css/browse.css")" rel="stylesheet" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="col-md-12 full-width">
+            <button id="seleccionar" class="btn btn-primary pull-right">Seleccionar</button>
+        </div>
+        <div class="col-md-12 visor">
+
+        </div>
+        <div class="col-md-6 col-md-offset-4 full-width">
+            <input id="select" class="filestyle" data-buttonName="btn-success" value="Subir Imagen" type="file"/>
+        </div>
+        <div class="col-md-2 full-width">
+            <input id="upload" type="button" class="btn btn-info btn-block" value="Cargar" />
+        </div>
+        <div id="progressbar" class="progressbar">
+            <div id="progresslabel" class="progressbarlabel">0%</div>
+        </div>
+    </div>
+    <script>
+        $('#seleccionar').click(function () {
+            window.opener.CKEDITOR.tools.callFunction('@aux', 'text/hola.jpg');
+            window.close();
+        });
+
+        $(document).ready(function () {
+            $("#upload").click(function (evt) {
+                var xhr = new XMLHttpRequest();
+                var data = new FormData();
+                var files = $("#select").get(0).files;
+                for (var i = 0; i < files.length; i++) {
+                    data.append(files[i].name, files[i]);
+                }
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var progress = Math.round(evt.loaded * 100 / evt.total);
+                        $("#progressbar").progressbar("value", progress);
+                    }
+                }, false);
+                xhr.open("POST", "/Admin/EnviarCorreos/BrowseUpload");
+                xhr.send(data);
+
+                $("#progressbar").progressbar({
+                    max: 100,
+                    change: function (evt, ui) {
+                        $("#progresslabel").text($("#progressbar").progressbar("value") + "%");
+                    },
+                    complete: function (evt, ui) {
+                        $("#progresslabel").text("File upload successful!");
+                    }
+                });
+                evt.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>

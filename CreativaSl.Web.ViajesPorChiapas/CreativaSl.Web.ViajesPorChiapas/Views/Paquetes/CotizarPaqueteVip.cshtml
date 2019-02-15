@@ -1,0 +1,897 @@
+﻿@using System.Data
+@using System.Text.RegularExpressions
+@using CreativaSl.Web.ViajesPorChiapas.Resources
+@model CreativaSl.Web.ViajesPorChiapas.Models.PaquetesModels
+@{
+    Localizate locale = new Localizate();
+}
+@{
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+@section metasTags{
+    @if (Model.tablaMetaTags.Rows.Count >= 1)
+    {
+        <meta charset="utf-8">
+        <title>@Html.Raw(Model.tablaMetaTags.Rows[0]["title"])</title>
+        <meta name="author" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["author"])">
+        <meta name="subject" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["subjetc"])">
+        <meta name="description" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["description"])">
+        <meta name="keywords" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["keywords"])">
+        <meta name="robots" content="@Html.Raw(Model.tablaMetaTags.Rows[0]["robots"])">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="@Html.Raw(Model.tablaMetaTags.Rows[0]["canonical"])" />
+    }
+    else
+    {
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="author" content="">
+        <meta name="subject" content="">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="robots" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="canonical" href="" />
+    }
+}
+<div class="row page-title">
+    <div class="container clear-padding text-center">
+        <h3>PAQUETE </h3>
+        <h4>6 DIAS</h4>
+
+    </div>
+</div>
+<div class="row booking-detail">
+    <div class="container clear-padding">
+        <div class="tab-content">
+            <div id="passenger-info" class="tab-pane fade in active">
+                <div class="col-md-8 col-sm-8">
+                    <div class="passenger-detail">
+                        <h3>
+                            @Html.Raw(locale.GetResourceCotizarPaqueteVip("cotizarPaqueteVip"))</h3>
+                        @using (Html.BeginForm("cotizarpaquetevip", "paquetes", FormMethod.Post, new { id = "form_paquetesVip", @class = "form-horizontal" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true)
+                            @Html.HiddenFor(model => model.id_paquete)
+                            <div class="passenger-detail-body">
+                                <div class="col-md-6 col-sm-6">
+                                    <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("estado"))</label>
+                                    @Html.DropDownListFor(model => model.tablaSeccionesEstadosCotizar, ViewData["cmbSeccionesEstadosCotizar"] as SelectList, new { id = "ListEstados", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.tablaSeccionesEstadosCotizar)
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("destino"))</label>
+                                    @Html.DropDownListFor(model => model.tablaLugaresTuristicosMunicipiosCotizar, ViewData["cmbLugaresTuristicosMunicipiosCotizar"] as SelectList, new { id = "ListMunicipios", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.tablaLugaresTuristicosMunicipiosCotizar)
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="hotel-list-view" id="lugaresSeccion"></div>
+                                </div>
+                                <div class="col-md-12">
+                                    <h2>@Html.Raw(locale.GetResourceCotizarPaqueteVip("recorridoPaqueteVip"))</h2>
+                                    <table class="table table-reflow" id="tabla_recorrido">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:0%; font-size:12px; display:none">ID</th>
+                                                <th style="width:20%; font-size:12px">@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroDias"))</th>
+                                                <th style="width:60%; font-size:12px">@Html.Raw(locale.GetResourceCotizarPaqueteVip("destino"))</th>
+                                                <th style="width:20%; font-size:12px">@Html.Raw(locale.GetResourceCotizarPaqueteVip("quitar"))</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-12">
+                                    <p id="estatus_recorrido" style="height:40px; margin-top:40px; font-size:15px; color:black; text-align:center; font-weight:bold;   line-height:35px; background-color:red"></p>
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("nombre"))</label>
+                                    <div class="input-group">
+                                        @Html.TextBoxFor(model => model.nombreCotizar, new { id = "nombreCotizar", @class = "form-control" })
+                                        <span class="input-group-addon cotizar-form"><i class="fa fa-user fa-fw"></i></span>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.nombreCotizar)
+                                       
+                                    </div>
+                                <div class="col-md-6 ol-sm-6">
+                                    <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("apellidoPaterno"))</label>
+                                    <div class="input-group">
+                                        @Html.TextBoxFor(model => model.apellidoPaternoCotizar, new { id = "apellidoPaternoCotizar", @class = "form-control" })
+                                        <span class="input-group-addon cotizar-form"><i class="fa fa-user fa-fw"></i></span>
+                                    </div>
+                                        @Html.ValidationMessageFor(model => model.apellidoPaternoCotizar)
+                                    </div>
+                                <div class="col-md-6 ol-sm-6">
+                                    <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("apellidoMaterno"))</label>
+                                    <div class="input-group">
+                                        @Html.TextBoxFor(model => model.apellidoMaternoCotizar, new { id = "apellidoMaternoCotizar", @class = "form-control" })
+                                        <span class="input-group-addon cotizar-form"><i class="fa fa-user fa-fw"></i></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 ol-sm-6">
+                                    <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("email"))</label>
+                                    <div class="input-group">
+                                        @Html.TextBoxFor(model => model.emailCotizar, new { id = "emailCotizar", @class = "form-control" })
+                                        <span class="input-group-addon cotizar-form"><i class="fa fa-envelope-o fa-fw"></i></span>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.emailCotizar)
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 ol-sm-6">
+                                        <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("telefono"))</label>
+                                        <div class="input-group">
+                                            @Html.TextBoxFor(model => model.telefonoCotizar, new { id = "telefonoCotizar", @class = "form-control" })
+                                            <span class="input-group-addon cotizar-form"><i class="fa fa-phone fa-fw"></i></span>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.telefonoCotizar)
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6">
+                                        <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("cuentaBoletoAvion"))</label>
+                                        @Html.DropDownListFor(model => model.BoletoCotizar, new SelectListItem[]
+                                    {
+                                        new SelectListItem() {Text = "SI", Value = "true", Selected = true},
+                                        new SelectListItem() {Text = "NO", Value = "false"},
+                                    }, new { id = "BoletoCotizar", @class = "form-control" })
+                                    </div>
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6" id="aeropuertollegada_div">
+                                        <label>@locale.GetResourceCotizar("aeropuertoLlegada")</label>
+                                        @Html.TextBoxFor(model => model.aeropuertoLlegadaCotizar, new { id = "aeropuertoLlegadaCotizar", @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.aeropuertoLlegadaCotizar)
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6" id="aeropuertosalida_div">
+                                        <label>@locale.GetResourceCotizar("aeropuertoSalida")</label>
+                                        @Html.TextBoxFor(model => model.aeropuertoSalidaCotizar, new { id = "aeropuertoSalidaCotizar", @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.aeropuertoSalidaCotizar)
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6">
+                                        <label>@locale.GetResourceCotizar("fechaLlegada")</label>
+                                        <div id="datetimepicker1" class="input-append date calendar">
+                                            @Html.TextBoxFor(model => model.fechaLlegadaCotizar, "{0:dd/MM/yyyy}", new { id = "fechaLlegadaCotizar", @class = "form-control calendarFecha", @readonly = "readonly" })
+                                            @Html.ValidationMessageFor(model => model.fechaLlegadaCotizar)
+                                            <span class="add-on">
+                                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6">
+                                        <label>@locale.GetResourceCotizar("fechaSalida")</label>
+                                        <div id="datetimepicker2" class="input-append date calendar">
+                                            @Html.TextBoxFor(model => model.fechaSalidaCotizar, "{0:dd/MM/yyyy}", new { id = "fechaSalidaCotizar", @class = "form-control calendarFecha", @readonly = "readonly" })
+                                            @Html.ValidationMessageFor(model => model.fechaSalidaCotizar)
+                                            <span class="add-on">
+                                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6" id="horallegada_div">
+                                        <label>@locale.GetResourceCotizar("horaLlegada")</label>
+                                        <div id="timepicker1" class="input-append time">
+                                            @Html.TextBoxFor(model => model.horaLlegadaCotizar, new { id = "horaLlegadaCotizar", @class = "form-control calendarFecha", @readonly = "readonly" })
+                                            @Html.ValidationMessageFor(model => model.horaLlegadaCotizar)
+                                            <span class="add-on">
+                                                <i data-time-icon="icon-time" data-date-icon="icon-time"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6" id="horasalida_div">
+                                        <label>@locale.GetResourceCotizar("horaSalida")</label>
+                                        <div id="timepicker2" class="input-append time">
+                                            @Html.TextBoxFor(model => model.horaSalidaCotizar, new { id = "horaSalidaCotizar", @class = "form-control calendarFecha", @readonly = "readonly" })
+                                            @Html.ValidationMessageFor(model => model.horaSalidaCotizar)
+                                            <span class="add-on">
+                                                <i data-time-icon="icon-time" data-date-icon="icon-time"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6">
+                                        <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("categoriaHotel"))</label>
+                                        @Html.DropDownListFor(model => model.categoriaHotelCotizar, new SelectListItem[]
+                                    {
+                                        new SelectListItem() {Text = "2 Estrellas", Value = "2", Selected = true},
+                                        new SelectListItem() {Text = "3 Estrellas", Value = "3"},
+                                        new SelectListItem() {Text = "4 Estrellas", Value = "4"},
+                                        new SelectListItem() {Text = "5 Estrellas", Value = "5"}
+                                    }, new { id = "categoriaHotelCotizar", @class = "form-control" })
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6">
+                                        <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroPersonas"))</label>
+                                        @Html.DropDownListFor(model => model.numeroPersonasCotizar, new SelectListItem[]
+                                    {
+                                        new SelectListItem() {Text = "1", Value = "1", Selected = true},
+                                        new SelectListItem() {Text = "2", Value = "2"},
+                                        new SelectListItem() {Text = "3", Value = "3"},
+                                        new SelectListItem() {Text = "4", Value = "4"},
+                                        new SelectListItem() {Text = "5", Value = "5"},
+                                        new SelectListItem() {Text = "6", Value = "6"},
+                                        new SelectListItem() {Text = "7", Value = "7"},
+                                        new SelectListItem() {Text = "8", Value = "8"},
+                                        new SelectListItem() {Text = "9", Value = "9"},
+                                        new SelectListItem() {Text = "10", Value = "10"},
+                                        new SelectListItem() {Text = "11", Value = "11"},
+                                        new SelectListItem() {Text = "12", Value = "12"},
+                                        new SelectListItem() {Text = "13", Value = "13"},
+                                        new SelectListItem() {Text = "14", Value = "14"},
+                                        new SelectListItem() {Text = "15", Value = "15"},
+                                    }, new { id = "numeroPersonasCotizar", @class = "form-control" })
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6">
+                                        <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroAdultos"))</label>
+                                        @Html.DropDownListFor(model => model.numeroAdultoCotizar, new SelectListItem[]
+                                    {
+                                    }, new { id = "numeroAdultoCotizar", @class = "form-control" })
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6">
+                                        <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("menores511"))</label>
+                                        @Html.DropDownListFor(model => model.numeroNiños511Cotizar, new SelectListItem[]
+                                    {
+                                    }, new { id = "numeroNiños511Cotizar", @class = "form-control" })
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6">
+                                        <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("menores14"))</label>
+                                        @Html.DropDownListFor(model => model.numeroNiños14Cotizar, new SelectListItem[]
+                                    {
+                                    }, new { id = "numeroNiños14Cotizar", @class = "form-control" })
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6">
+                                        <p id="estatus_numpersonas" style="height:auto; margin-top:40px; font-size:15px; color:white; text-align:center; font-weight:bold;   line-height:35px; background-color:orange"></p>
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6">
+                                        <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroHabitaciones"))</label>
+                                        @Html.DropDownListFor(model => model.numeroHabitacionesCotizar, new SelectListItem[]
+                                    {
+                                        new SelectListItem() {Text = "1", Value = "1", Selected = true},
+                                        new SelectListItem() {Text = "2", Value = "2"},
+                                        new SelectListItem() {Text = "3", Value = "3"},
+                                        new SelectListItem() {Text = "4", Value = "4"},
+                                        new SelectListItem() {Text = "5", Value = "5"},
+                                        new SelectListItem() {Text = "6", Value = "6"},
+                                        new SelectListItem() {Text = "7", Value = "7"},
+                                        new SelectListItem() {Text = "8", Value = "8"},
+                                        new SelectListItem() {Text = "9", Value = "9"},
+                                        new SelectListItem() {Text = "10", Value = "10"},
+                                        new SelectListItem() {Text = "11", Value = "11"},
+                                        new SelectListItem() {Text = "12", Value = "12"},
+                                        new SelectListItem() {Text = "13", Value = "13"},
+                                        new SelectListItem() {Text = "14", Value = "14"},
+                                        new SelectListItem() {Text = "15", Value = "15"},
+                                    }, new { id = "numeroHabitacionesCotizar", @class = "form-control" })
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6"></div>
+                                    <div class="col-md-12">
+                                        <div style="width:100%; height:50px"></div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p id="msghab" style="height:auto; font-size:12pt; color:white; text-align:center; font-weight:bold;   line-height:35px; background-color:#2B9EB6">
+                                            <label>@locale.GetResourceCotizarPaqueteVip("msghabitaciones") </label>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <h2>@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroPersonaHabitacion"))</h2>
+                                        <table class="table table-reflow" id="tabla_habitacion_cama">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:4%; font-size:12px">#</th>
+                                                    <th style="width:24%; font-size:12px">@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroAdultos"))</th>
+                                                    <th style="width:24%; font-size:12px">@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroNiño511"))</th>
+                                                    <th style="width:24%; font-size:12px">@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroNiño14"))</th>
+                                                    <th style="width:24%; font-size:12px">@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroCamas"))</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p id="estatus_numpersonasTabla" style="height:auto; margin-top:40px; font-size:15px; color:white; text-align:center; font-weight:bold;   line-height:35px; background-color:orange"></p>
+                                    </div>
+                                    <div class="col-md-6 ol-sm-6">
+                                        <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("tipoVehiculo"))</label>
+                                        @Html.DropDownListFor(model => model.tablaTipoVehiculosCotizar, ViewData["cmbTipoVehiculosCotizar"] as SelectList, new { id = "ListMunicipios", @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.tablaTipoVehiculosCotizar)
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("observaciones"))</label>
+                                        @Html.TextAreaFor(model => model.observacionesCotizar, new { id = "observacionesCotizar", @class = "form-control text-area-g", @rows = "4" })
+                                        @Html.ValidationMessageFor(model => model.observacionesCotizar)
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label>@Html.Raw(locale.GetResourceCotizarPaqueteVip("termino24Horas")) </label>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="text-center">
+                                            <button type="submit" id="cotizar_paquetes1">@Html.Raw(locale.GetResourceCotizarPaqueteVip("cotizar")) <i class="fa fa-chevron-right"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                        }
+</div>
+                </div>
+                <div class="col-md-4 package-detail-sidebar">
+                    <div class="col-md-12 sidebar-wrapper clear-padding">
+                        <div class="assistance-box sidebar-item">
+                            <h4><i class="fa fa-phone"></i>@locale.GetResourceCotizar("necesitaAyuda")</h4>
+                            <div class="assitance-body text-center">
+                                <h5>@locale.GetResourceCotizar("necesitaAyudaComunicarse")</h5>
+                                <h2>@Html.Raw(Model.tablaDatosGenerales.Rows[0]["telefono"])</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Newsletter{
+    <div class="container clear-padding">
+        <div class="col-md-7 col-sm-7">
+            <div class="progressbar fade-right animate1">
+                @{
+                    string newletter = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("newsletter")].ToString();
+                    string[] newsletter = Regex.Split(newletter, "\r\n");
+                    if (newsletter != null)
+                    {
+                        int totalnewsletter = newsletter.Count();
+                        if (totalnewsletter >= 1)
+                        {
+                            <p class="NL">@Html.Raw(newsletter[0])</p>
+                        }
+                        if (totalnewsletter >= 2)
+                        {
+                            <p>@Html.Raw(newsletter[1])</p>
+                        }
+                    }
+                }
+            </div>
+            <form>
+                <div class="col-md-9 col-sm-8 col-xs-6 clear-padding">
+                    <input type="text" id="correoSuscribirse" class="form-control" required />
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6 clear-padding">
+                    <button type="button" id="btnSuscribirse"><i class="fa fa-paper-plane"></i> @locale.GetResourceSeccion("suscribirse")</button>
+                </div>
+                <p id="msg_newsletter" style="font-size: 25px;"></p>
+            </form>
+        </div>
+        <div class="col-md-5 col-sm-5">
+            <div class="social-media pull-right">
+                <ul>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["facebook"])"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["twitter"])"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["instagram"])"><i class="fa fa-instagram"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["google"])"><i class="fa fa-google-plus"></i></a></li>
+                    <li><a href="@Html.Raw(Model.tablaDatosGenerales.Rows[0]["youtube"])"><i class="fa fa-youtube"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+@section Piedepagina{
+    <div class="container clear-padding">
+        <div class="col-md-3 col-sm-6 about-box">
+            @{
+                string pieAcerca = Model.tablaDatosGenerales.Rows[0][locale.GetResourceSeccion("pieAcerca")].ToString();
+                string[] pieAcercas = Regex.Split(pieAcerca, "\r\n");
+                if (pieAcercas != null)
+                {
+                    int totalPie = pieAcercas.Count();
+                    if (totalPie >= 1)
+                    {
+                        <h3>@Html.Raw(pieAcercas[0])</h3>
+                    }
+                    if (totalPie >= 2)
+                    {
+                        <p class="descripcion">@Html.Raw(pieAcercas[1])</p>
+                    }
+                }
+            }
+        </div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Popular")</h4>
+            <ul>
+                @foreach (DataRow PaquetPulares in Model.TablaPaquetesPopulares.Rows)
+                {
+                    string id = PaquetPulares["nombre_pagina"].ToString();
+                    <li><a href="@Url.Action("DetallePaquete", "Paquetes", new { id = id })">@Html.Raw(PaquetPulares["nombre"])</a></li>
+                }
+            </ul>
+        </div>
+        <div class="clearfix visible-sm-block"></div>
+        <div class="col-md-3 col-sm-6 links">
+            <h4>@locale.GetResourceSeccion("Servicio")</h4>
+            <ul>
+                <li><a href="@Url.Action("Index", "Home")">@locale.GetResource("inicio")</a></li>
+                <li><a href="@Url.Action("Index", "Transportacion")">@locale.GetResource("transportacion")</a></li>
+                <li><a href="@Url.Action("Index", "Promociones")">@locale.GetResource("promocion")</a></li>
+                <li><a href="@Url.Action("Index", "Galerias")">@locale.GetResource("galeria")</a></li>
+                <li><a href="@Url.Action("Index", "Blog")">@locale.GetResource("blog")</a></li>
+                <li><a href="@Url.Action("Index", "Contactos")">@locale.GetResource("contacto")</a></li>
+                <li><a href="@Url.Action("Index", "Recomendaciones")">@locale.GetResource("recomendaciones")</a></li>
+            </ul>
+        </div>
+        <div class="col-md-3 col-sm-6 contact-box">
+            <h4>@locale.GetResourceSeccion("contacto")</h4>
+            <p>
+                <i class="fa fa-home"></i>@locale.GetResourceSeccion("direccion"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["direccion"])
+            </p>
+            <p><i class="fa fa-phone"></i>@locale.GetResourceSeccion("telefono"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["telefono"])</p>
+            <p><i class="fa fa-envelope-o"></i>@locale.GetResourceSeccion("correo"): @Html.Raw(Model.tablaDatosGenerales.Rows[0]["correo"])</p>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12 text-center we-accept">
+            <h4>@locale.GetResourceSeccion("pago")</h4>
+            <ul>
+                @foreach (DataRow FormasPago in Model.TablaFormasDePago.Rows)
+                {
+                    <li><img class="formas-pago" src="@Html.Raw(Html.Encode(FormasPago["imagen"].ToString().Replace("~", "")))" alt="@Html.Raw(FormasPago["alt"].ToString())" title="@Html.Raw(FormasPago["title"].ToString())"></li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+@section scriptF{
+    <script>
+            var validacionLoad1 = 0;
+            var validacionLoad2 = 0;
+            var validacionLoad3 = 0;
+            var numeroPersonasCotizar = 0;
+            var numeroAdultoCotizar = 0;
+            var numeroNiños511Cotizar = 0;
+            var numeroNiños14Cotizar = 0;
+            var numeroLugaresTuristicos = 0;
+            $(document).ready(function () {
+                $("#numeroPersonasCotizar").change(function () {
+                    numeroPersonasCotizar = parseInt($("#numeroPersonasCotizar").val());
+                    $("#numeroAdultoCotizar").empty();
+                    $("#numeroNiños511Cotizar").empty();
+                    $("#numeroNiños14Cotizar").empty();
+                    for (var j = 0; j < (numeroPersonasCotizar + 1) ; j++) {
+                        $('#numeroAdultoCotizar').append($('<option>', { value: j, text: j }));
+                        $('#numeroNiños511Cotizar').append($('<option>', { value: j, text: j }));
+                        $('#numeroNiños14Cotizar').append($('<option>', { value: j, text: j }));
+                    }
+                    HabitacionesXPersonas();
+                });
+                $("#numeroAdultoCotizar").change(function () {
+                    NumHabitacionesMinimo();
+                    HabitacionesXPersonas();
+                });
+                $("#numeroNiños511Cotizar").change(function () {
+                    NumHabitacionesMinimo();
+                    HabitacionesXPersonas();
+                });
+                $("#numeroNiños14Cotizar").change(function () {
+                    HabitacionesXPersonas();
+                });
+                $("#numeroHabitacionesCotizar").change(function () {
+                    $("#tabla_habitacion_cama tbody").empty();
+                    var numCamas = parseInt($("#numeroHabitacionesCotizar").val());
+                    for (var j = 1; j <= (numCamas) ; j++) {
+                        $("#tabla_habitacion_cama tbody").append("<tr><td style='width:4%;font-size: 25px;align-items: center;'>" + j + "</td><td style='width:24%'><select name='numAdultos_tabla_td" + j + "' class='form-control' id='numAdultos_tabla_td" + j + "'><option value='0' selected>0</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option></select></td><td style='width:24%'><select name='numNinosMenores11_tabla_td" + j + "' class='form-control' id='numNinosMenores11_tabla_td" + j + "'><option value='0' selected>0</option><option value='1' >1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option></select></td><td style='width:24%'><select name='numNinosMenores4_tabla_td" + j + "' class='form-control' id='numNinosMenores4_tabla_td" + j + "'><option value='0' selected>0</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option></select></td><td style='width:24%'><select name='numCamas_tabla_td" + j + "' class='form-control' id='numCamas_tabla_td" + j + "'><option value='1' selected>1</option><option value='2'>2</option></select></td></tr>");
+                    }
+                    for (var j = 1; j <= (numCamas) ; j++) {
+                        $("#numAdultos_tabla_td" + j).change(function () {
+                            HabitacionesXPersonas();
+                        });
+                        $("#numNinosMenores11_tabla_td" + j).change(function () {
+                            HabitacionesXPersonas();
+                        });
+                        $("#numNinosMenores4_tabla_td" + j).change(function () {
+                            HabitacionesXPersonas();
+                        });
+                    }
+                    HabitacionesXPersonas();
+                });
+                function NumHabitacionesMinimo() {
+                    var NAdultoCotizar = parseInt($("#numeroAdultoCotizar").val());
+                    var NNiños511Cotizar = parseInt($("#numeroNiños511Cotizar").val());
+                    var numHabitaciónIgnorar = float2int((((NAdultoCotizar + NNiños511Cotizar) - 1) / 4));
+                    $("#numeroHabitacionesCotizar").empty();
+                    for (var j = 1; j <= 15 ; j++) {
+                        if (j <= numHabitaciónIgnorar) {
+                            $('#numeroHabitacionesCotizar').append($('<option>', { value: j, text: j, disabled: true }));
+                        }
+                        else
+                            $('#numeroHabitacionesCotizar').append($('<option>', { value: j, text: j }));
+                    }
+                }
+                function float2int(value) {
+                    return value | 0;
+                }
+                function HabitacionesXPersonas() {
+                    var ValidacionWill = 0;
+                    numeroPersonasCotizar = parseInt($("#numeroPersonasCotizar").val());
+                    numeroAdultoCotizar = parseInt($("#numeroAdultoCotizar").val());
+                    numeroNiños511Cotizar = parseInt($("#numeroNiños511Cotizar").val());
+                    numeroNiños14Cotizar = parseInt($("#numeroNiños14Cotizar").val());
+                    var numeroPersonasTablaCotizar = 0;
+                    var numeroAdultos_TablaCotizar = 0;
+                    var numeroNinosMenores11TablaCotizar = 0;
+                    var numeroNinosMenores4TablaCotizar = 0;
+                    var numCamaSobrante = 0;
+                    var numCamas = parseInt($("#numeroHabitacionesCotizar").val());
+                    for (var j = 1; j <= (numCamas) ; j++) {
+                        numeroAdultos_TablaCotizar = numeroAdultos_TablaCotizar + parseInt($("#numAdultos_tabla_td" + j).val());
+                        numeroNinosMenores11TablaCotizar = numeroNinosMenores11TablaCotizar + parseInt($("#numNinosMenores11_tabla_td" + j).val());
+                        numeroNinosMenores4TablaCotizar = numeroNinosMenores4TablaCotizar + parseInt($("#numNinosMenores4_tabla_td" + j).val());
+                        if ((parseInt($("#numAdultos_tabla_td" + j).val()) + parseInt($("#numNinosMenores11_tabla_td" + j).val()) + parseInt($("#numNinosMenores4_tabla_td" + j).val())) > 0)
+                            numCamaSobrante = numCamaSobrante + 1;
+                        if (parseInt($("#numAdultos_tabla_td" + j).val()) + parseInt($("#numNinosMenores11_tabla_td" + j).val()) > 4) {
+                            ValidacionWill = 10;
+                            $("#estatus_numpersonasTabla").css('background-color', 'orange');
+                            $("#estatus_numpersonasTabla").css('color', 'white');
+                            $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("validacionWill01"))');
+                        }
+                        else
+                            if ((parseInt($("#numAdultos_tabla_td" + j).val()) + parseInt($("#numNinosMenores11_tabla_td" + j).val()) + parseInt($("#numNinosMenores4_tabla_td" + j).val())) > 5) {
+                                ValidacionWill = 15;
+                                $("#estatus_numpersonasTabla").css('background-color', 'orange');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("validacionWill01"))');
+                            }
+                    }
+                    if (ValidacionWill == 0) {
+                        if (numeroPersonasCotizar > (numeroAdultoCotizar + numeroNiños511Cotizar + numeroNiños14Cotizar)) {
+                            if (validacionLoad1 < 2) {
+                                $("#estatus_numpersonas").css('background-color', 'orange');
+                                $("#estatus_numpersonas").css('color', 'white');
+                                $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizar("validacionLoad1"))');
+                                validacionLoad1 = validacionLoad1 + 1;
+                            }
+                            else {
+                                $("#estatus_numpersonas").css('background-color', 'red');
+                                $("#estatus_numpersonas").css('color', 'white');
+                                $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizar("numeroPersonaMenorSolicitada"))');
+                            }
+                        }
+                        else if (numeroPersonasCotizar < (numeroAdultoCotizar + numeroNiños511Cotizar + numeroNiños14Cotizar)) {
+                            if (validacionLoad1 < 2) {
+                                $("#estatus_numpersonas").css('background-color', 'orange');
+                                $("#estatus_numpersonas").css('color', 'white');
+                                $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizar("validacionLoad1"))');
+                            }
+                            else {
+                                $("#estatus_numpersonas").css('background-color', 'red');
+                                $("#estatus_numpersonas").css('color', 'white');
+                                $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizar("numeroPersonaMayorSolicitada"))');
+                            }
+                        }
+                        else {
+                            $("#estatus_numpersonas").css('background-color', 'green');
+                            $("#estatus_numpersonas").css('color', 'white');
+                            $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizar("numeroPersonasCorrectas"))');
+                        }
+
+                        if (numeroAdultoCotizar > (numeroAdultos_TablaCotizar)) {
+                            if (validacionLoad2 < 2) {
+                                $("#estatus_numpersonasTabla").css('background-color', 'orange');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("validacionLoad2"))');
+                                validacionLoad2 = validacionLoad2 + 1;
+                            }
+                            else {
+                                $("#estatus_numpersonasTabla").css('background-color', 'red');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("numeroPersonasAdultasAsignadaMenosSolicitada"))');
+                            }
+                        }
+                        else if (numeroAdultoCotizar < (numeroAdultos_TablaCotizar)) {
+                            if (validacionLoad2 < 2) {
+                                $("#estatus_numpersonasTabla").css('background-color', 'orange');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("validacionLoad2"))');
+                                validacionLoad2 = validacionLoad2 + 1;
+                            }
+                            else {
+                                $("#estatus_numpersonasTabla").css('background-color', 'red');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("numeroPersonasAdultasAsignadaMayorSolicitada"))');
+                            }
+                        }
+                        else if (numeroNiños511Cotizar > (numeroNinosMenores11TablaCotizar)) {
+                            if (validacionLoad2 < 2) {
+                                $("#estatus_numpersonasTabla").css('background-color', 'orange');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("validacionLoad2"))');
+                                validacionLoad2 = validacionLoad2 + 1;
+                            }
+                            else {
+                                $("#estatus_numpersonasTabla").css('background-color', 'red');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("numeroNiño51AsignadaMenorSolicitada"))');
+                            }
+                        }
+                        else if (numeroNiños511Cotizar < (numeroNinosMenores11TablaCotizar)) {
+                            if (validacionLoad2 < 2) {
+                                $("#estatus_numpersonasTabla").css('background-color', 'orange');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("validacionLoad2"))');
+                                validacionLoad2 = validacionLoad2 + 1;
+                            }
+                            else {
+                                $("#estatus_numpersonasTabla").css('background-color', 'red');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("numeroNiño51AsignadaMayorSolicitada"))');
+                            }
+                        }
+                        else if (numeroNiños14Cotizar > (numeroNinosMenores4TablaCotizar)) {
+                            if (validacionLoad2 < 2) {
+                                $("#estatus_numpersonasTabla").css('background-color', 'orange');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("validacionLoad2"))');
+                                validacionLoad2 = validacionLoad2 + 1;
+                            }
+                            else {
+                                $("#estatus_numpersonasTabla").css('background-color', 'red');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("numeroNiño14AsignadaMenorSolicitada"))');
+                            }
+                        }
+                        else if (numeroNiños14Cotizar < (numeroNinosMenores4TablaCotizar)) {
+                            if (validacionLoad2 < 2) {
+                                $("#estatus_numpersonasTabla").css('background-color', 'orange');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("validacionLoad2"))');
+                                validacionLoad2 = validacionLoad2 + 1;
+                            }
+                            else {
+                                $("#estatus_numpersonasTabla").css('background-color', 'red');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("numeroNiño14AsignadaMayorSolicitada"))');
+                            }
+                        }
+                        else if (numCamas > (numCamaSobrante)) {
+                            if (validacionLoad2 < 2) {
+                                $("#estatus_numpersonasTabla").css('background-color', 'orange');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("validacionLoad2"))');
+                                validacionLoad2 = validacionLoad2 + 1;
+                            }
+                            else {
+                                $("#estatus_numpersonasTabla").css('background-color', 'red');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("numeroCamaAsignadaMenorSolicitada"))');
+                            }
+                        }
+                        else if (numCamas < (numCamaSobrante)) {
+                            if (validacionLoad2 < 2) {
+                                $("#estatus_numpersonasTabla").css('background-color', 'orange');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("validacionLoad2"))');
+                                validacionLoad2 = validacionLoad2 + 1;
+                            }
+                            else {
+                                $("#estatus_numpersonasTabla").css('background-color', 'red');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("numeroCamaAsignadaMayorSolicitada"))');
+                            }
+                        }
+                        else {
+                            $("#estatus_numpersonasTabla").css('background-color', 'green');
+                            $("#estatus_numpersonasTabla").css('color', 'white');
+                            $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizar("numeroPersonaAsignadaCorrectamente"))');
+                        }
+                    }
+}
+                $("#form_paquetesVip").submit(function (e) {
+                    var banValidacion1 = 0;
+                    var banValidacion2 = 0;
+                    var banValidacion3 = 0;
+                    //Cambio Will
+                    var banValidacionWill = 0;
+                    numeroPersonasCotizar = parseInt($("#numeroPersonasCotizar").val());
+                    numeroAdultoCotizar = parseInt($("#numeroAdultoCotizar").val());
+                    numeroNiños511Cotizar = parseInt($("#numeroNiños511Cotizar").val());
+                    numeroNiños14Cotizar = parseInt($("#numeroNiños14Cotizar").val());
+                    var numeroPersonasTablaCotizar = 0;
+                    var numeroAdultos_TablaCotizar = 0;
+                    var numeroNinosMenores11TablaCotizar = 0;
+                    var numeroNinosMenores4TablaCotizar = 0;
+                    var numCamaSobrante = 0;
+                    var numCamas = parseInt($("#numeroHabitacionesCotizar").val());
+                    for (var j = 1; j <= (numCamas) ; j++) {
+                        numeroAdultos_TablaCotizar = numeroAdultos_TablaCotizar + parseInt($("#numAdultos_tabla_td" + j).val());
+                        numeroNinosMenores11TablaCotizar = numeroNinosMenores11TablaCotizar + parseInt($("#numNinosMenores11_tabla_td" + j).val());
+                        numeroNinosMenores4TablaCotizar = numeroNinosMenores4TablaCotizar + parseInt($("#numNinosMenores4_tabla_td" + j).val());
+                        if ((parseInt($("#numAdultos_tabla_td" + j).val()) + parseInt($("#numNinosMenores11_tabla_td" + j).val()) + parseInt($("#numNinosMenores4_tabla_td" + j).val())) > 0)
+                            numCamaSobrante = numCamaSobrante + 1;
+                        if ((parseInt($("#numAdultos_tabla_td" + j).val()) + parseInt($("#numNinosMenores11_tabla_td" + j).val())) > 4) {
+                            banValidacionWill = 10;
+                            $("#estatus_numpersonasTabla").css('background-color', 'orange');
+                            $("#estatus_numpersonasTabla").css('color', 'white');
+                            $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("validacionWill01"))');
+                        }
+                        else
+                            if ((parseInt($("#numAdultos_tabla_td" + j).val()) + parseInt($("#numNinosMenores11_tabla_td" + j).val()) + parseInt($("#numNinosMenores4_tabla_td" + j).val())) > 5) {
+                                banValidacionWill = 15;
+                                $("#estatus_numpersonasTabla").css('background-color', 'orange');
+                                $("#estatus_numpersonasTabla").css('color', 'white');
+                                $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("validacionWill01"))');
+                            }
+                    }
+                    if (banValidacionWill == 0) {
+
+                        if (numeroPersonasCotizar > (numeroAdultoCotizar + numeroNiños511Cotizar + numeroNiños14Cotizar)) {
+                            $("#estatus_numpersonas").css('background-color', 'red');
+                            $("#estatus_numpersonas").css('color', 'white');
+                            $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroPersonasMenorSolicitada"))');
+                        }
+                        else if (numeroPersonasCotizar < (numeroAdultoCotizar + numeroNiños511Cotizar + numeroNiños14Cotizar)) {
+                            $("#estatus_numpersonas").css('background-color', 'red');
+                            $("#estatus_numpersonas").css('color', 'white');
+                            $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroPersonasMayorSolicitada"))');
+                        }
+                        else {
+                            banValidacion1 = 1;
+                            $("#estatus_numpersonas").css('background-color', 'green');
+                            $("#estatus_numpersonas").css('color', 'white');
+                            $("#estatus_numpersonas").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroPersonasCorrectas"))');
+                        }
+                        if (numeroAdultoCotizar > (numeroAdultos_TablaCotizar)) {
+                            $("#estatus_numpersonasTabla").css('background-color', 'red');
+                            $("#estatus_numpersonas").css('color', 'white');
+                            $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroPersonasAdultasAsigMenorSolicitada"))');
+                        }
+                        else if (numeroAdultoCotizar < (numeroAdultos_TablaCotizar)) {
+                            $("#estatus_numpersonasTabla").css('background-color', 'red');
+                            $("#estatus_numpersonas").css('color', 'white');
+                            $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroPersonasAdultasAsigMayorSolicitada"))');
+                        }
+                        else if (numeroNiños511Cotizar > (numeroNinosMenores11TablaCotizar)) {
+                            $("#estatus_numpersonasTabla").css('background-color', 'red');
+                            $("#estatus_numpersonas").css('color', 'white');
+                            $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroNiño51AsigMenorSolicitada"))');
+                        }
+                        else if (numeroNiños511Cotizar < (numeroNinosMenores11TablaCotizar)) {
+                            $("#estatus_numpersonasTabla").css('background-color', 'red');
+                            $("#estatus_numpersonas").css('color', 'white');
+                            $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroNiño51AsigMayorSolicitada"))');
+                        }
+                        else if (numeroNiños14Cotizar > (numeroNinosMenores4TablaCotizar)) {
+                            $("#estatus_numpersonasTabla").css('background-color', 'red');
+                            $("#estatus_numpersonas").css('color', 'white');
+                            $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroNiño14AsigMenorSolicitada"))');
+                        }
+                        else if (numeroNiños14Cotizar < (numeroNinosMenores4TablaCotizar)) {
+                            $("#estatus_numpersonasTabla").css('background-color', 'red');
+                            $("#estatus_numpersonas").css('color', 'white');
+                            $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroNiño14AgigMayorSolicitada"))');
+                        }
+                        else if (numCamas > (numCamaSobrante)) {
+                            $("#estatus_numpersonasTabla").css('background-color', 'red');
+                            $("#estatus_numpersonas").css('color', 'white');
+                            $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroCamasAsigMenorSolicitada"))');
+                        }
+                        else if (numCamas < (numCamaSobrante)) {
+                            $("#estatus_numpersonasTabla").css('background-color', 'red');
+                            $("#estatus_numpersonas").css('color', 'white');
+                            $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroCamasAsigMayorSolicitada"))');
+                        }
+                        else {
+                            banValidacion2 = 1;
+                            $("#estatus_numpersonasTabla").css('background-color', 'green');
+                            $("#estatus_numpersonasTabla").css('color', 'white');
+                            $("#estatus_numpersonasTabla").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("numeroPersonasAsigCorrectamente"))');
+                            if ($("#tabla_recorrido tbody").children('tr').length > 0) {
+                                banValidacion3 = 1;
+                                $("#estatus_recorrido").css('background-color', 'orange');
+                                $("#estatus_recorrido").css('color', 'white');
+                                $("#estatus_recorrido").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("existeAlmenosLugarTuristico"))');
+                            }
+                            else {
+                                banValidacion3 = 0;
+                                $("#estatus_recorrido").css('background-color', 'red');
+                                $("#estatus_recorrido").css('color', 'white');
+                                $("#estatus_recorrido").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("noExisteAlmenosLugarTuristico"))');
+                            }
+                        }
+                    }
+                    if (banValidacion1 == 1 && banValidacion2 == 1 && banValidacion3 == 1 && banValidacionWill == 0) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                });
+                $("#BoletoCotizar").change(function () {
+                    var aux = 0;
+                    aux = $("#BoletoCotizar").val();
+                    if (aux == "true") {
+                        $('#aeropuertollegada_div').show();
+                        $('#aeropuertosalida_div').show();
+                        $('#horallegada_div').show();
+                        $('#horasalida_div').show();
+                    }
+                    else {
+                        $('#aeropuertollegada_div').hide();
+                        $('#aeropuertosalida_div').hide();
+                        $('#horallegada_div').hide();
+                        $('#horasalida_div').hide();
+                    }
+                });
+                $("#ListEstados").change(function () {
+                    var id = $("#ListEstados").val();
+                    $.ajax({
+                        url: "/Paquetes/Lugares",
+                        data: { id: id },
+                        dataType: "json",
+                        type: "POST",
+                        error: function () {
+                            $("#ListMunicipios").html('');
+                            $("#lugaresSeccion").html('');
+                        },
+                        success: function (municipio) {
+                            $("#ListMunicipios").html('');
+                            for (var i = 0; i < municipio.length; i++) {
+                                $('#ListMunicipios').append($('<option>', { value: municipio[i].id_municipio2, text: municipio[i].descripcion }));
+                            }
+                            $("#ListMunicipios").trigger("change");
+                        }
+                    });
+                });
+                $("#ListMunicipios").change(function () {
+                    var id = $("#ListMunicipios").val();
+                    $.ajax({
+                        url: "/Paquetes/LugaresTuristicosXMunicipios",
+                        data: { id: id },
+                        dataType: "json",
+                        type: "POST",
+                        error: function () {
+                            $("#lugaresSeccion").html('');
+                        },
+                        success: function (lugaresSeccion) {
+                            var htmlLugaresSeccion = "";
+                            $("#lugaresSeccion").html('');
+                            for (var i = 0; i < lugaresSeccion.length; i++) {
+                                htmlLugaresSeccion += "<div class='wrapper'><div class='col-md-4 col-sm-6 switch-img clear-padding'><img src='" + lugaresSeccion[i].pathImg.replace("~", "") + "' alt=''></div><div class='col-md-6 col-sm-6 hotel-info'><div><div class='hotel-header'><h5>" + lugaresSeccion[i].nombre + "</h5></div><div class='hotel-desc'><h8>Descripción</h8><p>" + lugaresSeccion[i].descripcion + "</p></div></div></div><div class='clearfix visible-sm-block'></div><div class='col-md-2 rating-price-box text-center clear-padding' style=''><div class='rating-box'></div><div class='room-book-box'><div class='book'><a href='javascript:void(0);' onclick='AgregarRecorrido(\"" + lugaresSeccion[i].id_lugar + "\",\"" + lugaresSeccion[i].nombre + "\");' ><span class='fa fa-cart-arrow-down'></span>Agregar</a></div></div></div></div>";
+                            }
+                            $("#lugaresSeccion").html(htmlLugaresSeccion);
+                        }
+                    });
+                });
+                $('body').on('click', 'input.deleteDep', function () {
+                    $(this).parents('tr').remove();
+                    ValidLugares();
+                });
+                $("#ListEstados").trigger("change");
+                $("#numeroPersonasCotizar").val = "1";
+                $("#numeroPersonasCotizar").trigger("change");
+                $("#numeroHabitacionesCotizar").trigger("change");
+                $("#BoletoCotizar").trigger("change");
+                ValidLugares();
+            });
+            function AgregarRecorrido(id_lugar, nombre) {
+                var auxBanTr = 1;
+                numeroLugaresTuristicos = numeroLugaresTuristicos + 1;
+                var auxTr = "<tr><td style='width:0%; display:none'><input type='hidden' name='recorrido_id_lugar" + numeroLugaresTuristicos + "' id='recorrido_id_lugar" + numeroLugaresTuristicos + "'value='" + id_lugar + "'></td><td style='width:20%'><select name='numDias_tabla_td" + numeroLugaresTuristicos + "' class='form-control' id='numDias_tabla_td" + numeroLugaresTuristicos + "'><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option></select></td><td style='width:60%'><h5>" + nombre + "</h5></td><td style='width:20%'><input type='button' class='deleteDep btnEliminarRecorrido' value='Eliminar'/></td></tr>";
+                $("#tabla_recorrido tbody tr").each(function (i, row) {
+                    if (id_lugar == $(this).find("td:first input").val()) {
+                        auxBanTr = 0;
+                        return false;
+                    }
+                });
+                if (auxBanTr == 1)
+                    $("#tabla_recorrido tbody").append(auxTr);
+
+                ValidLugares();
+                return false;
+            }
+            function ValidLugares() {
+                if ($("#tabla_recorrido tbody").children('tr').length > 0) {
+                    banValidacion3 = 1;
+                    $("#estatus_recorrido").css('background-color', 'green');
+                    $("#estatus_recorrido").css('color', 'white');
+                    $("#estatus_recorrido").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("existeAlmenosLugarTuristico"))');
+                    }
+                else {
+                    banValidacion3 = 0;
+                    $("#estatus_recorrido").css('background-color', 'orange');
+                    $("#estatus_recorrido").css('color', 'white');
+                        $("#estatus_recorrido").text('@Html.Raw(locale.GetResourceCotizarPaqueteVip("noExisteAlmenosLugarTuristico"))');
+                    }
+                }
+                $(document).ready(function () {
+                    jQuery.validator.methods["date"] = function (value, element) { return true; }
+                });
+</script>
+    }

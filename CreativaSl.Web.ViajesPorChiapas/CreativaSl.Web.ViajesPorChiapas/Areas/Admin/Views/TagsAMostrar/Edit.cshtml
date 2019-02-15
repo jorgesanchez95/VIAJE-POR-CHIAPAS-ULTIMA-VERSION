@@ -1,0 +1,96 @@
+﻿@model CreativaSl.Web.ViajesPorChiapas.Models.TagsMostrarModels
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section featured
+{
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Administrador/plugins/cropper/cropper.min.css")" />
+
+    @{
+        var message = TempData["message"] ?? string.Empty;
+        var typemessage = TempData["typemessage"] ?? string.Empty;
+    }
+    <div class="page-content">
+        <div id="Error" class="error message" style="display: none">
+            <h3></h3>
+        </div>
+        <div id="Success" class="success message" style="display: none">
+            <h3></h3>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h3 class="page-title">Viaje Por Chiapas<small>  Administración</small></h3>
+                </div>
+            </div>
+            <div class="tab-pane">
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Editar</div>
+                    </div>
+                    @using (Html.BeginForm("Edit", "TagsAMostrar", FormMethod.Post, new {@class = "form-horizontal" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+
+                        @Html.HiddenFor(model => model.id_tagMostrar)
+
+
+                        <div class="portlet-body form">
+                            <h3 class="form-section">Información</h3>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Tags<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.DropDownListFor(model => model.tablaTagsCmb, ViewData["cmbTags"] as SelectList, new { id = "ListTags", @class = "span12 m-wrap chosen" })
+                                            @Html.ValidationMessageFor(model => model.tablaTagsCmb)
+                                        </div>
+                                    </div>
+                                    <span class="help-block">Seleccione tag </span>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <input type="submit" value="Guardar" class="btn green">
+                                <a href="@Url.Action("Index","TagsAMostrar")" class="btn btn-default red"><i class="icon-prev"></i>Cancelar</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var auxbol = 1;
+        $(document).ready(function () {
+            $("#ListTags").val('@Model.id_tag');
+
+        });
+
+        jQuery(document).ready(function () {
+            var message = '@message';
+            var typemessage = '@typemessage';
+
+            if (typemessage && message) {
+                if (typemessage == '1') {
+                    $('#Success').html('<h3>' + message + '<h3>');
+                    $('#Success').css("display", "block");
+                    $('#Success').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Success').css("display", "block");
+                }
+                else if (typemessage == '2') {
+                    $('#Error').html('<h3>' + message + '<h3>');
+                    $('#Error').css("display", "block");
+                    $('#Error').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Error').css("display", "block");
+                }
+            }
+        });
+    </script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/cropper/cropper.min.js")"></script>
+    <script src="@Url.Content("~/Content/Administrador/scripts/image-cropper.js")"></script>
+}
+
+

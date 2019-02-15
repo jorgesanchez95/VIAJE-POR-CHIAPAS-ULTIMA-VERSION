@@ -1,0 +1,593 @@
+﻿@model CreativaSl.Web.ViajesPorChiapas.Models.ConfiguracionModels
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section featured
+{
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Administrador/plugins/cropper/cropper.min.css")" />
+    @{
+        var message = TempData["message"] ?? string.Empty;
+        var typemessage = TempData["typemessage"] ?? string.Empty;
+    }
+    <div class="page-content">
+        <div id="Error" class="error message" style="display: none">
+            <h3></h3>
+        </div>
+        <div id="Success" class="success message" style="display: none">
+            <h3></h3>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h3 class="page-title">Viaje Por Chiapas<small>  Administración</small></h3>
+                </div>
+            </div>
+            <div class="tab-pane">
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Editar Configuracion</div>
+                    </div>
+                    @using (Html.BeginForm("Edit", "Configuracion", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+
+                        @Html.HiddenFor(model => model.id_configuracion)
+                        @Html.HiddenFor(model => model.pathImg)
+                        
+                        <div class="portlet-body form">
+                            <h3 class="form-section">Información general</h3>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Telefono<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.telefono, new { id = "telefono", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.telefono)
+                                            <span class="help-block">Ingrese el telefono</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Correo<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.correo, new { id = "correo", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.correo)
+                                            <span class="help-block">Ingrese el correo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Texto 1<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.textoUno, new { id = "textoUno", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.textoUno)
+                                            <span class="help-block">Ingrese el texto</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Texto 1(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.textoUnoIngles, new { id = "textoUnoIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.textoUnoIngles)
+                                            <span class="help-block">Ingrese el texto</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Top 5<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.topCinco, new { id = "topCinco", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.topCinco)
+                                            <span class="help-block">Ingrese el texto para top 5</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Top 5(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.topCincoIngles, new { id = "topCincoIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.topCincoIngles)
+                                            <span class="help-block">Ingrese el texto para top 5</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Texto Home<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.textoDos, new { id = "textoDos", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.textoDos)
+                                            <span class="help-block">Ingrese el texto</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Texto Home 2(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.textoDosIngles, new { id = "textoDosIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.textoDosIngles)
+                                            <span class="help-block">Ingrese el texto</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Newsletter<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.newsletter, new { id = "newsletter", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.newsletter)
+                                            <span class="help-block">Ingrese el texto para newsletter</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Newsletter(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.newsletterIngles, new { id = "newsletterIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.newsletterIngles)
+                                            <span class="help-block">Ingrese el texto para newsletter</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Acerca(pie pagina)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.pieAcerca, new { id = "pieAcerca", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.pieAcerca)
+                                            <span class="help-block">Ingrese el "acerca de" para pie de pagina</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Acerca(pie pagina)(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.pieAcercaIngles, new { id = "pieAcercaIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.pieAcercaIngles)
+                                            <span class="help-block">Ingrese el "acerca de" para pie de pagina</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Dirección<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.direccion, new { id = "direccion", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.direccion)
+                                            <span class="help-block">Ingrese la direccion</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Contactanos<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.contactanos, new { id = "contactanos", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.contactanos)
+                                            <span class="help-block">Ingrese contactanos</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Contactanos(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.contactanosIngles, new { id = "contactanosIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.contactanosIngles)
+                                            <span class="help-block">Ingrese contactanos(Ingles)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">¿Quien Es...?<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.quienEs, new { id = "quienEs", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.quienEs)
+                                            <span class="help-block">Ingrese ¿Quien Es...?(Ingles)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">¿Quien Es...?(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.quienEsIngles, new { id = "quienEsIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.quienEsIngles)
+                                            <span class="help-block">Ingrese ¿Quien Es...?(Ingles)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" style="display:none">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Nuestros Servicios<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.nuestrosServicios, new { id = "nuestrosServicios", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.nuestrosServicios)
+                                            <span class="help-block">Ingrese Nuestros Servicios</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" style="display:none">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Nuestros Servicios(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.nuestrosServiciosIngles, new { id = "nuestrosServiciosIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.nuestrosServiciosIngles)
+                                            <span class="help-block">Ingrese Nuestros Servicios(Ingles)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" style="display:none">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Servicio Boletos<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.servicioBoletos, new { id = "servicioBoletos", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.servicioBoletos)
+                                            <span class="help-block">Ingrese Servicio Boeltos</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" style="display:none">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Servicio Boletos(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.servicioBoletosIngles, new { id = "servicioBoletosIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.servicioBoletosIngles)
+                                            <span class="help-block">Ingrese Servicio Boletos(Ingles)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Servicio Tours<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.servicioHotel, new { id = "servicioHotel", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.servicioHotel)
+                                            <span class="help-block">Ingrese Servicio Hotel</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Servicio Tours(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.servicioHotelIngles, new { id = "servicioHotelIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.servicioHotelIngles)
+                                            <span class="help-block">Ingrese Servicio Hotel(Ingles)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Servicio Transportación<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.servicioTraslado, new { id = "servicioTraslado", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.servicioTraslado)
+                                            <span class="help-block">Ingrese Servicio Traslado</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Servicio Transportación(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.servicioTrasladoIngles, new { id = "servicioTrasladoIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.servicioTrasladoIngles)
+                                            <span class="help-block">Ingrese Servicio Traslado(Ingles)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Servicio Paquetes<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.servicioPaquetes, new { id = "servicioPaquetes", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.servicioPaquetes)
+                                            <span class="help-block">Ingrese Servicio Paquetes</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Servicio Paquetes(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.servicioPaquetesIngles, new { id = "servicioPaquetesIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.servicioPaquetesIngles)
+                                            <span class="help-block">Ingrese Servicio Paquetes(Ingles)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Descripcion Transportacion<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.descripcionTransportacion, new { id = "descripcionTransportacion", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.descripcionTransportacion)
+                                            <span class="help-block">Ingrese Descripcion Transportacion</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Descripcion Transportacion(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.descripcionTransportacionIngles, new { id = "descripcionTransportacionIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.descripcionTransportacionIngles)
+                                            <span class="help-block">Ingrese Descripcion Transportacion(Ingles)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Detalle Promoción<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.detalleTransportacion, new { id = "detalleTransportacion", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.detalleTransportacion)
+                                            <span class="help-block">Ingrese Detalle Transportacion</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Detalle Promoción(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.detalleTransportacionIngles, new { id = "detalleTransportacionIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.detalleTransportacionIngles)
+                                            <span class="help-block">Ingrese Detalle Transportacion(Ingles)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Términos y Condiciones<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.terminosCondiciones, new { id = "terminosCondiciones", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.terminosCondiciones)
+                                            <span class="help-block">Ingrese Términos y Condiciones</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Términos y Condiciones(Ingles)<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.terminosCondicionesIngles, new { id = "terminosCondicionesIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.terminosCondicionesIngles)
+                                            <span class="help-block">Ingrese Términos y Condiciones(Ingles)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h3 class="form-section">Redes Sociales</h3>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Facebook<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.facebook, new { id = "facebook", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.facebook)
+                                            <span class="help-block">Ingrese el facebook</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Twitter<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.twitter, new { id = "twitter", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.twitter)
+                                            <span class="help-block">Ingrese el twitter</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Instagram<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.instagram, new { id = "instagram", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.instagram)
+                                            <span class="help-block">Ingrese el instagram</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Youtube<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.youtube, new { id = "youtube", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.youtube)
+                                            <span class="help-block">Ingrese el canal de youtube</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <label class="control-label">Google +<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.google, new { id = "google", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.google)
+                                            <span class="help-block">Ingrese cuenta de google +</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">ALT<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.alt, new { id = "alt", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.alt)
+                                            <span class="help-block">Alt</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Title<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.title, new { id = "title", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.title)
+                                            <span class="help-block">Title</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Nombre Imagen<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.nombreArchivo, new { id = "nombreArchivo", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.nombreArchivo)
+                                            <span class="help-block">Nombre Imagen</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="form-section">Imagen</h3>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <div class="fileupload fileupload-new" data-provides="fileupload">
+                                                <div class="img-container" style="max-height:300px; min-height:300px;">
+                                                    <img src="@Url.Content(Html.Encode(Model.pathImg))" alt="Picture" id="imgLugar" />
+                                                </div>
+                                                <br />
+                                                <div class="btn-group">
+                                                    <label class="btn btn-primary btn-upload" for="inputImage" title="Upload image file">
+                                                        <span class="btn btn-file">
+                                                            <span class="fileupload-new">Seleccionar Imagen</span>
+                                                            @Html.TextBoxFor(model => model.foto2, new { type = "file", id = "inputImage", accept = ".png, .jpg, .jpeg" })
+                                                            <p id="val-img"></p>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <input type="submit" value="Guardar" class="btn green">
+                                <a href="@Url.Action("Index","Configuracion")" class="btn btn-default red"><i class="icon-prev"></i>Cancelar</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#inputImage').change(function () {
+            if (this.files[0].size > 10000000) {
+                var control = jQuery('#inputImage');
+                control.replaceWith(control = control.val('').clone(true));
+                document.getElementById('val-img').innerHTML = "La imagen debe pesar menos de 10 mb. Seleccione nuevamente";
+                $('#val-img').css("color", "red");
+
+            }
+            else {
+                document.getElementById('val-img').innerHTML = "";
+            }
+        });
+        jQuery(document).ready(function () {
+            var message = '@message';
+            var typemessage = '@typemessage';
+
+            if (typemessage && message) {
+                if (typemessage == '1') {
+                    $('#Success').html('<h3>' + message + '<h3>');
+                    $('#Success').css("display", "block");
+                    $('#Success').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Success').css("display", "block");
+                }
+                else if (typemessage == '2') {
+                    $('#Error').html('<h3>' + message + '<h3>');
+                    $('#Error').css("display", "block");
+                    $('#Error').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Error').css("display", "block");
+                }
+            }
+        });
+    </script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/cropper/cropper.min.js")"></script>
+    <script src="@Url.Content("~/Content/Administrador/scripts/image-cropper.js")"></script>
+}
+

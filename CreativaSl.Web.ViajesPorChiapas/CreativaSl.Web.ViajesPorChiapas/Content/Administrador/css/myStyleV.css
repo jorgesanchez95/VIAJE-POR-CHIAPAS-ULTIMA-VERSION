@@ -1,0 +1,46 @@
+﻿td {
+    vertical-align: middle !important;
+}
+
+.slider .slider-selection {
+    background: #BABABA;
+}
+
+.imgContainer {
+    width: 80px;
+    text-align: center;
+}
+.logoImageList {
+    max-width: 80px;
+    max-height: 80px;
+}
+.updateList {
+    text-align: center;
+    width: 80px;
+}
+.deleteList {
+    text-align: center;
+    width: 80px;
+}
+.loader {
+    width: 40%;
+    margin:auto;
+    display:block
+}
+.full-width {
+    padding: 0px;
+}
+.map-container {
+    padding: 20px;
+    background: white;
+    border: 1px solid lightGray;
+}
+#map-sucursal {
+    width: 100%;
+}
+
+#numEstrellasSucursal a {
+    font-size: 30px;
+    text-decoration : none;
+    color: black;
+}

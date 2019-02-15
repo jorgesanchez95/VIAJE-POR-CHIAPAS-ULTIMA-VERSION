@@ -1,0 +1,281 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Sistema Administrador</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="description" />
+    <meta name="author" />
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    @RenderSection("styles", required: false)
+    <link href="@Url.Content("~/Content/Administrador/plugins/bootstrap/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Administrador/plugins/bootstrap/css/bootstrap-responsive.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Administrador/plugins/font-awesome/css/font-awesome.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Administrador/css/style-metro.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Administrador/css/style.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Administrador/css/style-responsive.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Administrador/css/themes/default.css")" rel="stylesheet" type="text/css" id="style_color" />
+    <link href="@Url.Content("~/Content/Administrador/plugins/uniform/css/uniform.default.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Administrador/plugins/select2/select2_metro.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Administrador/plugins/data-tables/DT_bootstrap.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/Administrador/plugins/glyphicons/css/glyphicons.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/Administrador/plugins/fullcalendar/fullcalendar/fullcalendar.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Administrador/plugins/chosen-bootstrap/chosen/chosen.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Administrador/css/bootstrap-datetimepicker.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Administrador/css/pages/inbox.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/Administrador/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css")" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="@Url.Content("~/Content/Pagina/Viajes.ico")">
+    @*<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">*@
+    
+    <link href="@Url.Content("~/Content/sceditor/minified/themes/default.min.css")" rel="stylesheet" /> 
+</head>
+<body class="fixed-top" onload="zoom()">
+    <div class="header navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a href="javascript:;" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+                    <img src="@Url.Content("~/Content/Administrador/img/menu-toggler.png")" alt="" />
+                </a>
+                <ul class="nav pull-right">
+                    <li class="dropdown user">
+                        @{
+                            string Conexion = System.Configuration.ConfigurationManager.AppSettings.Get("strConnection");
+                            CreativaSl.Web.ViajesPorChiapas.Models.UsuarioModels CuentaUsuario = new CreativaSl.Web.ViajesPorChiapas.Models.UsuarioModels();
+                            CreativaSl.Web.ViajesPorChiapas.Models.UsuarioDatos Cuenta = new CreativaSl.Web.ViajesPorChiapas.Models.UsuarioDatos();
+                            CuentaUsuario.conexion = Conexion;
+                            CuentaUsuario.id_usuario = User.Identity.Name;
+                            CuentaUsuario = Cuenta.ObtenerUsuariosXID(CuentaUsuario);
+                        }
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="@Html.Raw(Html.Encode(CuentaUsuario.tablaUsuario.Rows[0]["url_foto"].ToString().Replace("~", "")))" title="@Html.Raw(@Html.Encode(CuentaUsuario.tablaUsuario.Rows[0]["title"]))" alt="@Html.Raw(@Html.Encode(CuentaUsuario.tablaUsuario.Rows[0]["alt"]))" style="width: 50px;">
+                            <span class="username">@Html.Raw(@Html.Encode(CuentaUsuario.tablaUsuario.Rows[0]["nombre"]))</span>
+                            @*<img src="" title="" alt="" style="width: 50px;">
+                            <span class="username">Enrique Mendez</span>*@
+                            <i class="icon-angle-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="@Url.Action("LogOff", "Account", new { Area = "Admin"})"><i class="icon-key"></i> Cerrar Sesiòn</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="page-container">
+        <div class="page-sidebar nav-collapse collapse">
+            <ul>
+                <a class="brand" href="@Url.Action("Index", "HomeAdmin")">
+                    <img id="img-logo" src="@Url.Content("~/Content/Administrador/Logo.png")" alt="logo" style="height: 80px; max-width: 100%; width: 220px;" />
+                </a>
+                <li>
+                    <div class="sidebar-toggler hidden-phone"></div>
+                </li>
+                <li>
+                    <form class="sidebar-search">
+                        <div class="input-box">
+                        </div>
+                    </form>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "HomeAdmin")"><i class="icon-home"></i> <span class="title">INICIO</span></a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "Usuarios")"><i class="icon-user"></i><span class="title">USUARIOS</span></a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "Articulos")"><i class="icon-list"></i><span class="title">ARTÍCULOS</span></a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "Contacto")"><i class="icon-group"></i><span class="title">CONTACTO</span></a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "Secciones")"><i class="icon-flag"></i><span class="title">SECCIONES</span></a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "PreguntasFrecuentes")"><i class="icon-question-sign"></i><span class="title">PREGUNTAS FRECUENTES</span></a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "LugaresTuristicos")"><i class="icon-plane"></i><span class="title">LUGARES TURÍSTICOS</span></a>
+                </li>
+                <li class="">
+                    <a><i class="icon-tags"></i><span class="title">TAGS</span><span class="arrow "></span></a>
+                    <ul class="sub-menu">
+                        <li class="">
+                            <a href="@Url.Action("Index", "CatTags")"><i class="icon-tag"></i><span class="title">CAT TAGS</span></a>
+                        </li>
+                        @*<li>
+                                <a href="@Url.Action("Index", "TagsAMostrar")">TAGS PARA MOSTRAR</a>
+                            </li>*@
+                    </ul>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "CatPaquetes")"><i class="icon-folder-close"></i><span class="title">PAQUETES</span></a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "CatTours")"><i class="icon-globe"></i><span class="title">TOURS</span></a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "DepositosTransferencia")"><i class="icon-folder-close"></i><span class="title">DEPOSITOSTRANSFERENCIA</span></a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "CaracteristicaEmpresa")"><i class="icon-certificate"></i><span class="title">CARACTERISTICAS EMPRESA</span></a>
+                </li>
+                <li class="">
+                    <a><i class="icon-picture"></i><span class="title">GALERIA</span><span class="arrow "></span></a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="@Url.Action("Index", "CatTipoGaleria")">CAT TIPO GALERIA</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Galeria")">GALERIA</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="">
+                    <a><i class="icon-picture"></i><span class="title">MULTIMEDIA</span><span class="arrow "></span></a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="@Url.Action("Index", "CatMultimediaBannerInicio")">BANNER INICIO</a>
+                        </li>
+                        @*<li>
+                                <a href="@Url.Action("Index", "CatMultimediaBanner")">BANNER</a>
+                            </li> *@
+                        <li>
+                            <a href="@Url.Action("Index", "CatMultimediaPromociones")">PROMOCIONES</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="">
+                    <a><i class="icon-envelope"></i><span class="title">CORREOS</span><span class="arrow "></span></a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="@Url.Action("Index", "CorreosUsuario")">CORREOS USUARIOS</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Clientes")">CLIENTES</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Suscripciones")"></a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "CatGrupos")">GRUPOS</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "EnviarCorreos")">ENVIAR</a>
+                        </li>
+                    </ul>
+                </li>
+                @*<li class="">
+                    <a href="@Url.Action("Index", "CatHoteles")"><i class="icon-star"></i><span class="title">HOTELES</span></a>
+                </li>*@
+                <li class="">
+                    <a><i class="icon-picture"></i><span class="title">TRANSPORTACIÓN</span><span class="arrow "></span></a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="@Url.Action("Index", "CatTipoVehiculo")">TIPO VEHICULO</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "CatVehiculos")">VEHICULOS</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "Testimoniales")"><i class="icon-cogs"></i><span class="title">TESTIMONIALES</span></a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "MetaTags")"><i class="icon-cogs"></i><span class="title">META TAGS</span></a>
+                </li>
+                <li class="">
+                    <a href="@Url.Action("Index", "Configuracion")"><i class="icon-cogs"></i><span class="title">CONFIGURACION</span></a>
+                </li>
+            </ul>
+        </div>
+
+        @RenderSection("featured", required: false)
+
+    </div>
+    @RenderBody()
+
+
+    <script src="@Url.Content("~/Content/Administrador/plugins/jquery-ui/jquery-ui-1.10.1.custom.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
+
+    <!--[if lt IE 9]>
+    <script src="@Url.Content("~/Content/Administrador/plugins/excanvas.js")"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/respond.js")"></script>
+    <![endif]-->
+    <script src="@Url.Content("~/Content/Administrador/plugins/breakpoints/breakpoints.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/jquery-slimscroll/jquery.slimscroll.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/jquery.blockui.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/jquery.cookie.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/uniform/jquery.uniform.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/chosen-bootstrap/chosen/chosen.jquery.js")" type="text/javascript" )"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/jquery.pulsate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/bootstrap-daterangepicker/date.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/bootstrap-daterangepicker/daterangepicker.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/gritter/js/jquery.gritter.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/jquery.sparkline.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/scripts/app.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/scripts/index.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/jQuery-Mask-Plugin-master/jquery.mask.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/fullcalendar/fullcalendar/fullcalendar.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/jtables/datatable.min.js")" type="text/javascript"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDMC3rJcTZ-t0G37_EJFGkB4FibjqTYbg" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/scripts/mapa-lugares/config.map.places.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/scripts/form-samples.js")"></script>
+    <script src="@Url.Content("~/Content/Administrador/js/bootstrap-datetimepicker.min.js")"></script>
+    <script src="@Url.Content("~/Content/Administrador/scripts/inbox.js")"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/Administrador/scripts/form-components.js")"></script>
+    @RenderSection("scripts", required: false)
+    <script>
+        function zoom() {
+            document.body.style.zoom = "90%"
+        }
+        $(function () {
+            $('#datetimepicker1').datetimepicker({
+                format: "dd/MM/yyyy hh:mm:ss"
+            });
+
+            $('#datetimepicker2').datetimepicker({
+                format: "dd/MM/yyyy hh:mm:ss"
+            });
+
+            $('#datetimepicker3').datetimepicker({
+                format: "dd/MM/yyyy"
+            });
+
+            $('#datetimepicker4').datetimepicker({
+                format: "dd/MM/yyyy"
+            });
+
+            $('#timepicker1').datetimepicker({
+                pickDate: false,
+                format: "hh:mm"
+            });
+
+            $('#timepicker2').datetimepicker({
+                pickDate: false,
+                format: "hh:mm"
+            });
+        });
+
+        jQuery(document).ready(function () {
+            App.init(); // initlayout and core plugins
+            Index.init();
+            FormSamples.init();
+            FormComponents.init();
+        });
+
+    </script>
+    <script type="text/javascript">
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,276 @@
+﻿@model CreativaSl.Web.ViajesPorChiapas.Models.CatVehiculosModels
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section featured
+{
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Administrador/plugins/cropper/cropper.min.css")" />
+
+    @{
+        var message = TempData["message"] ?? string.Empty;
+        var typemessage = TempData["typemessage"] ?? string.Empty;
+    }
+    <div class="page-content">
+        <div id="Error" class="error message" style="display: none">
+            <h3></h3>
+        </div>
+        <div id="Success" class="success message" style="display: none">
+            <h3></h3>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h3 class="page-title">Viaje Por Chiapas<small>  Administración</small></h3>
+                </div>
+            </div>
+            <div class="tab-pane">
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Nuevo Vehículo</div>
+                    </div>
+                    @using (Html.BeginForm("Create", "CatVehiculos", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+
+                        @Html.HiddenFor(model => model.id_vehiculo)
+
+
+                        <div class="portlet-body form">
+                            <h3 class="form-section">Información</h3>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Descripción<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.descripcion, new { id = "descripcion", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.descripcion)
+                                            <span class="help-block">Ingrese descripción</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Descripción Ingles<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.descripcionIngles, new { id = "descripcionIngles", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.descripcionIngles)
+                                            <span class="help-block">Ingrese descripción en inglés</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                                
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Número de Placas<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.placas, new { id = "placas", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.placas)
+                                            <span class="help-block">Ingrese el número placas</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                
+                            
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Detalles<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.detalle, new { id = "detalle", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.detalle)
+                                            <span class="help-block">Ingrese detalles del Vehículo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Detalles Inglés<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.detalleIngles, new { id = "detalleIngles", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.detalleIngles)
+                                            <span class="help-block">Ingrese detalles en Inglés del Vehículo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                           
+
+                            <div class="row-fluid">
+                                
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Tipo de Vehículo<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.DropDownListFor(model => model.tablaTipoVehiculoCmb, ViewData["cmbTipoVehiculos"] as SelectList, new { id = "ListTipo", @class = "span12 m-wrap chosen" })
+                                            @Html.ValidationMessageFor(model => model.tablaTipoVehiculoCmb)
+                                        </div>
+                                    </div>
+                                    <span class="help-block">Seleccione un tipo de Vehículo</span>
+                                </div>
+                            
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Combustible<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.combustible, new { id = "combustible", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.combustible)
+                                            <span class="help-block">Ingrese el tipo de combustible del Vehículo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Transmisión<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.transmision, new { id = "transmision", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.transmision)
+                                            <span class="help-block">Ingrese la transmision del Vehículo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                           
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label">Número de Personas<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.numPersona, new { id = "numPersona", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.numPersona)
+                                            <span class="help-block">Ingrese la capacidad de personas en el vehículo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                           
+                                <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label">Número de Puertas<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.numPuerta, new { id = "numPuerta", @class = "span12 m-wrap" })
+                                            @Html.ValidationMessageFor(model => model.numPuerta)
+                                            <span class="help-block">Ingrese la cantidad de puertas del Vehículo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <div class="control-group">
+                                        <label class="control-label">ALT<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.alt, new { id = "alt", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.alt)
+                                            <span class="help-block">Alt</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span4">
+                                    <div class="control-group">
+                                        <label class="control-label">Title<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.title, new { id = "title", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.title)
+                                            <span class="help-block">Title</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="control-group">
+                                        <label class="control-label">Nombre Imagen<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.nombre_arc, new { id = "nombreArchivo", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.nombre_arc)
+                                            <span class="help-block">Nombre Imagen</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                           
+
+                            <h3 class="form-section">Imagen</h3>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <div class="fileupload fileupload-new" data-provides="fileupload">
+                                                <div class="img-container" style="max-height:300px; min-height:300px;">
+                                                    <img src="@Url.Content("~/Imagenes/default.png")" alt="Picture" id="imgLugar" />
+                                                </div>
+                                                <br />
+                                                <div class="btn-group">
+                                                    <label class="btn btn-primary btn-upload" for="inputImage" title="Upload image file">
+                                                        <span class="btn btn-file">
+                                                            <span class="fileupload-new">Seleccionar Imagen</span>
+                                                            @Html.TextBoxFor(model => model.foto, new { type = "file", id = "inputImage", accept = ".png, .jpg, .jpeg" })
+                                                            @Html.ValidationMessageFor(model => model.foto)
+                                                            <p id="val-img"></p>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                            <div class="row-fluid">
+                                <div class="span12">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <input type="submit" value="Guardar" class="btn green">
+                                <a href="@Url.Action("Index","CatVehiculo")" class="btn btn-default red"><i class="icon-prev"></i>Cancelar</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#inputImage').change(function () {
+            if (this.files[0].size > 10000000) {
+                var control = jQuery('#inputImage');
+                control.replaceWith(control = control.val('').clone(true));
+                document.getElementById('val-img').innerHTML = "La imagen debe pesar menos de 10 mb. Seleccione nuevamente";
+                $('#val-img').css("color", "red");
+
+            }
+            else {
+                document.getElementById('val-img').innerHTML = "";
+            }
+        });
+        jQuery(document).ready(function () {
+            var message = '@message';
+            var typemessage = '@typemessage';
+
+            if (typemessage && message) {
+                if (typemessage == '1') {
+                    $('#Success').html('<h3>' + message + '<h3>');
+                    $('#Success').css("display", "block");
+                    $('#Success').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Success').css("display", "block");
+                }
+                else if (typemessage == '2') {
+                    $('#Error').html('<h3>' + message + '<h3>');
+                    $('#Error').css("display", "block");
+                    $('#Error').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Error').css("display", "block");
+                }
+            }
+        });
+    </script>
+<script src="@Url.Content("~/Content/Administrador/plugins/cropper/cropper.min.js")"></script>
+<script src="@Url.Content("~/Content/Administrador/scripts/image-cropper.js")"></script>
+}
+
+

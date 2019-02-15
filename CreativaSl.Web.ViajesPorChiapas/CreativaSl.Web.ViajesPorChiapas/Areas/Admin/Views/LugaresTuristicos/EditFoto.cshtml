@@ -1,0 +1,196 @@
+﻿@model CreativaSl.Web.ViajesPorChiapas.Models.MultimediaModels
+@{
+    ViewBag.Title = "EditFoto";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section featured
+{
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Administrador/plugins/cropper/cropper.min.css")" />
+
+    @{
+        var message = TempData["message"] ?? string.Empty;
+        var typemessage = TempData["typemessage"] ?? string.Empty;
+    }
+    <div class="page-content">
+        <div id="Error" class="error message" style="display: none">
+            <h3></h3>
+        </div>
+        <div id="Success" class="success message" style="display: none">
+            <h3></h3>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h3 class="page-title">Viaje Por Chiapas<small>  Administración</small></h3>
+                </div>
+            </div>
+            <div class="tab-pane">
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="icon-reorder"></i>Editar Foto</div>
+                    </div>
+                    @using (Html.BeginForm("EditFoto", "LugaresTuristicos", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+
+                        @Html.HiddenFor(model => model.id_multimedia)
+                        @Html.HiddenFor(model => model.pathMul)
+                        @Html.HiddenFor(model => model.id_lugar)
+                        @Html.HiddenFor(model => model.id_seccion)
+
+                        <div class="portlet-body form">
+                            <h3 class="form-section">Información</h3>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Descripción<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.descripcion, new { id = "descripcion", @class = "span12 m-wrap", @rows="8" })
+                                            @Html.ValidationMessageFor(model => model.descripcion)
+                                            <span class="help-block">Ingrese la descripcion</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Descripción en Inglés<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextAreaFor(model => model.descripcionIngles, new { id = "descripcionIngles", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.descripcionIngles)
+                                            <span class="help-block">Ingrese la descripción en Ingles</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                             <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">ALT<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.alt, new { id = "alt", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.alt)
+                                            <span class="help-block">Alt</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Title<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.title, new { id = "title", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.title)
+                                            <span class="help-block">Title</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">Nombre Imagen<span class="required"> *</span></label>
+                                        <div class="controls">
+                                            @Html.TextBoxFor(model => model.nombreArchivo, new { id = "nombreArchivo", @class = "span12 m-wrap", @rows = "8" })
+                                            @Html.ValidationMessageFor(model => model.nombreArchivo)
+                                            <span class="help-block">Nombre Imagen</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="form-section">Imagen</h3>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <div class="fileupload fileupload-new" data-provides="fileupload">
+                                                <div class="img-container" style="max-height:300px; min-height:300px;">
+                                                    <img src="@Url.Content(Html.Encode(Model.pathMul))" alt="Picture" id="imgLugar" />
+                                                </div>
+                                                <br />
+                                                <div class="btn-group">
+                                                    <label class="btn btn-primary btn-upload" for="inputImage" title="Upload image file">
+                                                        <span class="btn btn-file">
+                                                            <span class="fileupload-new">Seleccionar Imagen</span>
+                                                            @Html.TextBoxFor(model => model.foto2, new { type = "file", id = "inputImage", accept = ".png, .jpg, .jpeg" })
+                                                            <p id="val-img"></p>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <input type="submit" value="Guardar" class="btn green">
+                                @{
+                                    string id = Model.id_lugar;
+                                    string id2 = Model.id_seccion;
+                                }
+                                <a href="@Url.Action("AddFotos","LugaresTuristicos", new {id = id, id2 = id2})" class="btn btn-default red"><i class="icon-prev"></i>Cancelar</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#inputImage').change(function () {
+            if (this.files[0].size > 10000000) {
+                var control = jQuery('#inputImage');
+                control.replaceWith(control = control.val('').clone(true));
+                document.getElementById('val-img').innerHTML = "La imagen debe pesar menos de 10 mb. Seleccione nuevamente";
+                $('#val-img').css("color", "red");
+
+            }
+            else {
+                document.getElementById('val-img').innerHTML = "";
+            }
+        });
+        $.validator.addMethod('filesize', function (value, element, param) {
+            return this.optional(element) || (element.files[0].size <= param)
+        });
+        $(function () {
+            $('input[name^="foto2"]').rules('add', {
+                accept: "png,jpg,jpeg",
+                filesize: 10485760,
+                messages: {
+                    accept: "Solo archivos png, jpg, jpeg",
+                    filesize: "Solo archivos de tamaño menor a 10 MB"
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $("#ListSecciones").val('@Model.id_seccion');
+        });
+
+        jQuery(document).ready(function () {
+            var message = '@message';
+            var typemessage = '@typemessage';
+
+            if (typemessage && message) {
+                if (typemessage == '1') {
+                    $('#Success').html('<h3>' + message + '<h3>');
+                    $('#Success').css("display", "block");
+                    $('#Success').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Success').css("display", "block");
+                }
+                else if (typemessage == '2') {
+                    $('#Error').html('<h3>' + message + '<h3>');
+                    $('#Error').css("display", "block");
+                    $('#Error').delay(400).slideDown(400).delay(2000).slideUp(400);
+                    $('#Error').css("display", "block");
+                }
+            }
+        });
+    </script>
+    <script src="@Url.Content("~/Content/Administrador/plugins/cropper/cropper.min.js")"></script>
+    <script src="@Url.Content("~/Content/Administrador/scripts/image-cropper.js")"></script>
+}
